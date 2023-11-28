@@ -7,6 +7,7 @@ import Guide from './components/Guide';
 import Hotel from './components/Hotel';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
+import MembersGroup from './components/MembersGroup';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
           <Route path='groups' element={<Groups/>}/> 
           <Route path='guide' element={<Guide/>}/> 
           <Route path='hotels' element={<Hotel/>}/> 
+          <Route path='members' element={<MembersGroup/>}/> 
         </Route>
         <Route path='login' element={<Login/>}/>
       </Routes>

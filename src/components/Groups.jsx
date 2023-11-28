@@ -225,7 +225,7 @@ const Groups = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {groups.map((group) => (
-                    <tr key={group.id}>
+                    <tr key={group.id} className="hover:bg-gray-200 duration-300">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div>
@@ -239,7 +239,7 @@ const Groups = () => {
                         <div className="flex items-center">
                           <div>
                             <div className="text-sm font-medium text-gray-900">
-                              {group.name}
+                              <a href="/members">{group.name}</a>
                             </div>
                           </div>
                         </div>
@@ -265,7 +265,7 @@ const Groups = () => {
                         <div className="flex items-center">
                           <div>
                             <div className="text-sm font-medium text-gray-900">
-                              <button className="bg-green-300 p-1 rounded-md">{group.program}</button>
+                              <button className="bg-green-300 hover:bg-green-500 duration-500 p-1 rounded-md">{group.program}</button>
                             </div>
                           </div>
                         </div>

@@ -143,7 +143,7 @@ const Hotel = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {hotels.map((hotel) => (
-                    <tr key={hotel.mapLink}>
+                    <tr key={hotel.mapLink} className="hover:bg-gray-200 duration-300">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div>
