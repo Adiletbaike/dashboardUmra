@@ -3,11 +3,11 @@ import { Menu, Transition } from "@headlessui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 
-const Header = () => {
+const Header = ({pathname}) => {
   const navigate = useNavigate();
   return (
     <div className="bg-white h-16 px-4 flex justify-between items-center border-b border-gray-200">
-      <strong>Умра</strong>
+      <strong>{pathname}</strong>
       <div className="">
         <Menu as="div" className="relative">
           <div>

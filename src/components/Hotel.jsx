@@ -2,11 +2,31 @@ import CreatableSelect from "react-select/creatable";
 import React, { useState } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { IoMdAdd } from "react-icons/io";
+import { CiEdit } from "react-icons/ci";
+import { RiDeleteBin5Line } from "react-icons/ri";
 import Modal from "./Modals/Modal";
 
 const hotel = [
   { value: "mekkah", label: "Мекке" },
   { value: "medina", label: "Мадина" },
+];
+
+const hotels = [
+  {
+    name: "Durrat al Eiman",
+    mapLink : "https://maps.app.goo.gl/eK91rkjNa9rRkHU78",
+    city: "Мадина",
+  },
+  {
+    name: "Movenpick",
+    mapLink : "https://maps.app.goo.gl/WHnUNw4xTz8hhyWB6",
+    city: "Мекке",
+  },
+  {
+    name: "Emaar Royal",
+    mapLink : "https://maps.app.goo.gl/D8fnVkwcR7v3wFKr6",
+    city: "Мадина",
+  },
 ];
 
 const Hotel = () => {
@@ -75,7 +95,7 @@ const Hotel = () => {
                   for="education"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Билген тилдери
+                  Жайгашкан жери
                 </label>
                 <CreatableSelect isClearable options={hotel} />
               </div>
@@ -90,6 +110,85 @@ const Hotel = () => {
             </form>
           </div>
         </Modal>
+      </div>
+      <div className="flex flex-col pt-4">
+        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Аты
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Карта адрес
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Шаар
+                    </th>
+                    <th scope="col" className="relative px-6 py-3">
+                      <span className="sr-only">Edit</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {hotels.map((hotel) => (
+                    <tr key={hotel.mapLink}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {hotel.name}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              <a href={hotel.mapLink} target="_blank">{hotel.mapLink}</a>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {hotel.city}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
+                        <a
+                          href="#"
+                          className="text-indigo-600 hover:text-indigo-900"
+                        >
+                          <CiEdit />
+                        </a>
+                        <a href="#" className="text-red-600 hover:text-red-900">
+                          <RiDeleteBin5Line />
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

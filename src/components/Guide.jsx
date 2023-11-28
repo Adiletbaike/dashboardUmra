@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { HiOutlineSearch } from "react-icons/hi";
 import { CiEdit } from "react-icons/ci";
@@ -9,29 +9,25 @@ import Select from "react-select";
 const people = [
   {
     name: "Abdulla Kaary",
-    title: "Islam University",
-    department: "Din taanuu",
-    role: "Guide",
-    email: "abdulla@example.com",
+    surname : "Abdullaev",
+    phone: "+996708112288",
+    university: "Islam University",
     image: "https://bit.ly/33HnjK0",
   },
   {
     name: "Aibek Ustaz",
-    title: "Egypt, Al-Askar",
-    department: "Islam taanuu",
-    role: "Guide",
-    email: "aibek@example.com",
+    surname : "Aibekov",
+    phone: "+996708112288",
+    university: "Egypt, Al-Askar",
     image: "https://bit.ly/3I9nL2D",
   },
   {
     name: "Nurbek Kaary",
-    title: "Manas University",
-    department: "Din taanuu",
-    role: "Guide",
-    email: "nurbek@example.com",
+    surname : "Nurbekov",
+    phone: "+996708112288",
+    university: "Manas University",
     image: "https://bit.ly/3vaOTe1",
   },
-  // More people...
 ];
 const language = [
   { value: "kyrgyz", label: "Кыргыз" },
@@ -41,6 +37,15 @@ const language = [
 
 const Guide = () => {
   const [showModal, setShowModal] = useState(false);
+  const inputRef = useRef(null);
+  const [image, setImage] = useState("");
+  const handleImageClick = () => {
+    inputRef.current.click();
+  };
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    setImage(event.target.files[0]);
+  };
   return (
     <div className="bg-white p-4 overflow-x-scroll">
       <div className="flex justify-between border-b pb-4 border-gray-200">
@@ -68,6 +73,31 @@ const Guide = () => {
               Умра башчы
             </h3>
             <form className="space-y-3" action="#">
+              <div
+                className="flex flex-col justify-center"
+                onClick={handleImageClick}
+              >
+                {image ? (
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt=""
+                    className="w-20 mb-2 rounded-full"
+                  />
+                ) : (
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                    alt=""
+                    className="w-20 mb-2"
+                  />
+                )}
+                <input
+                  type="file"
+                  // className="w-full"
+                  ref={inputRef}
+                  onChange={handleImageChange}
+                  // style={{display: none}}
+                />
+              </div>
               <div>
                 <label
                   for="name"
@@ -133,7 +163,7 @@ const Guide = () => {
                 />
               </div>
               <div>
-              <label
+                <label
                   for="education"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
@@ -171,7 +201,25 @@ const Guide = () => {
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
+                      Сүрөт
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       Аты
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Фамилиясы
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Телефон
                     </th>
                     <th
                       scope="col"
@@ -185,12 +233,7 @@ const Guide = () => {
                     >
                       Билген тилдери
                     </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Роль
-                    </th>
+
                     <th scope="col" className="relative px-6 py-3">
                       <span className="sr-only">Edit</span>
                     </th>
@@ -210,23 +253,34 @@ const Guide = () => {
                               alt="man-wearing-turban"
                             />
                           </div>
-                          <div className="ml-4">
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div>
                             <div className="text-sm font-medium text-gray-900">
                               {person.name}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {person.email}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {person.surname}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {person.title}
+                          {person.phone}
                         </div>
-                        <div className="text-sm text-gray-500">
-                          {person.department}
-                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {person.university}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
@@ -248,9 +302,7 @@ const Guide = () => {
                           Ru
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {person.role}
-                      </td>
+                      
                       <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
                         <a
                           href="#"

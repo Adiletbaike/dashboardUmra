@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { HiOutlineSearch } from "react-icons/hi";
+import { CiEdit } from "react-icons/ci";
+import { RiDeleteBin5Line } from "react-icons/ri";
 import Modal from "./Modals/Modal";
 import CreatableSelect from "react-select/creatable";
 
@@ -26,6 +28,33 @@ const madina = [
   { value: "durrat", label: "Durrat al Eiman" },
   { value: "ruva", label: "Ruva Al Madinah" },
   { value: "emaar", label: "Emaar Royal" },
+];
+
+const groups = [
+  {
+    id: 1,
+    name: "KG1212",
+    quantity: 34,
+    language: "Кыргыз",
+    guide: "Абдулла каары",
+    program: "Программа",
+  },
+  {
+    id: 2,
+    name: "RU2232",
+    quantity: 30,
+    language: "Орус",
+    guide: "Денис устаз",
+    program: "Программа",
+  },
+  {
+    id: 3,
+    name: "KG4232",
+    quantity: 20,
+    language: "Кыргыз",
+    guide: "Нурбек каары",
+    program: "Программа",
+  },
 ];
 
 const Groups = () => {
@@ -79,7 +108,7 @@ const Groups = () => {
                   Адам саны
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   name="number"
                   id="number"
                   placeholder="Саны"
@@ -144,6 +173,121 @@ const Groups = () => {
             </form>
           </div>
         </Modal>
+      </div>
+      <div className="flex flex-col pt-4">
+        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      ID
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Аты
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Cаны
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Группа тили
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Умра башчы
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Программа
+                    </th>
+
+                    <th scope="col" className="relative px-6 py-3">
+                      <span className="sr-only">Edit</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {groups.map((group) => (
+                    <tr key={group.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {group.id}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {group.name}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {group.quantity}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {group.language}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {group.guide}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              <button className="bg-green-300 p-1 rounded-md">{group.program}</button>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
+                        <a
+                          href="#"
+                          className="text-indigo-600 hover:text-indigo-900"
+                        >
+                          <CiEdit />
+                        </a>
+                        <a href="#" className="text-red-600 hover:text-red-900">
+                          <RiDeleteBin5Line />
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
