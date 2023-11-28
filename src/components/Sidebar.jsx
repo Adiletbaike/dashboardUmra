@@ -32,7 +32,7 @@ const Sidebar = () => {
     <div className="bg-neutral-900 w-60 p-3 flex flex-col text-white">
       <div className="flex items-center gap-2 px-3 py-3 border-b border-neutral-700">
         <FaKaaba fontSize={28} color="yellow" />{" "}
-        <span className="text-neutral-100 text-lg font-bold">Umrah</span>
+        <span className="text-neutral-100 text-lg font-bold">Умра</span>
       </div>
       <div className="flex-1 py-8 flex flex-col gap-0.5">
         {DASHBOARD_SIDEBAR_LINKS.map((item) => (
@@ -47,7 +47,7 @@ const Sidebar = () => {
           <span className="text-xl">
             <HiOutlineLogout />
           </span>
-          Logout
+          Чыгуу
         </div>
       </div>
     </div>

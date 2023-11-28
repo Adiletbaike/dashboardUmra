@@ -10,25 +10,25 @@ import {
 export const DASHBOARD_SIDEBAR_LINKS = [
 	{
 		key: 'dashboard',
-		label: 'Dashboard',
+		label: 'Башкы бет',
 		path: '/',
 		icon: <HiOutlineSquares2X2  />
 	},
 	{
 		key: 'groups',
-		label: 'Groups',
+		label: 'Группалар',
 		path: '/groups',
 		icon: <HiOutlineUserGroup  />
 	},
 	{
 		key: 'guide',
-		label: 'Guides',
+		label: 'Умра башчылар',
 		path: '/guide',
 		icon: <HiOutlineUserPlus  />
 	},
 	{
 		key: 'hotels',
-		label: 'Hotels',
+		label: 'Мейманканалар',
 		path: '/hotels',
 		icon: <HiOutlineBuildingOffice2  />
 	},
@@ -37,7 +37,7 @@ export const DASHBOARD_SIDEBAR_LINKS = [
 export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [
 	{
 		key: 'settings',
-		label: 'Settings',
+		label: 'Настройка',
 		path: '/settings',
 		icon: <HiOutlineCog />
 	}

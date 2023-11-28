@@ -20,7 +20,7 @@ const Dashboard = () => {
           <HiOutlineUserGroup className="text-2xl text-white" />
         </div>
         <div className="pl-4">
-          <span className="text-sm text-gray-900 font-light">Total Groups</span>
+          <span className="text-sm text-gray-900 font-light">Жалпы группа</span>
           <div className="flex items-center">
             <strong className="text-xl text-gray-700 font-semibold">100</strong>
           </div>
@@ -31,7 +31,7 @@ const Dashboard = () => {
           <HiOutlineUserPlus className="text-2xl text-white" />
         </div>
         <div className="pl-4">
-          <span className="text-sm text-gray-900 font-light">Total Guides</span>
+          <span className="text-sm text-gray-900 font-light">Жалпы умра башчы</span>
           <div className="flex items-center">
             <strong className="text-xl text-gray-700 font-semibold">100</strong>
           </div>
@@ -42,7 +42,7 @@ const Dashboard = () => {
           <HiOutlineBuildingOffice2 className="text-2xl text-white" />
         </div>
         <div className="pl-4">
-          <span className="text-sm text-gray-900 font-light">Total Hotels</span>
+          <span className="text-sm text-gray-900 font-light">Жалпы мейманкана</span>
           <div className="flex items-center">
             <strong className="text-xl text-gray-700 font-semibold">100</strong>
           </div>

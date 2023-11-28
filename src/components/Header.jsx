@@ -1,24 +1,13 @@
 import React, { Fragment } from "react";
-import { HiOutlineSearch } from "react-icons/hi";
 import { Menu, Transition } from "@headlessui/react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 
 const Header = () => {
   const navigate = useNavigate();
   return (
     <div className="bg-white h-16 px-4 flex justify-between items-center border-b border-gray-200">
-      <div className="relative">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input
-          type="text"
-          placeholder="Search..."
-          className="text-sm focus:outline-none active:outline-none h-10 w-[24rem] border border-gray-400 rounded-md pl-11 pr-4"
-        />
-      </div>
+      <strong>Умра</strong>
       <div className="">
         <Menu as="div" className="relative">
           <div>
@@ -54,7 +43,7 @@ const Header = () => {
                     )}
                     onClick={() => navigate("/profile")}
                   >
-                    Your Profile
+                    Профиль
                   </div>
                 )}
               </Menu.Item>
@@ -67,7 +56,7 @@ const Header = () => {
                     )}
                     onClick={() => navigate("/settings")}
                   >
-                    Settings
+                    Настройка
                   </div>
                 )}
               </Menu.Item>
@@ -80,7 +69,7 @@ const Header = () => {
                     )}
                     onClick={() => navigate("/logout ")}
                   >
-                    Logout
+                    Чыгуу
                   </div>
                 )}
               </Menu.Item>
