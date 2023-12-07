@@ -1,19 +1,19 @@
 import React from "react";
 import { IoCloseCircleSharp } from "react-icons/io5";
 
-const Modal = ({ isVisible, onClose, children }) => {
+const ModalCalendar = ({ isVisible, onClose, children }) => {
   if (!isVisible) return null;
   const handleClose = (e) => {
-    if(e.target.id === 'wrapper') onClose();
+    if (e.target.id === "wrapper2") onClose();
   };
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-25 overflow-y-scroll backdrop-blur-sm flex justify-center items-center"
       onClick={handleClose}
-      id="wrapper"
+      id="wrapper2"
     >
-      <div className="md:w-[600px] w-[90%] mx-auto flex flex-col">
-        <button
+      <div className="w-[90%] h-full mx-auto flex flex-col">
+      <button
           className="absolute text-white text-xl place-self-end"
           onClick={() => onClose()}
         >
@@ -25,4 +25,4 @@ const Modal = ({ isVisible, onClose, children }) => {
   );
 };
 
-export default Modal;
+export default ModalCalendar;

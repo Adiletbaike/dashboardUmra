@@ -22,14 +22,14 @@ const Login = () => {
           <div className="">
             <input
               type="text"
-              placeholder="Email"
+              placeholder="Логин"
               className=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-violet-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]"
             />
           </div>
           <div className="">
             <input
               type="password"
-              placeholder="Password"
+              placeholder="Пароль"
               className=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-violet-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]"
             />
           </div>

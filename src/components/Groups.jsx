@@ -5,6 +5,8 @@ import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import Modal from "./Modals/Modal";
 import CreatableSelect from "react-select/creatable";
+import ModalCalendar from "./Modals/ModalCalendar";
+import Calendar from "./Calendar/Calendar";
 
 const language = [
   { value: "kyrgyz", label: "Кыргыз" },
@@ -59,6 +61,8 @@ const groups = [
 
 const Groups = () => {
   const [showModal, setShowModal] = useState(false);
+  const [showModalCalendar, setShowModalCalendar] = useState(false);
+
   return (
     <div className="bg-white p-4">
       <div className="flex justify-between border-b pb-4 border-gray-200">
@@ -157,11 +161,28 @@ const Groups = () => {
                 </div>
               </div>
               <button
-                type="text"
+                type="button"
+                onClick={() => setShowModalCalendar(true)}
                 className="w-full text-white bg-blue-700 hover:bg-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               >
                 Программаны түзүү
               </button>
+              <ModalCalendar
+                isVisible={showModalCalendar}
+                onClose={() => setShowModalCalendar(false)}
+              >
+                <div className="w-auto m-10">
+                  <Calendar />
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="w-100 mt-2 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                    >
+                      Сактоо
+                    </button>
+                  </div>
+                </div>
+              </ModalCalendar>
               <div className="flex justify-end">
                 <button
                   type="submit"
@@ -225,7 +246,10 @@ const Groups = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {groups.map((group) => (
-                    <tr key={group.id} className="hover:bg-gray-200 duration-300">
+                    <tr
+                      key={group.id}
+                      className="hover:bg-gray-200 duration-300"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div>
@@ -265,7 +289,9 @@ const Groups = () => {
                         <div className="flex items-center">
                           <div>
                             <div className="text-sm font-medium text-gray-900">
-                              <button className="bg-green-300 hover:bg-green-500 duration-500 p-1 rounded-md">{group.program}</button>
+                              <button className="bg-green-300 hover:bg-green-500 duration-500 p-1 rounded-md">
+                                {group.program}
+                              </button>
                             </div>
                           </div>
                         </div>

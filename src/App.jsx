@@ -1,12 +1,12 @@
 import React from 'react'
 import './index.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from './components/Layout';
+import Layout from './components/Constants/Layout';
 import Groups from './components/Groups';
 import Guide from './components/Guide';
 import Hotel from './components/Hotel';
 import Dashboard from './components/Dashboard';
-import Login from './components/Login';
+import Login from './components/Auth/Login';
 import MembersGroup from './components/MembersGroup';
 
 const App = () => {

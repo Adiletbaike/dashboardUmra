@@ -4,7 +4,7 @@ import { HiOutlineLogout } from "react-icons/hi";
 import {
   DASHBOARD_SIDEBAR_BOTTOM_LINKS,
   DASHBOARD_SIDEBAR_LINKS,
-} from "../lib/consts/Navigation";
+} from "../../lib/consts/Navigation";
 import { Link, useLocation } from "react-router-dom";
 import classNames from "classnames";
 
