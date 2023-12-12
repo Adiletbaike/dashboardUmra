@@ -19,7 +19,7 @@ const Header = ({pathname}) => {
             className="text-sm focus:outline-none active:outline-none h-10 w-[24rem] border border-gray-400 rounded-md pl-11 pr-4"
           />
         </div>
-      <div className="">
+      {/* <div className="">
         <Menu as="div" className="relative">
           <div>
             <Menu.Button className="ml-2 inline-flex rounded-full focus:outline-none focus:ring-2 focus:ring-neutral-400">
@@ -78,7 +78,7 @@ const Header = ({pathname}) => {
                       active && "bg-gray-100",
                       "text-gray-700 focus:bg-gray-200 cursor-pointer rounded-sm px-4 py-2"
                     )}
-                    onClick={() => navigate("/logout ")}
+                    onClick={() => navigate("/login ")}
                   >
                     Чыгуу
                   </div>
@@ -87,7 +87,7 @@ const Header = ({pathname}) => {
             </Menu.Items>
           </Transition>
         </Menu>
-      </div>
+      </div> */}
     </div>
   );
 };

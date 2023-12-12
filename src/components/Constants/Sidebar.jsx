@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaKaaba } from "react-icons/fa6";
 import { HiOutlineLogout } from "react-icons/hi";
 import {
   DASHBOARD_SIDEBAR_BOTTOM_LINKS,
   DASHBOARD_SIDEBAR_LINKS,
 } from "../../lib/consts/Navigation";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 
 const linkClasses =
@@ -27,7 +27,15 @@ const SidebarLink = ({ item }) => {
     </Link>
   );
 };
+
 const Sidebar = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!localStorage.getItem("isLoggedIn")) {
+      navigate("/login");
+    }
+  }, []);
+
   return (
     <div className="bg-neutral-900 w-60 p-3 flex flex-col text-white">
       <div className="flex items-center gap-2 px-3 py-3 border-b border-neutral-700">
@@ -43,12 +51,20 @@ const Sidebar = () => {
         {DASHBOARD_SIDEBAR_BOTTOM_LINKS.map((item) => (
           <SidebarLink key={item.key} item={item} />
         ))}
-        <div className={classNames("text-red-500 cursor-pointer", linkClasses)}>
-          
-          <span className="text-xl">
-            <HiOutlineLogout />
-          </span>
-          Чыгуу
+        <div className={classNames("", linkClasses)}>
+          <div
+            className="flex gap-2 text-red-500 cursor-pointer hover:no-underline"
+            onClick={() => {
+              localStorage.removeItem("isLoggedIn");
+              navigate("/login");
+              alert("Сиз чыгдыныз");
+            }}
+          >
+            <span className="text-xl">
+              <HiOutlineLogout />
+            </span>
+            Чыгуу
+          </div>
         </div>
       </div>
     </div>
