@@ -57,7 +57,6 @@ const Sidebar = () => {
             onClick={() => {
               localStorage.removeItem("isLoggedIn");
               navigate("/login");
-              alert("Сиз чыгдыныз");
             }}
           >
             <span className="text-xl">
