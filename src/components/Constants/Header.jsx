@@ -2,12 +2,23 @@ import React, { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import classNames from "classnames";
+import { HiOutlineSearch } from 'react-icons/hi'
 
 const Header = ({pathname}) => {
   const navigate = useNavigate();
   return (
     <div className="bg-white h-16 px-4 flex justify-between items-center border-b border-gray-200">
-      <strong>{pathname}</strong>
+      <div className="relative">
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            placeholder="Издөө..."
+            className="text-sm focus:outline-none active:outline-none h-10 w-[24rem] border border-gray-400 rounded-md pl-11 pr-4"
+          />
+        </div>
       <div className="">
         <Menu as="div" className="relative">
           <div>

@@ -44,6 +44,7 @@ const Sidebar = () => {
           <SidebarLink key={item.key} item={item} />
         ))}
         <div className={classNames("text-red-500 cursor-pointer", linkClasses)}>
+          
           <span className="text-xl">
             <HiOutlineLogout />
           </span>
