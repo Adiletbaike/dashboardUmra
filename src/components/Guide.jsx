@@ -90,7 +90,7 @@ const Guide = () => {
               </div>
               <div>
                 <label
-                  for="name"
+                  htmlFor="name"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Аты
@@ -106,7 +106,7 @@ const Guide = () => {
               </div>
               <div>
                 <label
-                  for="surname"
+                  htmlFor="surname"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Фамилия
@@ -122,7 +122,7 @@ const Guide = () => {
               </div>
               <div>
                 <label
-                  for="surname"
+                  htmlFor="surname"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Телефон
@@ -138,7 +138,7 @@ const Guide = () => {
               </div>
               <div>
                 <label
-                  for="education"
+                  htmlFor="education"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Билими
@@ -154,7 +154,7 @@ const Guide = () => {
               </div>
               <div>
                 <label
-                  for="education"
+                  htmlFor="education"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Билген тилдери

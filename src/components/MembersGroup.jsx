@@ -75,7 +75,7 @@ const MembersGroup = () => {
             <form className="space-y-2" action="#">
               <div>
                 <label
-                  for="name"
+                  htmlFor="name"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Аты
@@ -91,7 +91,7 @@ const MembersGroup = () => {
               </div>
               <div>
                 <label
-                  for="name"
+                  htmlFor="name"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Фамилия
@@ -107,7 +107,7 @@ const MembersGroup = () => {
               </div>
               <div>
                 <label
-                  for="number"
+                  htmlFor="number"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Телефон
@@ -123,7 +123,7 @@ const MembersGroup = () => {
               </div>
               <div>
                 <label
-                  for="number"
+                  htmlFor="number"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Туулган күнү
@@ -139,7 +139,7 @@ const MembersGroup = () => {
               </div>
               <div>
                 <label
-                  for="number"
+                  htmlFor="number"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   ИНН
@@ -156,7 +156,7 @@ const MembersGroup = () => {
               <div className="flex justify-between">
                 <div className="w-[48%]">
                   <label
-                    for="language"
+                    htmlFor="language"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Жыныс
@@ -166,7 +166,7 @@ const MembersGroup = () => {
               </div>
               <div>
                 <label
-                  for="login"
+                  htmlFor="login"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Логин
@@ -182,7 +182,7 @@ const MembersGroup = () => {
               </div>
               <div>
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Пароль

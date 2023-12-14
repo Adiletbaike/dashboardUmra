@@ -1,5 +1,5 @@
 import CreatableSelect from "react-select/creatable";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { IoMdAdd } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
@@ -30,6 +30,31 @@ const hotels = [
 ];
 
 const Hotel = () => {
+  const nameRef = useRef();
+  const mapLinkRef = useRef();
+  const cityRef = useRef();
+  // Table 
+  const [data, setData] = useState(hotels);
+
+  //handle values
+  const handleValues = (e) => {
+    e.preventDefault();
+    const name = e.target.name.value;
+    const mapLink = e.target.mapLink.value;
+    const city = e.target.city.value;
+    const newHotel = {
+      name, 
+      mapLink,
+      city
+    };
+    console.log(name, mapLink, locationCity);
+    setData(prevData => prevData.concat(newHotel));
+    nameRef.current.value = "";
+    mapLinkRef.current.value = "";
+    cityRef.current.value = "";
+  };
+
+  // Modal 
   const [showModal, setShowModal] = useState(false);
   return (
     <div className="bg-white p-4">
@@ -47,15 +72,16 @@ const Hotel = () => {
             <h3 className="mb-4 text-xl font-medium text-gray-900">
               Мейманканалар
             </h3>
-            <form className="space-y-3" action="#">
+            <form className="space-y-3" action="#" onSubmit={handleValues}>
               <div>
                 <label
-                  for="name"
+                  htmlFor="name"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Мейманкана аты
                 </label>
                 <input
+                ref={nameRef}
                   type="text"
                   name="name"
                   id="name"
@@ -66,15 +92,16 @@ const Hotel = () => {
               </div>
               <div>
                 <label
-                  for="surname"
+                  htmlFor="mapLink"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Карта адреси
                 </label>
                 <input
+                ref={mapLinkRef}
                   type="text"
-                  name="surname"
-                  id="surname"
+                  name="mapLink"
+                  id="mapLink"
                   placeholder="Адрес"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -82,7 +109,8 @@ const Hotel = () => {
               </div>
               <div>
                 <label
-                  for="education"
+                  htmlFor="city"
+                  ref={cityRef}
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Жайгашкан жери

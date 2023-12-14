@@ -80,7 +80,7 @@ const Groups = () => {
             <form className="space-y-3" action="#">
               <div>
                 <label
-                  for="groups"
+                  htmlFor="groups"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Группанын аты
@@ -96,7 +96,7 @@ const Groups = () => {
               </div>
               <div>
                 <label
-                  for="number"
+                  htmlFor="number"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Адам саны
@@ -113,7 +113,7 @@ const Groups = () => {
               <div className="flex justify-between">
                 <div className="w-[48%]">
                   <label
-                    for="language"
+                    htmlFor="language"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Группанын тили
@@ -122,7 +122,7 @@ const Groups = () => {
                 </div>
                 <div className="w-[50%]">
                   <label
-                    for="guide"
+                    htmlFor="guide"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Умра башчы
@@ -133,7 +133,7 @@ const Groups = () => {
               <div className="flex justify-between">
                 <div className="w-[48%]">
                   <label
-                    for="hotel"
+                    htmlFor="hotel"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Мекке отель
@@ -142,7 +142,7 @@ const Groups = () => {
                 </div>
                 <div className="w-[50%]">
                   <label
-                    for="hotel"
+                    htmlFor="hotel"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Мадина отель
