@@ -14,17 +14,17 @@ const hotel = [
 const hotels = [
   {
     name: "Durrat al Eiman",
-    mapLink : "https://maps.app.goo.gl/eK91rkjNa9rRkHU78",
+    mapLink: "https://maps.app.goo.gl/eK91rkjNa9rRkHU78",
     city: "Мадина",
   },
   {
     name: "Movenpick",
-    mapLink : "https://maps.app.goo.gl/WHnUNw4xTz8hhyWB6",
+    mapLink: "https://maps.app.goo.gl/WHnUNw4xTz8hhyWB6",
     city: "Мекке",
   },
   {
     name: "Emaar Royal",
-    mapLink : "https://maps.app.goo.gl/D8fnVkwcR7v3wFKr6",
+    mapLink: "https://maps.app.goo.gl/D8fnVkwcR7v3wFKr6",
     city: "Мадина",
   },
 ];
@@ -33,33 +33,33 @@ const Hotel = () => {
   const nameRef = useRef();
   const mapLinkRef = useRef();
   const cityRef = useRef();
-  // Table 
+  // Table
   const [data, setData] = useState(hotels);
+  const [selectedCity, setSelectedCity] = useState(null);
 
   //handle values
   const handleValues = (e) => {
     e.preventDefault();
-    const name = e.target.name.value;
-    const mapLink = e.target.mapLink.value;
-    const city = e.target.city.value;
-    const newHotel = {
-      name, 
+    const name = nameRef.current.value;
+    const mapLink = mapLinkRef.current.value;
+    const city = selectedCity ? selectedCity.label : '';
+    var newHotel = {
+      name,
       mapLink,
-      city
+      city,
     };
-    console.log(name, mapLink, locationCity);
-    setData(prevData => prevData.concat(newHotel));
+    console.log(newHotel);
+    setData((prevData) => prevData.concat(newHotel));
     nameRef.current.value = "";
     mapLinkRef.current.value = "";
-    cityRef.current.value = "";
+    setSelectedCity(null);
   };
 
-  // Modal 
+  // Modal
   const [showModal, setShowModal] = useState(false);
   return (
     <div className="bg-white p-4">
       <div className="flex justify-end border-b pb-4 border-gray-200">
-        
         <button
           className="flex items-center text-lg rounded-lg border p-1 bg-green-400"
           onClick={() => setShowModal(true)}
@@ -81,7 +81,7 @@ const Hotel = () => {
                   Мейманкана аты
                 </label>
                 <input
-                ref={nameRef}
+                  ref={nameRef}
                   type="text"
                   name="name"
                   id="name"
@@ -98,7 +98,7 @@ const Hotel = () => {
                   Карта адреси
                 </label>
                 <input
-                ref={mapLinkRef}
+                  ref={mapLinkRef}
                   type="text"
                   name="mapLink"
                   id="mapLink"
@@ -110,12 +110,16 @@ const Hotel = () => {
               <div>
                 <label
                   htmlFor="city"
-                  ref={cityRef}
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Жайгашкан жери
                 </label>
-                <CreatableSelect isClearable options={hotel} />
+                <CreatableSelect
+                  ref={cityRef}
+                  onChange={(selectedOption) => setSelectedCity(selectedOption)}
+                  isClearable
+                  options={hotel}
+                />
               </div>
               <div className="flex justify-end">
                 <button
@@ -131,9 +135,9 @@ const Hotel = () => {
       </div>
       <div className="flex flex-col pt-4">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-200">
+          <div className="py-2 align-middle inline-block min-w-full h-full sm:px-6 lg:px-8">
+            <div className="shadow border-b h-[500px] overflow-y-scroll border-gray-200 sm:rounded-lg">
+              <table className="min-w-full divide-y divide-gray-200 ">
                 <thead className="bg-gray-50">
                   <tr>
                     <th
@@ -159,9 +163,12 @@ const Hotel = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {hotels.map((hotel) => (
-                    <tr key={hotel.mapLink} className="hover:bg-gray-200 duration-300">
+                <tbody className="bg-white divide-y divide-gray-200 ">
+                  {data.map((hotel) => (
+                    <tr
+                      key={hotel.mapLink}
+                      className="hover:bg-gray-200 duration-300"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div>
@@ -175,7 +182,9 @@ const Hotel = () => {
                         <div className="flex items-center">
                           <div>
                             <div className="text-sm font-medium text-gray-900">
-                              <a href={hotel.mapLink} target="_blank">{hotel.mapLink}</a>
+                              <a href={hotel.mapLink} target="_blank">
+                                {hotel.mapLink}
+                              </a>
                             </div>
                           </div>
                         </div>
