@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
-import { HiOutlineSearch } from "react-icons/hi";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import Modal from "./Modals/Modal";
 import CreatableSelect from "react-select/creatable";
+import DialogDelete from "./Modals/DialogDelete";
 
 const gender = [
   { value: "male", label: "Эркек" },
@@ -47,14 +49,196 @@ const members = [
   },
 ];
 const MembersGroup = () => {
+  // Modal
   const [showModal, setShowModal] = useState(false);
+
+  // Table
+  const [data, setData] = useState(members);
+  const [selectedGender, setSelectedGender] = useState(null);
+
+  // Handle values
+  const nameRef = useRef();
+  const surnameRef = useRef();
+  const phoneRef = useRef();
+  const birthdayRef = useRef();
+  const innRef = useRef();
+  const genderRef = useRef();
+  const loginRef = useRef();
+  const passwordRef = useRef();
+  const handleValues = (e) => {
+    e.preventDefault();
+    const name = nameRef.current.value;
+    const surname = surnameRef.current.value;
+    const phone = phoneRef.current.value;
+    const birthday = birthdayRef.current.value;
+    const inn = innRef.current.value;
+    const gender = selectedGender ? selectedGender.label : "";
+    const login = loginRef.current.value;
+    const password = passwordRef.current.value;
+    const newId = Math.max(...members.map((member) => member.id)) + 1;
+    var newMember = {
+      id: newId,
+      name,
+      surname,
+      phone,
+      birthday,
+      inn,
+      gender,
+      login,
+      password,
+    };
+    members.push(newMember);
+    setData((prevData) => prevData.concat(newMember));
+    nameRef.current.value = "";
+    surnameRef.current.value = "";
+    phoneRef.current.value = "";
+    birthdayRef.current.value = "";
+    innRef.current.value = "";
+    setSelectedGender(null);
+    loginRef.current.value = "";
+    passwordRef.current.value = "";
+    setShowModal(false);
+    // Show toast notification
+    toast.success("Ийгиликтүү сакталды!!!", {
+      position: "top-right",
+      autoClose: 3000, // 3 seconds
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
+
+  // Delete
+  const nameMemberRef = useRef();
+  const [dialogDelete, setDialogDelete] = useState({
+    isLoading: false,
+    message: "",
+  });
+  const handleDialog = (message, isLoading) => {
+    setDialogDelete({ ...dialogDelete, message, isLoading });
+  };
+  const handleDelete = (name) => {
+    handleDialog("Чындап өчүрүүнү каалайсызбы?", true);
+    nameMemberRef.current = name;
+  };
+  const areYouSureDelete = (choose) => {
+    if (choose) {
+      setData((prevData) =>
+        prevData.filter((member) => member.name !== nameMemberRef.current)
+      );
+      handleDialog("", false);
+      toast.error("Ийгиликтүү өчүрүлдү!!!", {
+        position: "top-right",
+        autoClose: 3000, // 3 seconds
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      handleDialog("", false);
+    }
+  };
+
+  // Edit
+  const [edit, setEdit] = useState(false);
+  const [editData, setEditData] = useState({
+    name: "",
+    surname: "",
+    phone: "",
+    birthday: "",
+    inn: "",
+    gender: "",
+    login: "",
+    password: "",
+  });
+  const handleEdit = (name) => {
+    setEdit(true);
+    const member = members.find((member) => member.name === name);
+    setEditData({
+      name: member.name,
+      surname: member.surname,
+      phone: member.phone,
+      birthday: member.birthday,
+      inn: member.inn,
+      gender: member.gender,
+      login: member.login,
+      password: member.password,
+    });
+  };
+  const handleEditValues = (e) => {
+    e.preventDefault();
+    const name = nameRef.current.value;
+    const surname = surnameRef.current.value;
+    const phone = phoneRef.current.value;
+    const birthday = birthdayRef.current.value;
+    const inn = innRef.current.value;
+    const gender = selectedGender ? selectedGender.label : "";
+    const login = loginRef.current.value;
+    const password = passwordRef.current.value;
+    const editedMember = {
+      id: editData.id,
+      name,
+      surname,
+      phone,
+      birthday,
+      inn,
+      gender,
+      login,
+      password,
+    };
+    setData((prevData) =>
+      prevData.map((member) =>
+        member.name === editData.name ? editedMember : member
+      )
+    );
+    setEdit(false);
+    setEditData({
+      name: "",
+      surname: "",
+      phone: "",
+      birthday: "",
+      inn: "",
+      gender: "",
+      login: "",
+      password: "",
+    });
+    nameRef.current.value = "";
+    surnameRef.current.value = "";
+    phoneRef.current.value = "";
+    birthdayRef.current.value = "";
+    innRef.current.value = "";
+    setSelectedGender(null);
+    loginRef.current.value = "";
+    passwordRef.current.value = "";
+    setShowModal(false);
+    // Show toast notification
+    toast.info("Ийгиликтүү өзгөртүлдү!!!", {
+      position: "top-right",
+      autoClose: 3000, // 3 seconds
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      style: {
+        backgroundColor: "#fff", // Set your desired background color
+      },
+    });
+  };
   return (
     <div className="bg-white p-4 overflow-x-scroll">
+      <ToastContainer />
       <div className="flex justify-end border-b pb-4 border-gray-200">
-        
         <button
           className="flex items-center text-lg rounded-lg border p-1 bg-green-400"
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setEdit(false);
+            setShowModal(true);
+          }}
         >
           <IoMdAdd />
           Жаңы кошуу
@@ -62,7 +246,11 @@ const MembersGroup = () => {
         <Modal isVisible={showModal} onClose={() => setShowModal(false)}>
           <div className="py-6 px-6 lg:px-8 text-left mt-24">
             <h3 className="mb-1 text-xl font-medium text-gray-900">Мүчөлөр</h3>
-            <form className="space-y-2" action="#">
+            <form
+              className="space-y-2"
+              action="#"
+              onSubmit={edit ? handleEditValues : handleValues}
+            >
               <div>
                 <label
                   htmlFor="name"
@@ -74,6 +262,8 @@ const MembersGroup = () => {
                   type="text"
                   name="name"
                   id="name"
+                  ref={nameRef}
+                  defaultValue={edit ? editData.name : ""}
                   placeholder="Аты"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -89,6 +279,8 @@ const MembersGroup = () => {
                 <input
                   type="text"
                   name="name"
+                  ref={surnameRef}
+                  defaultValue={edit ? editData.surname : ""}
                   id="name"
                   placeholder="Фамилия"
                   required
@@ -106,6 +298,8 @@ const MembersGroup = () => {
                   type="text"
                   name="number"
                   id="number"
+                  defaultValue={edit ? editData.phone : ""}
+                  ref={phoneRef}
                   placeholder="Телефон"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -121,7 +315,9 @@ const MembersGroup = () => {
                 <input
                   type="date"
                   name="number"
+                  defaultValue={edit ? editData.birthday : ""}
                   id="number"
+                  ref={birthdayRef}
                   placeholder="Телефон"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -136,7 +332,9 @@ const MembersGroup = () => {
                 </label>
                 <input
                   type="number"
+                  ref={innRef}
                   name="number"
+                  defaultValue={edit ? editData.inn : ""}
                   id="number"
                   placeholder="00000000000000"
                   required
@@ -151,7 +349,19 @@ const MembersGroup = () => {
                   >
                     Жыныс
                   </label>
-                  <CreatableSelect isClearable options={gender} />
+                  <CreatableSelect
+                    ref={genderRef}
+                    isClearable
+                    onChange={(selectedOption) =>
+                      setSelectedGender(selectedOption)
+                    }
+                    defaultValue={
+                      edit && editData.gender
+                        ? { value: "gender", label: editData.gender }
+                        : null
+                    }
+                    options={gender}
+                  />
                 </div>
               </div>
               <div>
@@ -164,6 +374,8 @@ const MembersGroup = () => {
                 <input
                   type="text"
                   name="login"
+                  defaultValue={edit ? editData.login : ""}
+                  ref={loginRef}
                   id="login"
                   placeholder="Логин"
                   required
@@ -180,6 +392,8 @@ const MembersGroup = () => {
                 <input
                   type="text"
                   name="password"
+                  ref={passwordRef}
+                  defaultValue={edit ? editData.password : ""}
                   id="password"
                   placeholder="Пароль"
                   required
@@ -191,7 +405,7 @@ const MembersGroup = () => {
                   type="submit"
                   className="w-100 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
-                  Сактоо
+                  {edit ? "Өзгөртүү" : "Сактоо"}
                 </button>
               </div>
             </form>
@@ -318,15 +532,27 @@ const MembersGroup = () => {
                         {member.password}
                       </td>
                       <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
-                        <a
-                          href="#"
+                        <button
+                          onClick={() => {
+                            handleEdit(member.name);
+                            setShowModal(true);
+                          }}
                           className="text-indigo-600 hover:text-indigo-900"
                         >
                           <CiEdit />
-                        </a>
-                        <a href="#" className="text-red-600 hover:text-red-900">
+                        </button>
+                        <button
+                          onClick={() => handleDelete(member.name)}
+                          className="text-red-600 hover:text-red-900"
+                        >
                           <RiDeleteBin5Line />
-                        </a>
+                        </button>
+                        {dialogDelete.isLoading && (
+                          <DialogDelete
+                            onDialog={areYouSureDelete}
+                            message={dialogDelete.message}
+                          />
+                        )}
                       </td>
                     </tr>
                   ))}

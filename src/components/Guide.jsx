@@ -54,7 +54,6 @@ const Guide = () => {
   };
 
   // handleValues
-  const nameRef = useRef();
   const handleValues = (e) => {
     e.preventDefault();
     const name = e.target.name.value;

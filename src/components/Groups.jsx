@@ -8,6 +8,7 @@ import Modal from "./Modals/Modal";
 import CreatableSelect from "react-select/creatable";
 import ModalCalendar from "./Modals/ModalCalendar";
 import Calendar from "./Calendar/Calendar";
+import DialogDelete from "./Modals/DialogDelete";
 
 const language = [
   { value: "kyrgyz", label: "Кыргыз" },
@@ -41,6 +42,8 @@ const groups = [
     language: "Кыргыз",
     guide: "Абдулла каары",
     program: "Программа",
+    mekkah: "Movenpick",
+    madina: "Durrat al Eiman",
   },
   {
     id: 2,
@@ -49,6 +52,8 @@ const groups = [
     language: "Орус",
     guide: "Денис устаз",
     program: "Программа",
+    mekkah: "Jabal Omar",
+    madina: "Emaar Royal",
   },
   {
     id: 3,
@@ -57,6 +62,8 @@ const groups = [
     language: "Кыргыз",
     guide: "Нурбек каары",
     program: "Программа",
+    mekkah: "Hilton",
+    madina: "Ruva Al Madinah",
   },
 ];
 
@@ -69,7 +76,7 @@ const Groups = () => {
   const [data, setData] = useState(groups);
   const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [selectedGuide, setSelectedGuide] = useState(null);
-  const [selectedMekke, setSelectedMekke] = useState(null);
+  const [selectedMekkah, setSelectedMekkah] = useState(null);
   const [selectedMadina, setSelectedMadina] = useState(null);
 
   // Handle values
@@ -83,16 +90,17 @@ const Groups = () => {
       quantity: numberRef.current.value,
       language: selectedLanguage ? selectedLanguage.label : "",
       guide: selectedGuide ? selectedGuide.label : "",
-      mekke: selectedMekke ? selectedMekke.label : "",
+      mekkah: selectedMekkah ? selectedMekkah.label : "",
       madina: selectedMadina ? selectedMadina.label : "",
       program: "Программа",
     };
-    setData((prevData) => [...prevData, newGroup]);
+    groups.push(newGroup);
+    // setData((prevData) => [...prevData, newGroup]);
     nameRef.current.value = "";
     numberRef.current.value = "";
     setSelectedLanguage(null);
     setSelectedGuide(null);
-    setSelectedMekke(null);
+    setSelectedMekkah(null);
     setSelectedMadina(null);
     setShowModal(false);
     // Show toast notification
@@ -107,13 +115,126 @@ const Groups = () => {
     });
   };
 
+  // Delete
+  const nameGroupRef = useRef();
+  const [dialogDelete, setDialogDelete] = useState({
+    isLoading: false,
+    message: "",
+  });
+  const handleDialog = (message, isLoading) => {
+    setDialogDelete({
+      ...dialogDelete,
+      isLoading,
+      message,
+    });
+  };
+  const handleDelete = (name) => {
+    handleDialog("Чындап өчүрүүнү каалайсызбы?", true);
+    nameGroupRef.current = name;
+  };
+
+  const areYouSureDelete = (choose) => {
+    if (choose) {
+      setData(data.filter((group) => group.name !== nameGroupRef.current));
+      handleDialog("", false);
+      // Show toast notification
+      toast.error("Ийгиликтүү өчүрүлдү!!!", {
+        position: "top-right",
+        autoClose: 3000, // 3 seconds
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        style: {
+          backgroundColor: "#fff", // Set your desired background color
+        },
+      });
+    } else {
+      handleDialog("", false);
+    }
+  };
+
+  // Edit
+  const [edit, setEdit] = useState(false);
+  const [editData, setEditData] = useState({
+    name: "",
+    quantity: "",
+    language: "",
+    guide: "",
+    mekkah: "",
+    madina: "",
+  });
+  const handleEdit = (name) => {
+    setEdit(true);
+    const group = data.find((group) => group.name === name);
+    setEditData({
+      name: group.name,
+      quantity: group.quantity,
+      language: group.language,
+      guide: group.guide,
+      mekkah: group.mekkah,
+      madina: group.madina,
+    });
+  };
+  const handleEditValues = (e) => {
+    e.preventDefault();
+    const editedGroup = {
+      id: data.length + 1,
+      name: nameRef.current.value,
+      quantity: numberRef.current.value,
+      language: selectedLanguage ? selectedLanguage.label : "",
+      guide: selectedGuide ? selectedGuide.label : "",
+      mekkah: selectedMekkah ? selectedMekkah.label : "",
+      madina: selectedMadina ? selectedMadina.label : "",
+      program: "Программа",
+    };
+    setData((prevData) =>
+      prevData.map((group) =>
+        group.name === editData.name ? editedGroup : group
+      )
+    );
+    setEdit(false);
+    setEditData({
+      name: "",
+      quantity: "",
+      language: "",
+      guide: "",
+      mekkah: "",
+      madina: "",
+    });
+    nameRef.current.value = "";
+    numberRef.current.value = "";
+    setSelectedLanguage(null);
+    setSelectedGuide(null);
+    setSelectedMekkah(null);
+    setSelectedMadina(null);
+    setShowModal(false);
+    // Show toast notification
+    toast.info("Ийгиликтүү сакталды!!!", {
+      position: "top-right",
+      autoClose: 3000, // 3 seconds
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      style: {
+        backgroundColor: "#fff", // Set your desired background color
+      },
+    });
+  };
+
   return (
     <div className="bg-white p-4">
       <ToastContainer />
       <div className="flex justify-end border-b pb-4 border-gray-200">
         <button
           className="flex justify-end items-center text-lg rounded-lg border p-1 bg-green-400"
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setEdit(false);
+            setShowModal(true);
+          }}
         >
           <IoMdAdd />
           Жаңы кошуу
@@ -121,7 +242,11 @@ const Groups = () => {
         <Modal isVisible={showModal} onClose={() => setShowModal(false)}>
           <div className="py-6 px-6 lg:px-8 text-left">
             <h3 className="mb-4 text-xl font-medium text-gray-900">Группа</h3>
-            <form className="space-y-3" action="#" onSubmit={handleValues}>
+            <form
+              className="space-y-3"
+              action="#"
+              onSubmit={edit ? handleEditValues : handleValues}
+            >
               <div>
                 <label
                   htmlFor="groups"
@@ -135,6 +260,7 @@ const Groups = () => {
                   ref={nameRef}
                   id="name"
                   placeholder="Аты"
+                  defaultValue={edit ? editData.name : ""}
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                 />
@@ -149,6 +275,7 @@ const Groups = () => {
                 <input
                   type="number"
                   name="number"
+                  defaultValue={edit ? editData.quantity : ""}
                   ref={numberRef}
                   id="number"
                   placeholder="Саны"
@@ -167,6 +294,11 @@ const Groups = () => {
                   <CreatableSelect
                     isClearable
                     options={language}
+                    defaultValue={
+                      edit && editData.language
+                        ? { value: "language", label: editData.language }
+                        : null
+                    }
                     onChange={(value) => setSelectedLanguage(value)}
                   />
                 </div>
@@ -180,6 +312,11 @@ const Groups = () => {
                   <CreatableSelect
                     isClearable
                     options={guide}
+                    defaultValue={
+                      edit && editData.guide
+                        ? { value: "guide", label: editData.guide }
+                        : null
+                    }
                     onChange={(value) => setSelectedGuide(value)}
                   />
                 </div>
@@ -187,7 +324,7 @@ const Groups = () => {
               <div className="flex justify-between">
                 <div className="w-[48%]">
                   <label
-                    htmlFor="hotel"
+                    htmlFor="hotelMekkah"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Мекке отель
@@ -195,12 +332,17 @@ const Groups = () => {
                   <CreatableSelect
                     isClearable
                     options={mekkah}
-                    onChange={(value) => setSelectedGuide(value)}
+                    defaultValue={
+                      edit && editData.mekkah
+                        ? { value: "mekkah", label: editData.mekkah }
+                        : null
+                    }
+                    onChange={(value) => setSelectedMekkah(value)}
                   />
                 </div>
                 <div className="w-[50%]">
                   <label
-                    htmlFor="hotel"
+                    htmlFor="hotelMedina"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Мадина отель
@@ -208,7 +350,12 @@ const Groups = () => {
                   <CreatableSelect
                     isClearable
                     options={madina}
-                    onChange={(value) => setSelectedGuide(value)}
+                    defaultValue={
+                      edit && editData.madina
+                        ? { value: "madina", label: editData.madina }
+                        : null
+                    }
+                    onChange={(value) => setSelectedMadina(value)}
                   />
                 </div>
               </div>
@@ -288,6 +435,18 @@ const Groups = () => {
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
+                      Мекке
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Мадина
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
                       Программа
                     </th>
 
@@ -297,11 +456,8 @@ const Groups = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {groups.map((group) => (
-                    <tr
-                      key={group.id}
-                      className="hover:bg-gray-200 duration-300"
-                    >
+                  {groups.map((group, index) => (
+                    <tr key={index} className="hover:bg-gray-200 duration-300">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div>
@@ -337,6 +493,12 @@ const Groups = () => {
                           </div>
                         </div>
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {group.mekkah}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {group.madina}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div>
@@ -349,15 +511,27 @@ const Groups = () => {
                         </div>
                       </td>
                       <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
-                        <a
-                          href="#"
+                        <button
+                          onClick={() => {
+                            handleEdit(group.name);
+                            setShowModal(true);
+                          }}
                           className="text-indigo-600 hover:text-indigo-900"
                         >
                           <CiEdit />
-                        </a>
-                        <a href="#" className="text-red-600 hover:text-red-900">
+                        </button>
+                        <button
+                          onClick={() => handleDelete(group.name)}
+                          className="text-red-600 hover:text-red-900"
+                        >
                           <RiDeleteBin5Line />
-                        </a>
+                        </button>
+                        {dialogDelete.isLoading && (
+                          <DialogDelete
+                            message={dialogDelete.message}
+                            onDialog={areYouSureDelete}
+                          />
+                        )}
                       </td>
                     </tr>
                   ))}
