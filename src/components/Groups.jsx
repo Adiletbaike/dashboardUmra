@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
-import { HiOutlineSearch } from "react-icons/hi";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import Modal from "./Modals/Modal";
@@ -60,13 +61,56 @@ const groups = [
 ];
 
 const Groups = () => {
+  // Modal
   const [showModal, setShowModal] = useState(false);
   const [showModalCalendar, setShowModalCalendar] = useState(false);
 
+  // Table
+  const [data, setData] = useState(groups);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
+  const [selectedGuide, setSelectedGuide] = useState(null);
+  const [selectedMekke, setSelectedMekke] = useState(null);
+  const [selectedMadina, setSelectedMadina] = useState(null);
+
+  // Handle values
+  const nameRef = useRef(null);
+  const numberRef = useRef(null);
+  const handleValues = (e) => {
+    e.preventDefault();
+    const newGroup = {
+      id: data.length + 1,
+      name: nameRef.current.value,
+      quantity: numberRef.current.value,
+      language: selectedLanguage ? selectedLanguage.label : "",
+      guide: selectedGuide ? selectedGuide.label : "",
+      mekke: selectedMekke ? selectedMekke.label : "",
+      madina: selectedMadina ? selectedMadina.label : "",
+      program: "Программа",
+    };
+    setData((prevData) => [...prevData, newGroup]);
+    nameRef.current.value = "";
+    numberRef.current.value = "";
+    setSelectedLanguage(null);
+    setSelectedGuide(null);
+    setSelectedMekke(null);
+    setSelectedMadina(null);
+    setShowModal(false);
+    // Show toast notification
+    toast.success("Ийгиликтүү сакталды!!!", {
+      position: "top-right",
+      autoClose: 3000, // 3 seconds
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
+
   return (
     <div className="bg-white p-4">
+      <ToastContainer />
       <div className="flex justify-end border-b pb-4 border-gray-200">
-        
         <button
           className="flex justify-end items-center text-lg rounded-lg border p-1 bg-green-400"
           onClick={() => setShowModal(true)}
@@ -77,7 +121,7 @@ const Groups = () => {
         <Modal isVisible={showModal} onClose={() => setShowModal(false)}>
           <div className="py-6 px-6 lg:px-8 text-left">
             <h3 className="mb-4 text-xl font-medium text-gray-900">Группа</h3>
-            <form className="space-y-3" action="#">
+            <form className="space-y-3" action="#" onSubmit={handleValues}>
               <div>
                 <label
                   htmlFor="groups"
@@ -88,6 +132,7 @@ const Groups = () => {
                 <input
                   type="text"
                   name="name"
+                  ref={nameRef}
                   id="name"
                   placeholder="Аты"
                   required
@@ -104,6 +149,7 @@ const Groups = () => {
                 <input
                   type="number"
                   name="number"
+                  ref={numberRef}
                   id="number"
                   placeholder="Саны"
                   required
@@ -118,7 +164,11 @@ const Groups = () => {
                   >
                     Группанын тили
                   </label>
-                  <CreatableSelect isClearable options={language} />
+                  <CreatableSelect
+                    isClearable
+                    options={language}
+                    onChange={(value) => setSelectedLanguage(value)}
+                  />
                 </div>
                 <div className="w-[50%]">
                   <label
@@ -127,7 +177,11 @@ const Groups = () => {
                   >
                     Умра башчы
                   </label>
-                  <CreatableSelect isClearable options={guide} />
+                  <CreatableSelect
+                    isClearable
+                    options={guide}
+                    onChange={(value) => setSelectedGuide(value)}
+                  />
                 </div>
               </div>
               <div className="flex justify-between">
@@ -138,7 +192,11 @@ const Groups = () => {
                   >
                     Мекке отель
                   </label>
-                  <CreatableSelect isClearable options={mekkah} />
+                  <CreatableSelect
+                    isClearable
+                    options={mekkah}
+                    onChange={(value) => setSelectedGuide(value)}
+                  />
                 </div>
                 <div className="w-[50%]">
                   <label
@@ -147,7 +205,11 @@ const Groups = () => {
                   >
                     Мадина отель
                   </label>
-                  <CreatableSelect isClearable options={madina} />
+                  <CreatableSelect
+                    isClearable
+                    options={madina}
+                    onChange={(value) => setSelectedGuide(value)}
+                  />
                 </div>
               </div>
               <button

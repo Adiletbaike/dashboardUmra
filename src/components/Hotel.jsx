@@ -171,7 +171,10 @@ const Hotel = () => {
       <div className="flex justify-end border-b pb-4 border-gray-200">
         <button
           className="flex items-center text-lg rounded-lg border p-1 bg-green-400"
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setEdit(false);
+            setShowModal(true);
+          }}
         >
           <IoMdAdd />
           Жаңы кошуу

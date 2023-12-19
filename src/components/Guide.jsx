@@ -1,31 +1,33 @@
 import React, { useRef, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
-import { HiOutlineSearch } from "react-icons/hi";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import Modal from "./Modals/Modal";
 import Select from "react-select";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import DialogDelete from "./Modals/DialogDelete";
 
 const people = [
   {
     name: "Abdulla Kaary",
-    surname : "Abdullaev",
+    surname: "Abdullaev",
     phone: "+996708112288",
-    university: "Islam University",
+    education: "Islam University",
     image: "https://bit.ly/33HnjK0",
   },
   {
     name: "Aibek Ustaz",
-    surname : "Aibekov",
+    surname: "Aibekov",
     phone: "+996708112288",
-    university: "Egypt, Al-Askar",
+    education: "Egypt, Al-Askar",
     image: "https://bit.ly/3I9nL2D",
   },
   {
     name: "Nurbek Kaary",
-    surname : "Nurbekov",
+    surname: "Nurbekov",
     phone: "+996708112288",
-    university: "Manas University",
+    education: "Manas University",
     image: "https://bit.ly/3vaOTe1",
   },
 ];
@@ -36,23 +38,174 @@ const language = [
 ];
 
 const Guide = () => {
+  // Modal
   const [showModal, setShowModal] = useState(false);
+
+  // Image
   const inputRef = useRef(null);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
   const handleImageClick = () => {
     inputRef.current.click();
   };
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    setImage(event.target.files[0]);
+    setImage(file);
+    console.log(file);
   };
+
+  // handleValues
+  const nameRef = useRef();
+  const handleValues = (e) => {
+    e.preventDefault();
+    const name = e.target.name.value;
+    const surname = e.target.surname.value;
+    const phone = e.target.number.value;
+    const education = e.target.education.value;
+    const languages = Array.isArray(e.target.language)
+      ? e.target.language.map((option) => option.value)
+      : [];
+
+    const newGuide = {
+      name,
+      surname,
+      phone,
+      education,
+      languages,
+    };
+
+    people.push(newGuide);
+    setShowModal(false);
+    // Show toast notification
+    toast.success("Ийгиликтүү сакталды!!!", {
+      position: "top-right",
+      autoClose: 3000, // 3 seconds
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  };
+
+  // Delete
+  const [data, setData] = useState(people);
+  const nameGuideRef = useRef();
+  const [dialogDelete, setDialogDelete] = useState({
+    message: "",
+    isLoading: false,
+  });
+  const handleDialog = (message, isLoading) => {
+    setDialogDelete({
+      message,
+      isLoading,
+    });
+  };
+  const handleDelete = (name) => {
+    handleDialog("Чындап өчүрүүнү каалайсызбы?", true);
+  };
+
+  const areYouSureDelete = (choose) => {
+    if (choose) {
+      setData(data.filter((person) => person.name !== nameGuideRef.current));
+      handleDialog("", false);
+      // Show toast notification
+      toast.error("Ийгиликтүү өчүрүлдү!!!", {
+        position: "top-right",
+        autoClose: 3000, // 3 seconds
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        style: {
+          backgroundColor: "#fff", // Set your desired background color
+        },
+      });
+    } else {
+      handleDialog("", false);
+    }
+  };
+
+  // Edit
+  const [edit, setEdit] = useState(false);
+  const [editData, setEditData] = useState({
+    name: "",
+    surname: "",
+    phone: "",
+    education: "",
+    languages: [],
+  });
+  const handleEdit = (name) => {
+    setEdit(true);
+    const editPerson = people.find((person) => person.name === name);
+    setEditData(editPerson);
+  };
+  const handleEditValues = (e) => {
+    e.preventDefault();
+    const name = e.target.name.value;
+    const surname = e.target.surname.value;
+    const phone = e.target.number.value;
+    const education = e.target.education.value;
+    const languages = Array.isArray(e.target.language)
+      ? e.target.language.map((option) => option.value)
+      : [];
+
+    const editedGuide = {
+      name,
+      surname,
+      phone,
+      education,
+      languages,
+    };
+
+    // Update the data in edit mode
+    setData((prevData) =>
+      prevData.map((person) =>
+        person.name === name ? editedGuide : person
+      )
+    );
+    setEdit(false);
+    setEditData({
+      name: "",
+      surname: "",
+      phone: "",
+      education: "",
+      languages: [],
+    });
+
+    // Reset form fields
+    e.target.name.value = "";
+    e.target.surname.value = "";
+    e.target.number.value = "";
+    e.target.education.value = "";
+    e.target.language.value = "";
+    setShowModal(false);
+
+    // Show toast notification
+    toast.info("Ийгиликтүү өзгөртүлдү!!!", {
+      position: "top-right",
+      autoClose: 3000, // 3 seconds
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      style: {
+        backgroundColor: "#fff", // Set your desired background color
+      },
+    });
+  };
+
   return (
     <div className="bg-white p-4 overflow-x-scroll">
+      <ToastContainer />
       <div className="flex justify-end border-b pb-4 border-gray-200">
-      
         <button
           className="flex items-center text-lg rounded-lg border p-1 bg-green-400"
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setEdit(false);
+            setShowModal(true);
+          }}
         >
           <IoMdAdd />
           Жаңы кошуу
@@ -62,7 +215,7 @@ const Guide = () => {
             <h3 className="mb-4 text-xl font-medium text-gray-900">
               Умра башчы
             </h3>
-            <form className="space-y-3" action="#">
+            <form className="space-y-3" action="#" onSubmit={edit ? handleEditValues : handleValues}>
               <div
                 className="flex flex-col justify-center"
                 onClick={handleImageClick}
@@ -85,7 +238,9 @@ const Guide = () => {
                   // className="w-full"
                   ref={inputRef}
                   onChange={handleImageChange}
+                  value={image ? URL.createObjectURL(image) : ""}
                   // style={{display: none}}
+                  // defaultValue={edit ? editData.image : null}
                 />
               </div>
               <div>
@@ -96,6 +251,7 @@ const Guide = () => {
                   Аты
                 </label>
                 <input
+                  defaultValue={edit ? editData.name : ""}
                   type="text"
                   name="name"
                   id="name"
@@ -113,6 +269,7 @@ const Guide = () => {
                 </label>
                 <input
                   type="text"
+                  defaultValue={edit ? editData.surname : ""}
                   name="surname"
                   id="surname"
                   placeholder="Фамилиясы"
@@ -128,7 +285,8 @@ const Guide = () => {
                   Телефон
                 </label>
                 <input
-                  type="text"
+                  type="tel"
+                  defaultValue={edit ? editData.phone : ""}
                   name="number"
                   id="number"
                   placeholder="Телефон номери"
@@ -145,6 +303,7 @@ const Guide = () => {
                 </label>
                 <input
                   type="text"
+                  defaultValue={edit ? editData.education : ""}
                   name="education"
                   id="education"
                   placeholder="Билими"
@@ -160,10 +319,11 @@ const Guide = () => {
                   Билген тилдери
                 </label>
                 <Select
-                  defaultValue={[language[0], language[3]]}
+                  // defaultValue={[language[0], language[3]]}
                   isMulti
                   name="language"
                   options={language}
+                  defaultValue={edit && editData.languages ? editData.languages.map(lang => language.find(option => option.value === lang)) : null}
                   className="basic-multi-select"
                   classNamePrefix="select"
                 />
@@ -173,7 +333,7 @@ const Guide = () => {
                   type="submit"
                   className="w-100 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
-                  Сактоо
+                  {edit ? "Өзгөртүү" : "Сактоо"}
                 </button>
               </div>
             </form>
@@ -230,8 +390,8 @@ const Guide = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {people.map((person) => (
-                    <tr key={person.email} className="hover:bg-gray-200 duration-300">
+                  {people.map((person, index) => (
+                    <tr key={index} className="hover:bg-gray-200 duration-300">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
@@ -263,46 +423,56 @@ const Guide = () => {
                           </div>
                         </div>
                       </td>
-                      
+
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
                           {person.phone}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {person.university}
+                        {person.education}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
+                        {/* {Array.isArray(person.languages)
+                          ? person.languages.map((lang, index) => (
+                              <span
+                                key={index}
+                                className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                              >
+                                {console.log(lang)}
+                              </span>
+                            ))
+                          : null} */}
                         <span
                           className="px-2 inline-flex text-xs leading-5
                       font-semibold rounded-full bg-green-100 text-green-800"
                         >
-                          KG
-                        </span>
-                        <span
-                          className="px-2 inline-flex text-xs leading-5
-                      font-semibold rounded-full bg-green-100 text-green-800"
-                        >
-                          En
-                        </span>
-                        <span
-                          className="px-2 inline-flex text-xs leading-5
-                      font-semibold rounded-full bg-green-100 text-green-800"
-                        >
-                          Ru
+                          kg
                         </span>
                       </td>
-                      
+
                       <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
-                        <a
-                          href="#"
+                      <button
+                          onClick={() => {
+                            handleEdit(person.name);
+                            setShowModal(true);
+                          }}
                           className="text-indigo-600 hover:text-indigo-900"
                         >
                           <CiEdit />
-                        </a>
-                        <a href="#" className="text-red-600 hover:text-red-900">
+                        </button>
+                        <button
+                          onClick={() => handleDelete(person.name)}
+                          className="text-red-600 hover:text-red-900"
+                        >
                           <RiDeleteBin5Line />
-                        </a>
+                        </button>
+                        {dialogDelete.isLoading && (
+                          <DialogDelete
+                            onDialog={areYouSureDelete}
+                            message={dialogDelete.message}
+                          />
+                        )}
                       </td>
                     </tr>
                   ))}
