@@ -94,8 +94,7 @@ const Groups = () => {
       madina: selectedMadina ? selectedMadina.label : "",
       program: "Программа",
     };
-    groups.push(newGroup);
-    // setData((prevData) => [...prevData, newGroup]);
+    setData([...data, newGroup]);
     nameRef.current.value = "";
     numberRef.current.value = "";
     setSelectedLanguage(null);
@@ -123,7 +122,6 @@ const Groups = () => {
   });
   const handleDialog = (message, isLoading) => {
     setDialogDelete({
-      ...dialogDelete,
       isLoading,
       message,
     });

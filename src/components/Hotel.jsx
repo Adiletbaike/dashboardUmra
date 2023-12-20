@@ -118,14 +118,14 @@ const Hotel = () => {
     city: "",
   });
   const handleEdit = (name) => {
-    setEdit(true);
     setEditData(data.find((hotel) => hotel.name === name));
+    setEdit(true);
   };
   const handleEditValues = (e) => {
     e.preventDefault();
     const name = nameRef.current.value;
     const mapLink = mapLinkRef.current.value;
-    const city = selectedCity ? selectedCity.label : "";
+    const city = cityRef.current.getValue()[0].label;
     var editedHotel = {
       name,
       mapLink,

@@ -40,6 +40,7 @@ const language = [
 const Guide = () => {
   // Modal
   const [showModal, setShowModal] = useState(false);
+  const [peopleData, setPeopleData] = useState(people);
 
   // Image
   const inputRef = useRef(null);
@@ -60,6 +61,7 @@ const Guide = () => {
     const surname = e.target.surname.value;
     const phone = e.target.number.value;
     const education = e.target.education.value;
+    
     const languages = Array.isArray(e.target.language)
       ? e.target.language.map((option) => option.value)
       : [];
@@ -72,7 +74,7 @@ const Guide = () => {
       languages,
     };
 
-    people.push(newGuide);
+    setPeopleData([...peopleData, newGuide]);
     setShowModal(false);
     // Show toast notification
     toast.success("Ийгиликтүү сакталды!!!", {
@@ -87,7 +89,6 @@ const Guide = () => {
   };
 
   // Delete
-  const [data, setData] = useState(people);
   const nameGuideRef = useRef();
   const [dialogDelete, setDialogDelete] = useState({
     message: "",
@@ -101,11 +102,14 @@ const Guide = () => {
   };
   const handleDelete = (name) => {
     handleDialog("Чындап өчүрүүнү каалайсызбы?", true);
+    nameGuideRef.current = name;
   };
 
   const areYouSureDelete = (choose) => {
     if (choose) {
-      setData(data.filter((person) => person.name !== nameGuideRef.current));
+      setPeopleData(
+        peopleData.filter((person) => person.name !== nameGuideRef.current)
+      );
       handleDialog("", false);
       // Show toast notification
       toast.error("Ийгиликтүү өчүрүлдү!!!", {
@@ -136,7 +140,7 @@ const Guide = () => {
   });
   const handleEdit = (name) => {
     setEdit(true);
-    const editPerson = people.find((person) => person.name === name);
+    const editPerson = peopleData.find((person) => person.name === name);
     setEditData(editPerson);
   };
   const handleEditValues = (e) => {
@@ -145,22 +149,28 @@ const Guide = () => {
     const surname = e.target.surname.value;
     const phone = e.target.number.value;
     const education = e.target.education.value;
-    const languages = Array.isArray(e.target.language)
-      ? e.target.language.map((option) => option.value)
-      : [];
+    const languages = [];
+
+    if (typeof e.target.language?.value === "string") {
+      languages.push(e.target.language.value);
+    } else {
+      e.target.language.forEach((option) => {
+        languages.push(option.value);
+      });
+    }
 
     const editedGuide = {
-      name,
-      surname,
-      phone,
-      education,
-      languages,
+      name: name,
+      surname: surname,
+      phone: phone,
+      education: education,
+      languages: languages,
     };
 
     // Update the data in edit mode
-    setData((prevData) =>
+    setPeopleData((prevData) =>
       prevData.map((person) =>
-        person.name === name ? editedGuide : person
+        person.name === editData.name ? editedGuide : person
       )
     );
     setEdit(false);
@@ -214,7 +224,11 @@ const Guide = () => {
             <h3 className="mb-4 text-xl font-medium text-gray-900">
               Умра башчы
             </h3>
-            <form className="space-y-3" action="#" onSubmit={edit ? handleEditValues : handleValues}>
+            <form
+              className="space-y-3"
+              action="#"
+              onSubmit={edit ? handleEditValues : handleValues}
+            >
               <div
                 className="flex flex-col justify-center"
                 onClick={handleImageClick}
@@ -322,7 +336,13 @@ const Guide = () => {
                   isMulti
                   name="language"
                   options={language}
-                  defaultValue={edit && editData.languages ? editData.languages.map(lang => language.find(option => option.value === lang)) : null}
+                  defaultValue={
+                    edit && editData.languages
+                      ? editData.languages.map((lang) =>
+                          language.find((option) => option.value === lang)
+                        )
+                      : null
+                  }
                   className="basic-multi-select"
                   classNamePrefix="select"
                 />
@@ -389,7 +409,7 @@ const Guide = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {people.map((person, index) => (
+                  {peopleData.map((person, index) => (
                     <tr key={index} className="hover:bg-gray-200 duration-300">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
@@ -446,12 +466,12 @@ const Guide = () => {
                           className="px-2 inline-flex text-xs leading-5
                       font-semibold rounded-full bg-green-100 text-green-800"
                         >
-                          kg
+                          {person.languages}
                         </span>
                       </td>
 
                       <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
-                      <button
+                        <button
                           onClick={() => {
                             handleEdit(person.name);
                             setShowModal(true);
