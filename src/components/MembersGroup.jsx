@@ -53,7 +53,7 @@ const MembersGroup = () => {
   const [showModal, setShowModal] = useState(false);
 
   // Table
-  const [data, setData] = useState(members);
+  const [dataMember, setDataMember] = useState(members);
   const [selectedGender, setSelectedGender] = useState(null);
 
   // Handle values
@@ -88,7 +88,7 @@ const MembersGroup = () => {
       password,
     };
     members.push(newMember);
-    setData((prevData) => prevData.concat(newMember));
+    setDataMember((prevData) => prevData.concat(newMember));
     nameRef.current.value = "";
     surnameRef.current.value = "";
     phoneRef.current.value = "";
@@ -113,11 +113,11 @@ const MembersGroup = () => {
   // Delete
   const nameMemberRef = useRef();
   const [dialogDelete, setDialogDelete] = useState({
-    isLoading: false,
     message: "",
+    isLoading: false,
   });
   const handleDialog = (message, isLoading) => {
-    setDialogDelete({ ...dialogDelete, message, isLoading });
+    setDialogDelete({ message, isLoading });
   };
   const handleDelete = (name) => {
     handleDialog("Чындап өчүрүүнү каалайсызбы?", true);
@@ -125,9 +125,7 @@ const MembersGroup = () => {
   };
   const areYouSureDelete = (choose) => {
     if (choose) {
-      setData((prevData) =>
-        prevData.filter((member) => member.name !== nameMemberRef.current)
-      );
+      setDataMember(dataMember.filter((members) => members.name !== nameMemberRef.current));
       handleDialog("", false);
       toast.error("Ийгиликтүү өчүрүлдү!!!", {
         position: "top-right",
@@ -146,6 +144,7 @@ const MembersGroup = () => {
   // Edit
   const [edit, setEdit] = useState(false);
   const [editData, setEditData] = useState({
+    id: "",
     name: "",
     surname: "",
     phone: "",
@@ -157,16 +156,17 @@ const MembersGroup = () => {
   });
   const handleEdit = (name) => {
     setEdit(true);
-    const member = members.find((member) => member.name === name);
+    const editMember = dataMember.find((member) => member.name === name);
     setEditData({
-      name: member.name,
-      surname: member.surname,
-      phone: member.phone,
-      birthday: member.birthday,
-      inn: member.inn,
-      gender: member.gender,
-      login: member.login,
-      password: member.password,
+      id: editMember.id,
+      name: editMember.name,
+      surname: editMember.surname,
+      phone: editMember.phone,
+      birthday: editMember.birthday,
+      inn: editMember.inn,
+      gender: editMember.gender,
+      login: editMember.login,
+      password: editMember.password,
     });
   };
   const handleEditValues = (e) => {
@@ -176,7 +176,7 @@ const MembersGroup = () => {
     const phone = phoneRef.current.value;
     const birthday = birthdayRef.current.value;
     const inn = innRef.current.value;
-    const gender = selectedGender ? selectedGender.label : "";
+    const gender = genderRef.current.getValue()[0].label;
     const login = loginRef.current.value;
     const password = passwordRef.current.value;
     const editedMember = {
@@ -190,13 +190,14 @@ const MembersGroup = () => {
       login,
       password,
     };
-    setData((prevData) =>
+    setDataMember((prevData) =>
       prevData.map((member) =>
         member.name === editData.name ? editedMember : member
       )
     );
     setEdit(false);
     setEditData({
+      id: "",
       name: "",
       surname: "",
       phone: "",
@@ -479,9 +480,9 @@ const MembersGroup = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {members.map((member) => (
+                  {dataMember.map((member,index) => (
                     <tr
-                      key={member.id}
+                      key={index}
                       className="hover:bg-gray-200 duration-300"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
