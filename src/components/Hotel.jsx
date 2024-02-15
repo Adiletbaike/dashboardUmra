@@ -1,5 +1,5 @@
 import CreatableSelect from "react-select/creatable";
-import React, { useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Line } from "react-icons/ri";
@@ -7,92 +7,106 @@ import Modal from "./Modals/Modal";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DialogDelete from "./Modals/DialogDelete";
-
-const hotel = [
-  { value: "mekkah", label: "Мекке" },
-  { value: "medina", label: "Мадина" },
-];
-
-const hotels = [
-  {
-    name: "Durrat al Eiman",
-    mapLink: "https://maps.app.goo.gl/eK91rkjNa9rRkHU78",
-    city: "Мадина",
-  },
-  {
-    name: "Movenpick",
-    mapLink: "https://maps.app.goo.gl/WHnUNw4xTz8hhyWB6",
-    city: "Мекке",
-  },
-  {
-    name: "Emaar Royal",
-    mapLink: "https://maps.app.goo.gl/D8fnVkwcR7v3wFKr6",
-    city: "Мадина",
-  },
-];
+import CustomAxios from "../axios/customAxios";
+import { AppContext } from "../App";
+import axios from "axios";
+import Loader from "./Constants/Louder";
 
 const Hotel = () => {
   // Modal
   const [showModal, setShowModal] = useState(false);
+  const customAxios = CustomAxios();
+  const {userData, setUserData} = useContext(AppContext);
+  const [isLoad, setIsLoad] = useState(true);
 
-  // Table
-  const [data, setData] = useState(hotels);
-  const [selectedCity, setSelectedCity] = useState(null);
+  // Hotels
+  const [hotels, setHotels] = useState([]);
 
-  // Handle values
-  const nameRef = useRef();
-  const mapLinkRef = useRef();
-  const cityRef = useRef();
-  const handleValues = (e) => {
+  const [hotelData, setHotelData] = useState({
+    isEdit: false,
+    id: '',
+    name: '',
+    location: ''
+  })
+
+  useEffect(()=>{
+    if(userData.isAuth){
+      if(hotels.length==0){
+        getAllHotels()
+      }
+    }
+  }, [userData])
+
+  const getAllHotels = async ()=>{
+    try{
+      const response = await customAxios({
+        method: 'get',
+        url: 'hotel',
+        headers:{
+          'Authorization': `Bearer ${userData.token}`
+        }
+      });
+
+      setHotels(response.data);
+      setIsLoad(false);
+    }
+    catch(err){
+      alert(err.message)
+      setIsLoad(false);
+      }
+  }
+
+  // Add new hotel data
+  const addHotelHandler = async (e) => {
     e.preventDefault();
-    const name = nameRef.current.value;
-    const mapLink = mapLinkRef.current.value;
-    const city = selectedCity ? selectedCity.label : "";
-    var newHotel = {
-      name,
-      mapLink,
-      city,
-    };
-    setData((prevData) => prevData.concat(newHotel));
-    nameRef.current.value = "";
-    mapLinkRef.current.value = "";
-    setSelectedCity(null);
-    setShowModal(false);
-
-    // Show toast notification
-    toast.success("Ийгиликтүү сакталды!!!", {
-      position: "top-right",
-      autoClose: 3000, // 3 seconds
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+    try{
+      const response = await customAxios({
+        method: 'post',
+        url: 'hotel',
+        headers:{
+          'Authorization': `Bearer ${userData.token}`
+        },
+        data: await JSON.stringify({
+          name: hotelData.name,
+          location: hotelData.location
+        })
+      });
+      getAllHotels();
+      setHotelData({
+        id: '',
+        name: '',
+        location: ''
+      })
+      setShowModal(false);
+      toast.success("Ийгиликтүү сакталды!!!", {
+        position: "top-right",
+        autoClose: 3000, // 3 seconds
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    catch(err){
+      alert(err.message)
+    }
   };
 
-  // Delete
-  const nameHotelRef = useRef();
-  const [dialogDelete, setDialogDelete] = useState({
-    message: "",
-    isLoading: false,
-  });
-  const handleDialog = (message, isLoading) => {
-    setDialogDelete({
-      message,
-      isLoading,
-    });
-  };
-  const handleDelete = (name) => {
-    handleDialog("Чындап өчүрүүнү каалайсызбы?", true);
-    nameHotelRef.current = name;
-  };
+  // // Delete
+  const [isShowDialogModalWin, setIsShowDialogModalWin] = useState(false);
 
-  const areYouSureDelete = (choose) => {
+  const areYouSureDelete = async (choose, id) => {
     if (choose) {
-      setData(data.filter((hotel) => hotel.name !== nameHotelRef.current));
-      handleDialog("", false);
-      // Show toast notification
+      const response = await customAxios({
+        method: "delete",
+        url: `hotel/${id}`,
+        headers: {
+          'Authorization': `Bearer ${userData.token}`
+        },
+      });
+      getAllHotels();
+      setIsShowDialogModalWin(false);
       toast.error("Ийгиликтүү өчүрүлдү!!!", {
         position: "top-right",
         autoClose: 3000, // 3 seconds
@@ -106,62 +120,56 @@ const Hotel = () => {
         },
       });
     } else {
-      handleDialog("", false);
+      setIsShowDialogModalWin(false);
     }
   };
 
-  // Edit
-  const [edit, setEdit] = useState(false);
-  const [editData, setEditData] = useState({
-    name: "",
-    mapLink: "",
-    city: "",
-  });
-  const handleEdit = (name) => {
-    setEditData(data.find((hotel) => hotel.name === name));
-    setEdit(true);
-  };
-  const handleEditValues = (e) => {
+  // Edit hotel data
+  const editFormInitializationHandler = (data)=>{
+    setHotelData({
+      isEdit: true,
+      ...data
+    })
+  }
+  const editHotelDataHandler = async (e) => {
     e.preventDefault();
-    const name = nameRef.current.value;
-    const mapLink = mapLinkRef.current.value;
-    const city = cityRef.current.getValue()[0].label;
-    var editedHotel = {
-      name,
-      mapLink,
-      city,
-    };
-    // Update the data in edit mode
-    setData((prevData) =>
-      prevData.map((hotel) =>
-        hotel.name === editData.name ? editedHotel : hotel
-      )
-    );
-    // Reset edit mode and data
-    setEdit(false);
-    setEditData({
-      name: "",
-      mapLink: "",
-      city: "",
-    });
 
-    // Reset form fields
-    nameRef.current.value = "";
-    mapLinkRef.current.value = "";
-    setSelectedCity(null);
-    setShowModal(false);
-    // Toast notification
-    toast.info("Ийгиликтүү өзгөртүлдү!!!", {
-      position: "top-right",
-      autoClose: 3000, // 3 seconds
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      style: {
-        backgroundColor: "#fff", // Set your desired background color
+    let data = JSON.stringify({
+      "name": hotelData.name,
+      "location": hotelData.location
+    });
+    
+    let config = {
+      method: 'put',
+      maxBodyLength: Infinity,
+      url: `hotel/${hotelData.id}`,
+      headers: {
+        'Authorization': `Bearer ${userData.token}`
       },
+      data : data
+    };
+    
+    await customAxios.request(config)
+    .then((response) => {
+      setHotelData({
+        id: '',
+        name: '',
+        location: ''
+      })
+      setShowModal(false);
+      toast.success("Ийгиликтүү сакталды!!!", {
+        position: "top-right",
+        autoClose: 3000, // 3 seconds
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      getAllHotels();
+    })
+    .catch((error) => {
+      alert(error)
     });
   };
 
@@ -172,14 +180,16 @@ const Hotel = () => {
         <button
           className="flex items-center text-lg rounded-lg border p-1 bg-green-400"
           onClick={() => {
-            setEdit(false);
             setShowModal(true);
           }}
         >
           <IoMdAdd />
           Жаңы кошуу
         </button>
-        <Modal isVisible={showModal} onClose={() => setShowModal(false)}>
+        <Modal isVisible={showModal} onClose={() => {
+          setShowModal(false)
+          setHotelData({isEdit:false, id:'', name:'', location:'', city:''})
+        }}>
           <div className="py-6 px-6 lg:px-8 text-left">
             <h3 className="mb-4 text-xl font-medium text-gray-900">
               Мейманканалар
@@ -187,7 +197,7 @@ const Hotel = () => {
             <form
               className="space-y-3"
               action="#"
-              onSubmit={edit ? handleEditValues : handleValues}
+              onSubmit={hotelData.isEdit ? editHotelDataHandler : addHotelHandler}
             >
               <div>
                 <label
@@ -197,51 +207,32 @@ const Hotel = () => {
                   Мейманкана аты
                 </label>
                 <input
-                  ref={nameRef}
                   type="text"
                   name="name"
                   id="name"
                   placeholder="Аты"
                   required
-                  defaultValue={edit ? editData.name : ""}
+                  value={hotelData.name}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  onChange={(e)=>{setHotelData(hotelData.isEdit?{...hotelData,name: e.currentTarget.value}:{...hotelData,id: e.currentTarget.value, name: e.currentTarget.value})}}
                 />
               </div>
               <div>
                 <label
-                  htmlFor="mapLink"
+                  htmlFor="location"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Карта адреси
                 </label>
                 <input
-                  ref={mapLinkRef}
                   type="text"
-                  name="mapLink"
-                  id="mapLink"
-                  placeholder="Адрес"
+                  name="location"
+                  id="location"
+                  placeholder="42.161384638583456, 74.27452891557907"
                   required
-                  defaultValue={edit ? editData.mapLink : ""}
+                  defaultValue={hotelData.location}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="city"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
-                  Жайгашкан жери
-                </label>
-                <CreatableSelect
-                  ref={cityRef}
-                  onChange={(selectedOption) => setSelectedCity(selectedOption)}
-                  isClearable
-                  defaultValue={
-                    edit && editData.city
-                      ? { value: "city", label: editData.city }
-                      : null
-                  }
-                  options={hotel}
+                  onChange={(e)=>{setHotelData({...hotelData, location: e.currentTarget.value})}}
                 />
               </div>
               <div className="flex justify-end">
@@ -249,7 +240,7 @@ const Hotel = () => {
                   type="submit"
                   className="w-100 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
-                  {edit ? "Өзгөртүү" : "Сактоо"}
+                  {hotelData.isEdit ? "Өзгөртүү" : "Сактоо"}
                 </button>
               </div>
             </form>
@@ -260,94 +251,101 @@ const Hotel = () => {
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full h-full sm:px-6 lg:px-8">
             <div className="shadow border-b h-[500px] overflow-y-scroll border-gray-200 sm:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-200 ">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Аты
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Карта адрес
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Шаар
-                    </th>
-                    <th scope="col" className="relative px-6 py-3">
-                      <span className="sr-only">Edit</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200 ">
-                  {data.map((hotel) => (
-                    <tr
-                      key={hotel.mapLink}
-                      className="hover:bg-gray-200 duration-300"
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">
-                              {hotel.name}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">
-                              <a href={hotel.mapLink} target="_blank">
-                                {hotel.mapLink}
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">
-                              {hotel.city}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
-                        <button
-                          onClick={() => {
-                            handleEdit(hotel.name);
-                            setShowModal(true);
-                          }}
-                          className="text-indigo-600 hover:text-indigo-900"
-                        >
-                          <CiEdit />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(hotel.name)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          <RiDeleteBin5Line />
-                        </button>
-                        {dialogDelete.isLoading && (
-                          <DialogDelete
-                            onDialog={areYouSureDelete}
-                            message={dialogDelete.message}
-                          />
-                        )}
-                      </td>
+             {
+                isLoad?
+                <Loader/>:
+                hotels.length==0?
+                <div className="w-full flex p-5 justify-center items-center">
+                  <span>Мейманканалар жок</span>
+                </div>
+                :
+                <table className="min-w-full divide-y divide-gray-200 ">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Аты
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Latitude
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Logitude
+                      </th>
+                      <th scope="col" className="relative px-6 py-3">
+                        <span className="sr-only">Edit</span>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200 ">
+                    {hotels.map((hotel, index) => (
+                      <tr
+                        key={index}
+                        className="hover:bg-gray-200 duration-300"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">
+                                {hotel.name}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">
+                                  {hotel.latitude}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">
+                                {hotel.longitude}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
+                          <button
+                            onClick={() => {
+                              editFormInitializationHandler({id: hotel.id, name: hotel.name, location: hotel.latitude+", "+hotel.longitude});
+                              setShowModal(true);
+                            }}
+                            className="text-indigo-600 hover:text-indigo-900"
+                          >
+                            <CiEdit />
+                          </button>
+                          <button
+                            onClick={() => setIsShowDialogModalWin(true)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <RiDeleteBin5Line />
+                          </button>
+                          {isShowDialogModalWin && (
+                            <DialogDelete
+                              onDialog={choose=>areYouSureDelete(choose, hotel.id)}
+                              message={'Чындап өчүрүүнү каалайсызбы?'}
+                            />
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+             }
             </div>
           </div>
         </div>

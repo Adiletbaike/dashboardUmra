@@ -1,25 +1,48 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../../App";
+import CustomAxios from "../../axios/customAxios";
 
 const Login = () => {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const {userData, setUserData, companyId} = useContext(AppContext);
   const navigate = useNavigate();
-  const handleLogin = () => {
-    if (login === "admin" && password === "1234") {
-      localStorage.setItem("isLoggedIn", true);
-      navigate("/");
-    } else {
-      alert("Туура эмес");
+  const customAxios = CustomAxios();
+
+  const handleLogin = async () => {
+    try {
+      const response = await customAxios({
+        method: 'post',
+        url: isSuperAdmin ? 'auth/login/super-admin' : 'auth/login',
+        maxBodyLength: Infinity,
+        data: JSON.stringify({
+          username: login,
+          password: password,
+          companyId: companyId,
+        }),
+      });
+  
+      setUserData({
+        isAuth: true,
+        isSuperAdmin: isSuperAdmin,
+        token: response.data.token,
+      });
+  
+      localStorage.setItem('isAuth', true);
+      localStorage.setItem('isSuperAdmin', isSuperAdmin);
+      localStorage.setItem('token', response.data.token);
+    } catch (error) {
+      alert(error.message);
     }
   };
 
   useEffect(() => {
-    if (localStorage.getItem("isLoggedIn")) {
+    if (userData.isAuth) {
       navigate("/");
     }
-  }, []);
+  }, [userData]);  
 
   return (
     <div className="flex justify-center bg-[url(https://images.unsplash.com/photo-1693590614566-1d3ea9ef32f7?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] h-screen bg-center">
@@ -30,6 +53,7 @@ const Login = () => {
         <div className="flex flex-col justify-center items-center mt-10 md:mt-4 space-y-6 md:space-y-8">
           <div className="">
             <input
+
               value={login}
               onChange={(e) => setLogin(e.target.value)}
               type="text"
@@ -45,6 +69,15 @@ const Login = () => {
               placeholder="Пароль"
               className=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-violet-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]"
             />
+          </div>
+          <div className="bg-gray-100 p-2 pl-5 rounded-lg md:w-72 lg:w-[340px]">
+            <input
+            id="isSuperAdmin"
+              onClick={(e) => {setIsSuperAdmin(prev=>!prev);}}
+              type="checkbox"
+              className="mr-2 cursor-pointer"
+            />
+            <label htmlFor="isSuperAdmin" className="text-gray-400 cursor-pointer">Super admin</label>
           </div>
         </div>
         <div className="text-center mt-7">

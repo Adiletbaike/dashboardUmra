@@ -1,15 +1,13 @@
-import React, { useEffect } from "react";
 import {
   HiOutlineUserGroup,
   HiOutlineUserPlus,
   HiOutlineBuildingOffice2,
 } from "react-icons/hi2";
-import Calendar from "./Calendar/Calendar";
 
-const BoxWrapper = ({ children }) => {
+const BoxWrapper = (props) => {
   return (
     <div className="bg-white rounded-sm p-4 flex-1 border border-gray-200 flex items-center">
-      {children}
+      {props.children}
     </div>
   );
 };

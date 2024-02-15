@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { FaKaaba } from "react-icons/fa6";
 import { HiOutlineLogout } from "react-icons/hi";
 import {
@@ -7,6 +7,7 @@ import {
 } from "../../lib/consts/Navigation";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import classNames from "classnames";
+import { AppContext } from "../../App";
 
 const linkClasses =
   "flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base";
@@ -30,11 +31,13 @@ const SidebarLink = ({ item }) => {
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const {userData, setUserData} = useContext(AppContext)
+
   useEffect(() => {
-    if (!localStorage.getItem("isLoggedIn")) {
+    if (!userData.isAuth && localStorage.getItem('isAuth')=='false') {
       navigate("/login");
     }
-  }, []);
+  }, [userData]);
 
   return (
     <div className="bg-neutral-900 w-60 p-3 flex flex-col text-white">
@@ -54,10 +57,17 @@ const Sidebar = () => {
         <div className={classNames("", linkClasses)}>
           <div
             className="flex gap-2 text-red-500 cursor-pointer hover:no-underline"
-            onClick={() => {
-              localStorage.removeItem("isLoggedIn");
-              navigate("/login");
-            }}
+            onClick={()=>{
+              console.log(userData);
+              setUserData({
+                  isAuth: false,
+                  isSuperAdmin: false,
+                  token: ''
+              });
+              localStorage.setItem('isAuth', false);
+              localStorage.setItem('isSuperAdmin', false);
+              localStorage.setItem('token', '');
+          }}
           >
             <span className="text-xl">
               <HiOutlineLogout />
