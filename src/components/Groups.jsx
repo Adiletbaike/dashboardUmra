@@ -424,7 +424,7 @@ const Groups = () => {
                           scope="col"
                           className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                         >
-                          ID
+                          №
                         </th>
                         <th
                           scope="col"
@@ -481,7 +481,7 @@ const Groups = () => {
                             <div className="flex items-center">
                               <div>
                                 <div className="text-sm font-medium text-gray-900">
-                                  {index}
+                                  {index + 1}
                                 </div>
                               </div>
                             </div>

@@ -60,6 +60,23 @@ export default function CompanyAdmins(){
         })
     }
 
+    const logoutHandler = ()=>{
+        try{
+            setUserData({
+                isAuth: false,
+                isSuperAdmin: false,
+                token: ''
+            });
+            localStorage.setItem('isAuth', false);
+            localStorage.setItem('isSuperAdmin', false);
+            localStorage.setItem('token', '');
+        }catch(err){
+            alert(err.message)
+        }finally{
+            navigate('/login')
+        }
+    }
+
     // add new admin
     const addAdminHandler = (e)=>{
         e.preventDefault();
@@ -144,16 +161,7 @@ export default function CompanyAdmins(){
                 <span className="text-neutral-100 text-lg font-bold">{companyName}</span>
             </button>
             <button className="flex items-center gap-2 bg-orange-400 rounded-lg px-3 py-1"
-                onClick={()=>{
-                    setUserData({
-                        isAuth: false,
-                        isSuperAdmin: false,
-                        token: ''
-                    });
-                    localStorage.setItem('isAuth', false);
-                    localStorage.setItem('isSuperAdmin', false);
-                    localStorage.setItem('token', '');
-                }}
+                onClick={logoutHandler}
             >
                 <CiLogout color="yellow" />
                 <span className="text-white text-sm font-normal">Чыгуу</span>
@@ -163,7 +171,7 @@ export default function CompanyAdmins(){
                 <ToastContainer />
                 <div className="flex justify-between items-center border-b pb-4 border-gray-200">
                     <button
-                        className="flex justify-end items-center text-lg rounded-lg border p-1 bg-green-400"
+                        className="flex justify-end items-center text-lg rounded-lg border p-1 bg-gray-300"
                         onClick={()=>navigate('/')}
                     >
                         <IoArrowBack />

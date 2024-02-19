@@ -241,7 +241,7 @@ export default function GroupPlan(){
                                 Location
                             </th>
                             <th scope="col" className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Kg
+                                Description
                             </th>
                             {/* <th scope="col" className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Control

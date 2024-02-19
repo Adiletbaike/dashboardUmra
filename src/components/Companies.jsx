@@ -303,7 +303,7 @@ const Componies = () => {
                                         scope="col"
                                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                     >
-                                        ID
+                                        №
                                     </th>
                                     <th
                                         scope="col"
@@ -330,7 +330,7 @@ const Componies = () => {
                                     <div className="flex items-center">
                                     <div>
                                         <div className="text-sm font-medium text-gray-900">
-                                        {company.id}
+                                        {index + 1}
                                         </div>
                                     </div>
                                     </div>
@@ -348,7 +348,7 @@ const Componies = () => {
                                     <div className="flex items-center">
                                     <div>
                                         <div className="text-sm font-medium text-gray-900">
-                                            <a href={`/admins/${company.id}/admins`}>admins</a>
+                                            <a href={`/${company.name}/${company.id}/admins`}>admins</a>
                                         </div>
                                     </div>
                                     </div>

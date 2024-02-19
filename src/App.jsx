@@ -54,6 +54,7 @@ const App = () => {
             </Route>
           }
           <Route path='/login' element={<Login/>}/>
+          <Route path="*" element={"$404"}/>
         </Routes>
       </BrowserRouter>
     </AppContext.Provider>

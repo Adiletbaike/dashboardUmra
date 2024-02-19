@@ -313,7 +313,7 @@ const MembersGroup = () => {
                         scope="col"
                         className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        ID
+                        №
                       </th>
                       <th
                         scope="col"
