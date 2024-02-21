@@ -243,9 +243,9 @@ export default function GroupPlan(){
                             <th scope="col" className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Description
                             </th>
-                            {/* <th scope="col" className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Control
-                            </th> */}
+                            </th>
                         </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">

@@ -14,7 +14,7 @@ import Loader from "./Constants/Louder";
 
 const languages = [
   { label: "Кыргызча", value: "KG" },
-  { label: "Росский", value: "RU" },
+  { label: "Рyсский", value: "RU" },
   { label: "Казакча", value: "KZ" },
   { label: "Озбекче", value: "UZ" },
   { label: "English", value: "EN" },
@@ -467,6 +467,12 @@ const Groups = () => {
                           className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                         >
                           Программа
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Control
                         </th>
 
                         <th scope="col" className="relative px-6 py-3">
