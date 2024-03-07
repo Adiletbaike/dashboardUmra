@@ -7,7 +7,7 @@ import Select from "react-select";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DialogDelete from "./Modals/DialogDelete";
-import {AppContext} from '../App';
+import { AppContext } from "../App";
 import CustomAxios from "../axios/customAxios";
 import Loader from "./Constants/Louder";
 
@@ -15,78 +15,77 @@ const Guide = () => {
   // Modal
   const [showModal, setShowModal] = useState(false);
   const [guides, setGuides] = useState([]);
-  const {userData, setUserData} = useContext(AppContext);
+  const { userData, setUserData } = useContext(AppContext);
   const customAxios = CustomAxios();
   const [isLoad, setIsLoad] = useState(true);
 
   const [guideData, setGuideData] = useState({
     isEdit: false,
     data: {
-      id: '',
-      name: '',
-      surname: '',
-      phone: '',
-      education: ''
-    }
-  })
+      id: "",
+      name: "",
+      surname: "",
+      phone: "",
+      education: "",
+    },
+  });
 
-  useEffect(()=>{
-    if(userData.isAuth){
-      if(guides.length == 0){
+  useEffect(() => {
+    if (userData.isAuth) {
+      if (guides.length == 0) {
         getAllGuides();
       }
     }
-  }, [userData])
+  }, [userData]);
 
-  const getAllGuides = async ()=>{  
-    try{
+  const getAllGuides = async () => {
+    try {
       const response = await customAxios({
         method: "get",
-        url: 'lead-group',
+        url: "lead-group",
         headers: {
-          'Authorization': `Bearer ${userData.token}`
-        }
+          Authorization: `Bearer ${userData.token}`,
+        },
       });
       setGuides(response.data);
       setIsLoad(false);
-    }
-    catch(err){
-      alert(err.message)
+    } catch (err) {
+      alert(err.message);
       setIsLoad(false);
     }
-  }
+  };
 
   // add new guide
   const addGuideHandler = async (e) => {
     e.preventDefault();
-    try{
+    try {
       const data = await JSON.stringify({
-            firstName: guideData.data.name,
-            lastName: guideData.data.surname,
-            phoneNumber: guideData.data.phone,
-            university: guideData.data.education
-          });
+        firstName: guideData.data.name,
+        lastName: guideData.data.surname,
+        phoneNumber: guideData.data.phone,
+        university: guideData.data.education,
+      });
       const response = await customAxios({
         method: "post",
-        url: 'lead-group',
+        url: "lead-group",
         headers: {
-          'Authorization': `Bearer ${userData.token}`
+          Authorization: `Bearer ${userData.token}`,
         },
-        data: data
-      })
+        data: data,
+      });
       getAllGuides();
       setGuideData({
         ...guideData,
         data: {
-          id: '',
-          name: '',
-          surname: '',
-          phone: '',
-          education: ''
-        }
-      })
+          id: "",
+          name: "",
+          surname: "",
+          phone: "",
+          education: "",
+        },
+      });
       setShowModal(false);
-        toast.success("Ийгиликтүү сакталды!!!", {
+      toast.success("Ийгиликтүү сакталды!!!", {
         position: "top-right",
         autoClose: 3000, // 3 seconds
         hideProgressBar: true,
@@ -95,23 +94,20 @@ const Guide = () => {
         draggable: true,
         progress: undefined,
       });
-    }catch(err){
-      alert(err.message)
+    } catch (err) {
+      alert(err.message);
     }
-    
-    
-    
   };
 
   // Delete
   const [isShowDialogModalWin, setIsShowDialogModalWin] = useState(false);
-  const areYouSureDelete = async(choose, id) => {
+  const areYouSureDelete = async (choose, id) => {
     if (choose) {
       const response = await customAxios({
         method: "delete",
         url: `lead-group/${id}`,
         headers: {
-          'Authorization': `Bearer ${userData.token}`
+          Authorization: `Bearer ${userData.token}`,
         },
       });
       getAllGuides();
@@ -127,42 +123,41 @@ const Guide = () => {
           backgroundColor: "#fff", // Set your desired background color
         },
       });
-      setIsShowDialogModalWin(false)
+      setIsShowDialogModalWin(false);
     } else {
-      setIsShowDialogModalWin(false)
+      setIsShowDialogModalWin(false);
     }
   };
 
   // Edit guide data
-  const handleEditValues = async(e) => {
+  const handleEditValues = async (e) => {
     e.preventDefault();
-    try{
-
+    try {
       const data = await JSON.stringify({
         firstName: guideData.data.name,
         lastName: guideData.data.surname,
         phoneNumber: guideData.data.phone,
-        university: guideData.data.education
+        university: guideData.data.education,
       });
       const response = await customAxios({
         method: "put",
         url: `lead-group/${guideData.data.id}`,
         headers: {
-          'Authorization': `Bearer ${userData.token}`
+          Authorization: `Bearer ${userData.token}`,
         },
-        data: data
-      })
+        data: data,
+      });
       getAllGuides();
       setGuideData({
         isEdit: false,
-        data:{
-          id: '',
-          name: '',
-          surname: '',
-          phone: '',
-          education: ''
-        }
-      })
+        data: {
+          id: "",
+          name: "",
+          surname: "",
+          phone: "",
+          education: "",
+        },
+      });
       setShowModal(false);
       toast.info("Ийгиликтүү өзгөртүлдү!!!", {
         position: "top-right",
@@ -176,11 +171,9 @@ const Guide = () => {
           backgroundColor: "#fff", // Set your desired background color
         },
       });
-
-    }catch(err){
-      alert(err.message)
+    } catch (err) {
+      alert(err.message);
     }
-    
   };
 
   return (
@@ -221,7 +214,23 @@ const Guide = () => {
                   placeholder="Аты"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  onChange={e=>setGuideData(prev=>{return guideData.isEdit?{...prev, data: {...prev.data, name: e.target.value}}: {...prev, data: {...prev.data, id: e.target.value, name: e.target.value}}})}
+                  onChange={(e) =>
+                    setGuideData((prev) => {
+                      return guideData.isEdit
+                        ? {
+                            ...prev,
+                            data: { ...prev.data, name: e.target.value },
+                          }
+                        : {
+                            ...prev,
+                            data: {
+                              ...prev.data,
+                              id: e.target.value,
+                              name: e.target.value,
+                            },
+                          };
+                    })
+                  }
                 />
               </div>
               <div>
@@ -233,13 +242,20 @@ const Guide = () => {
                 </label>
                 <input
                   type="text"
-                  value       ={guideData.data.surname}
+                  value={guideData.data.surname}
                   name="surname"
                   id="surname"
                   placeholder="Фамилиясы"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  onChange={e=>setGuideData(prev=>{return {...prev, data: {...prev.data, surname: e.target.value}}})}
+                  onChange={(e) =>
+                    setGuideData((prev) => {
+                      return {
+                        ...prev,
+                        data: { ...prev.data, surname: e.target.value },
+                      };
+                    })
+                  }
                 />
               </div>
               <div>
@@ -257,7 +273,14 @@ const Guide = () => {
                   placeholder="Телефон номери"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  onChange={e=>setGuideData(prev=>{return {...prev, data: {...prev.data, phone: e.target.value}}})}
+                  onChange={(e) =>
+                    setGuideData((prev) => {
+                      return {
+                        ...prev,
+                        data: { ...prev.data, phone: e.target.value },
+                      };
+                    })
+                  }
                 />
               </div>
               <div>
@@ -275,7 +298,14 @@ const Guide = () => {
                   placeholder="Билими"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  onChange={e=>setGuideData(prev=>{return {...prev, data: {...prev.data, education: e.target.value}}})}
+                  onChange={(e) =>
+                    setGuideData((prev) => {
+                      return {
+                        ...prev,
+                        data: { ...prev.data, education: e.target.value },
+                      };
+                    })
+                  }
                 />
               </div>
               <div className="flex justify-end">
@@ -294,22 +324,16 @@ const Guide = () => {
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              {
-                isLoad?
-                <Loader/>:
-                guides.length==0?
+              {isLoad ? (
+                <Loader />
+              ) : guides.length == 0 ? (
                 <div className="flex w-full justify-center items-center p-5">
-                  <span > Группа башчылары жок </span>
-                </div>:
+                  <span> Группа башчылары жок </span>
+                </div>
+              ) : (
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        №
-                      </th>
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -334,23 +358,26 @@ const Guide = () => {
                       >
                         Билими
                       </th>
-                      <th scope="col" className="relative px-6 py-3">
-                        <span className="sr-only">Edit</span>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Билген тилдери
+                      </th>
+                      <th
+                        scope="col"
+                        className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Action
                       </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {guides.map((person, index) => (
-                      <tr key={index} className="hover:bg-gray-200 duration-300">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div>
-                              <div className="text-sm font-medium text-gray-900">
-                                {index+1}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
+                      <tr
+                        key={index}
+                        className="hover:bg-gray-200 duration-300"
+                      >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div>
@@ -378,6 +405,9 @@ const Guide = () => {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {person.university}
                         </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {person.languages}
+                        </td>
                         <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
                           <button
                             onClick={() => {
@@ -389,8 +419,8 @@ const Guide = () => {
                                   surname: person.lastName,
                                   phone: person.phoneNumber,
                                   education: person.university,
-                                }
-                              })
+                                },
+                              });
                               setShowModal(true);
                             }}
                             className="text-indigo-600 hover:text-indigo-900"
@@ -405,7 +435,9 @@ const Guide = () => {
                           </button>
                           {isShowDialogModalWin && (
                             <DialogDelete
-                              onDialog={(choose)=>areYouSureDelete(choose, person.id)}
+                              onDialog={(choose) =>
+                                areYouSureDelete(choose, person.id)
+                              }
                               message={"Чындап өчүрүүнү каалайсызбы?"}
                             />
                           )}
@@ -414,7 +446,7 @@ const Guide = () => {
                     ))}
                   </tbody>
                 </table>
-              }
+              )}
             </div>
           </div>
         </div>

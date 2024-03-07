@@ -266,12 +266,6 @@ const Hotel = () => {
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        №
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
                         Аты
                       </th>
                       <th
@@ -286,8 +280,17 @@ const Hotel = () => {
                       >
                         Logitude
                       </th>
-                      <th scope="col" className="relative px-6 py-3">
-                        <span className="sr-only">Edit</span>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        City
+                      </th>
+                      <th
+                        scope="col"
+                        className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Action
                       </th>
                     </tr>
                   </thead>
@@ -301,15 +304,6 @@ const Hotel = () => {
                           <div className="flex items-center">
                             <div>
                               <div className="text-sm font-medium text-gray-900">
-                                {index+1}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div>
-                              <div className="text-sm font-medium text-gray-900">
                                 {hotel.name}
                               </div>
                             </div>
@@ -319,7 +313,7 @@ const Hotel = () => {
                           <div className="flex items-center">
                             <div>
                               <div className="text-sm font-medium text-gray-900">
-                                  {hotel.latitude}
+                                {hotel.latitude}
                               </div>
                             </div>
                           </div>
@@ -329,6 +323,15 @@ const Hotel = () => {
                             <div>
                               <div className="text-sm font-medium text-gray-900">
                                 {hotel.longitude}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">
+                                {hotel.city}
                               </div>
                             </div>
                           </div>

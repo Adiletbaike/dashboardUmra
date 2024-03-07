@@ -1,4 +1,4 @@
-import {useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,59 +20,59 @@ const initialMemberData = {
   phoneNumber: "",
   password: "",
   companyId: 0,
-  username: ""
-}
+  username: "",
+};
 
 const MembersGroup = () => {
   // Modal
   const [showModal, setShowModal] = useState(false);
-  const {userData, setUserData,  companyId} = useContext(AppContext);
+  const { userData, setUserData, companyId } = useContext(AppContext);
   const navigate = useNavigate();
   const customAxios = CustomAxios();
-  const {id} = useParams();
+  const { id } = useParams();
   const [isLoad, setIsLoad] = useState(true);
 
   // Table
   const [members, setMembers] = useState([]);
   const [memberData, setMemberData] = useState({
     isEdit: false,
-    data: {...initialMemberData}
-  })
+    data: { ...initialMemberData },
+  });
 
-  useEffect(()=>{
-    if(userData.isAuth){
-      if(members.length==0){
-        getAllMember()
+  useEffect(() => {
+    if (userData.isAuth) {
+      if (members.length == 0) {
+        getAllMember();
       }
     }
-  }, [userData])
+  }, [userData]);
 
-  const getAllMember = async()=>{
-    try{
+  const getAllMember = async () => {
+    try {
       const response = await customAxios({
-        method: 'get',
+        method: "get",
         url: `group/${id}/participant`,
         headers: {
-          'Authorization': `Bearer ${userData.token}`
-        }
+          Authorization: `Bearer ${userData.token}`,
+        },
       });
       setMembers(response.data);
       setIsLoad(false);
-    }catch(err){
-      console.log(err.message)
+    } catch (err) {
+      console.log(err.message);
       setIsLoad(false);
     }
-  }
+  };
 
   //add new member
-  const addMemberHandler = async(e) => {
+  const addMemberHandler = async (e) => {
     e.preventDefault();
-    try{
+    try {
       const response = await customAxios({
         method: "post",
         url: `group/${id}/participant`,
-        headers:{
-          'Authorization': `Bearer ${userData.token}`
+        headers: {
+          Authorization: `Bearer ${userData.token}`,
         },
         data: JSON.stringify({
           firstName: memberData.data.firstName,
@@ -80,14 +80,14 @@ const MembersGroup = () => {
           phoneNumber: memberData.data.phoneNumber,
           password: memberData.data.password,
           companyId: companyId,
-          username: memberData.data.username
-        })
-      })
-      getAllMember()
+          username: memberData.data.username,
+        }),
+      });
+      getAllMember();
       setMemberData({
         isEdit: false,
-        data: {...initialMemberData}
-      })
+        data: { ...initialMemberData },
+      });
       setShowModal(false);
       toast.success("Ийгиликтүү сакталды!!!", {
         position: "top-right",
@@ -98,7 +98,7 @@ const MembersGroup = () => {
         draggable: true,
         progress: undefined,
       });
-    }catch(err){
+    } catch (err) {
       alert(err.message);
     }
   };
@@ -107,12 +107,11 @@ const MembersGroup = () => {
   const [isShowDialogModalWin, setIsShowDialogModalWin] = useState(false);
   const areYouSureDelete = async (choose, participantId) => {
     if (choose) {
-      
       const response = await customAxios({
         method: "delete",
         url: `group/${id}/participant/${participantId}`,
         headers: {
-          'Authorization': `Bearer ${userData.token}`
+          Authorization: `Bearer ${userData.token}`,
         },
       });
       getAllMember();
@@ -166,17 +165,20 @@ const MembersGroup = () => {
     <div className="bg-white p-4 overflow-x-scroll">
       <ToastContainer />
       <div className="flex justify-between border-b pb-4 border-gray-200">
-        <button className="flex items-center text-lg rounded-lg border p-1 gap-2 bg-gray-300"  onClick={()=>navigate('/groups')}>
-            <IoArrowBack />
-            Back
+        <button
+          className="flex items-center text-lg rounded-lg border p-1 gap-2 bg-gray-300"
+          onClick={() => navigate("/")}
+        >
+          <IoArrowBack />
+          Back
         </button>
         <button
           className="flex items-center text-lg rounded-lg border p-1 bg-green-400"
           onClick={() => {
             setMemberData({
               isEdit: false,
-              data: {...initialMemberData}
-            })
+              data: { ...initialMemberData },
+            });
             setShowModal(true);
           }}
         >
@@ -184,7 +186,7 @@ const MembersGroup = () => {
           Жаңы кошуу
         </button>
         <Modal isVisible={showModal} onClose={() => setShowModal(false)}>
-          <div className="py-6 px-6 lg:px-8 text-left mt-24">
+          <div className="py-6 px-6 lg:px-8 text-left mt-8">
             <h3 className="mb-1 text-xl font-medium text-gray-900">Мүчөлөр</h3>
             <form
               className="space-y-2"
@@ -206,8 +208,14 @@ const MembersGroup = () => {
                   placeholder="Аты"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  onChange={(e)=>{setMemberData(prev=>{return {...prev, data: {...prev.data, firstName: e.target.value}}
-                  })}}
+                  onChange={(e) => {
+                    setMemberData((prev) => {
+                      return {
+                        ...prev,
+                        data: { ...prev.data, firstName: e.target.value },
+                      };
+                    });
+                  }}
                 />
               </div>
               <div>
@@ -225,7 +233,14 @@ const MembersGroup = () => {
                   placeholder="Фамилия"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  onChange={(e)=>{setMemberData(prev=>{return{...prev, data: {...prev.data, lastName: e.target.value}}})}}
+                  onChange={(e) => {
+                    setMemberData((prev) => {
+                      return {
+                        ...prev,
+                        data: { ...prev.data, lastName: e.target.value },
+                      };
+                    });
+                  }}
                 />
               </div>
               <div>
@@ -243,7 +258,14 @@ const MembersGroup = () => {
                   placeholder="Телефон"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  onChange={(e)=>{setMemberData(prev=>{return{...prev, data: {...prev.data, phoneNumber: e.target.value}}})}}
+                  onChange={(e) => {
+                    setMemberData((prev) => {
+                      return {
+                        ...prev,
+                        data: { ...prev.data, phoneNumber: e.target.value },
+                      };
+                    });
+                  }}
                 />
               </div>
               <div>
@@ -261,7 +283,14 @@ const MembersGroup = () => {
                   placeholder="Логин"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  onChange={(e)=>{setMemberData(prev=>{return{...prev, data: {...prev.data, username: e.target.value}}})}}
+                  onChange={(e) => {
+                    setMemberData((prev) => {
+                      return {
+                        ...prev,
+                        data: { ...prev.data, username: e.target.value },
+                      };
+                    });
+                  }}
                 />
               </div>
               <div>
@@ -279,7 +308,14 @@ const MembersGroup = () => {
                   placeholder="Пароль"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  onChange={(e)=>{setMemberData(prev=>{return{...prev, data: {...prev.data, password: e.target.value}}})}}
+                  onChange={(e) => {
+                    setMemberData((prev) => {
+                      return {
+                        ...prev,
+                        data: { ...prev.data, password: e.target.value },
+                      };
+                    });
+                  }}
                 />
               </div>
               <div className="flex justify-end">
@@ -298,14 +334,13 @@ const MembersGroup = () => {
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-              {
-                isLoad?
-                <Loader/>:
-                members.length==0?
+              {isLoad ? (
+                <Loader />
+              ) : members.length == 0 ? (
                 <div className="flex w-full justify-center items-center p-5">
-                  <span > Группа мучолору жок </span>
+                  <span> Группа мучолору жок </span>
                 </div>
-                :
+              ) : (
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
@@ -313,7 +348,7 @@ const MembersGroup = () => {
                         scope="col"
                         className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        №
+                        ID
                       </th>
                       <th
                         scope="col"
@@ -331,7 +366,31 @@ const MembersGroup = () => {
                         scope="col"
                         className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
+                        Жынысы
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Туулган күнү
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
                         Логин
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Пароль
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Action
                       </th>
                       {/* <th scope="col" className="relative px-5 py-3">
                         <span className="sr-only">Edit</span>
@@ -339,7 +398,7 @@ const MembersGroup = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {members.map((member,index) => (
+                    {members.map((member, index) => (
                       <tr
                         key={index}
                         className="hover:bg-gray-200 duration-300"
@@ -348,7 +407,7 @@ const MembersGroup = () => {
                           <div className="flex items-center">
                             <div>
                               <div className="text-sm font-medium text-gray-900">
-                                {index+1}
+                                {index + 1}
                               </div>
                             </div>
                           </div>
@@ -357,7 +416,7 @@ const MembersGroup = () => {
                           <div className="flex items-center">
                             <div>
                               <div className="text-sm font-medium text-gray-900">
-                                {member.fullName}
+                                {member.firstName} {member.lastName}
                               </div>
                             </div>
                           </div>
@@ -366,7 +425,16 @@ const MembersGroup = () => {
                           {member.phoneNumber}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {member.gender}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {member.birthday}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {member.username}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {member.password}
                         </td>
                         <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
                           {/* <button
@@ -393,7 +461,9 @@ const MembersGroup = () => {
                           </button>
                           {isShowDialogModalWin && (
                             <DialogDelete
-                              onDialog={(choose)=>areYouSureDelete(choose, member.id)}
+                              onDialog={(choose) =>
+                                areYouSureDelete(choose, member.id)
+                              }
                               message={"Чындап өчүрүүнү каалайсызбы?"}
                             />
                           )}
@@ -402,7 +472,7 @@ const MembersGroup = () => {
                     ))}
                   </tbody>
                 </table>
-              } 
+              )}
             </div>
           </div>
         </div>

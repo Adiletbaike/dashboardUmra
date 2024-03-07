@@ -7,16 +7,16 @@ import {
 } from "react-icons/hi2";
 
 export const DASHBOARD_SIDEBAR_LINKS = [
-  {
-    key: "dashboard",
-    label: "Башкы бет",
-    path: "/",
-    icon: <HiOutlineSquares2X2 />,
-  },
+  // {
+  //   key: "dashboard",
+  //   label: "Башкы бет",
+  //   path: "/",
+  //   icon: <HiOutlineSquares2X2 />,
+  // },
   {
     key: "groups",
     label: "Группалар",
-    path: "/groups",
+    path: "/",
     icon: <HiOutlineUserGroup />,
   },
   {

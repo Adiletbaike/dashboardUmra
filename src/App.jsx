@@ -45,8 +45,7 @@ const App = () => {
               </>
             :
             <Route path='/' element={<Layout/>}>
-              <Route index element={<Dashboard/>}/> 
-              <Route path='/groups' element={<Groups/>}/> 
+              <Route index element={<Groups/>}/> 
               <Route path='/guide' element={<Guide/>}/> 
               <Route path='/hotels' element={<Hotel/>}/> 
               <Route path='/group/:id/members' element={<MembersGroup/>}/> 
