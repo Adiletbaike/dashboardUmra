@@ -9,14 +9,13 @@ import "react-toastify/dist/ReactToastify.css";
 import DialogDelete from "./Modals/DialogDelete";
 import CustomAxios from "../axios/customAxios";
 import { AppContext } from "../App";
-import axios from "axios";
 import Loader from "./Constants/Louder";
 
 const Hotel = () => {
   // Modal
   const [showModal, setShowModal] = useState(false);
   const customAxios = CustomAxios();
-  const {userData, setUserData} = useContext(AppContext);
+  const {userData, setUserData} = useContext(AppContext); 
   const [isLoad, setIsLoad] = useState(true);
 
   // Hotels
@@ -26,7 +25,8 @@ const Hotel = () => {
     isEdit: false,
     id: '',
     name: '',
-    location: ''
+    location: '',
+    city: ''
   })
 
   useEffect(()=>{
@@ -41,12 +41,8 @@ const Hotel = () => {
     try{
       const response = await customAxios({
         method: 'get',
-        url: 'hotel',
-        headers:{
-          'Authorization': `Bearer ${userData.token}`
-        }
+        url: 'hotel'
       });
-
       setHotels(response.data);
       setIsLoad(false);
     }
@@ -60,22 +56,21 @@ const Hotel = () => {
   const addHotelHandler = async (e) => {
     e.preventDefault();
     try{
-      const response = await customAxios({
+      await customAxios({
         method: 'post',
         url: 'hotel',
-        headers:{
-          'Authorization': `Bearer ${userData.token}`
-        },
         data: await JSON.stringify({
           name: hotelData.name,
-          location: hotelData.location
+          location: hotelData.location,
+          city: hotelData.city
         })
       });
       getAllHotels();
       setHotelData({
         id: '',
         name: '',
-        location: ''
+        location: '',
+        city: ''
       })
       setShowModal(false);
       toast.success("Ийгиликтүү сакталды!!!", {
@@ -95,15 +90,13 @@ const Hotel = () => {
 
   // // Delete
   const [isShowDialogModalWin, setIsShowDialogModalWin] = useState(false);
+  const [delHotelId, setDelHotelId] = useState(null);
 
-  const areYouSureDelete = async (choose, id) => {
+  const areYouSureDelete = async (choose) => {
     if (choose) {
       const response = await customAxios({
         method: "delete",
-        url: `hotel/${id}`,
-        headers: {
-          'Authorization': `Bearer ${userData.token}`
-        },
+        url: `hotel/${delHotelId}`,
       });
       getAllHotels();
       setIsShowDialogModalWin(false);
@@ -119,8 +112,10 @@ const Hotel = () => {
           backgroundColor: "#fff", // Set your desired background color
         },
       });
+      setDelHotelId(null);
     } else {
       setIsShowDialogModalWin(false);
+      setDelHotelId(null);
     }
   };
 
@@ -135,17 +130,15 @@ const Hotel = () => {
     e.preventDefault();
 
     let data = JSON.stringify({
-      "name": hotelData.name,
-      "location": hotelData.location
+      name: hotelData.name,
+      location: hotelData.location,
+      city: hotelData.city
     });
     
     let config = {
       method: 'put',
       maxBodyLength: Infinity,
       url: `hotel/${hotelData.id}`,
-      headers: {
-        'Authorization': `Bearer ${userData.token}`
-      },
       data : data
     };
     
@@ -154,7 +147,8 @@ const Hotel = () => {
       setHotelData({
         id: '',
         name: '',
-        location: ''
+        location: '',
+        city: ''
       })
       setShowModal(false);
       toast.success("Ийгиликтүү сакталды!!!", {
@@ -235,6 +229,22 @@ const Hotel = () => {
                   onChange={(e)=>{setHotelData({...hotelData, location: e.currentTarget.value})}}
                 />
               </div>
+              <div>
+                <label
+                  htmlFor="location"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Шаар
+                </label>
+                <select 
+                  onChange={(e)=>{setHotelData({...hotelData, city: e.currentTarget.value})}}
+                  className="w-9/12 p-2.5 rounded-lg cursor-pointer bg-gray-50 border-gray-300 border text-gray-900 text-sm"
+                >
+                  <option value={hotelData.isEdit?hotelData.city:""}>{hotelData.isEdit?hotelData.city:"Choose city"}</option>
+                  <option value="MAKKAH">MAKKAH</option>
+                  <option value="MEDINA">MEDINA</option>
+                </select>
+              </div>
               <div className="flex justify-end">
                 <button
                   type="submit"
@@ -250,7 +260,7 @@ const Hotel = () => {
       <div className="flex flex-col pt-4">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full h-full sm:px-6 lg:px-8">
-            <div className="shadow border-b h-[500px] overflow-y-scroll border-gray-200 sm:rounded-lg">
+            <div className="shadow border-b overflow-y-scroll border-gray-200 sm:rounded-lg">
              {
                 isLoad?
                 <Loader/>:
@@ -339,7 +349,7 @@ const Hotel = () => {
                         <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
                           <button
                             onClick={() => {
-                              editFormInitializationHandler({id: hotel.id, name: hotel.name, location: hotel.latitude+", "+hotel.longitude});
+                              editFormInitializationHandler({id: hotel.id, name: hotel.name, location: hotel.latitude+", "+hotel.longitude, city:hotel.city});
                               setShowModal(true);
                             }}
                             className="text-indigo-600 hover:text-indigo-900"
@@ -347,14 +357,17 @@ const Hotel = () => {
                             <CiEdit />
                           </button>
                           <button
-                            onClick={() => setIsShowDialogModalWin(true)}
+                            onClick={() => {
+                              setIsShowDialogModalWin(true);
+                              setDelHotelId(hotel.id);
+                            }}
                             className="text-red-600 hover:text-red-900"
                           >
                             <RiDeleteBin5Line />
                           </button>
                           {isShowDialogModalWin && (
                             <DialogDelete
-                              onDialog={choose=>areYouSureDelete(choose, hotel.id)}
+                              onDialog={areYouSureDelete}
                               message={'Чындап өчүрүүнү каалайсызбы?'}
                             />
                           )}

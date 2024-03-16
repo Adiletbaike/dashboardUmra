@@ -3,7 +3,6 @@ import { IoMdAdd } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import Modal from "./Modals/Modal";
-import Select from "react-select";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DialogDelete from "./Modals/DialogDelete";
@@ -18,6 +17,7 @@ const Guide = () => {
   const { userData, setUserData } = useContext(AppContext);
   const customAxios = CustomAxios();
   const [isLoad, setIsLoad] = useState(true);
+  const [showLanguages, setShowLanguages] = useState(false);
 
   const [guideData, setGuideData] = useState({
     isEdit: false,
@@ -27,6 +27,14 @@ const Guide = () => {
       surname: "",
       phone: "",
       education: "",
+      languages: [
+        {code: "RU", lang: "Русский язык", checked: false},
+        {code: "KG", lang: "Кыргыз тили", checked: true},
+        {code: "KZ", lang: "Казак тили", checked: false},
+        {code: "UZ", lang: "Uzbek тили", checked: true},
+        {code: "TR", lang: "Turkce", checked: false},
+        {code: "EN", lang: "English", checked: false}
+      ]
     },
   });
 
@@ -43,9 +51,6 @@ const Guide = () => {
       const response = await customAxios({
         method: "get",
         url: "lead-group",
-        headers: {
-          Authorization: `Bearer ${userData.token}`,
-        },
       });
       setGuides(response.data);
       setIsLoad(false);
@@ -65,12 +70,9 @@ const Guide = () => {
         phoneNumber: guideData.data.phone,
         university: guideData.data.education,
       });
-      const response = await customAxios({
+      await customAxios({
         method: "post",
         url: "lead-group",
-        headers: {
-          Authorization: `Bearer ${userData.token}`,
-        },
         data: data,
       });
       getAllGuides();
@@ -103,12 +105,9 @@ const Guide = () => {
   const [isShowDialogModalWin, setIsShowDialogModalWin] = useState(false);
   const areYouSureDelete = async (choose, id) => {
     if (choose) {
-      const response = await customAxios({
+      await customAxios({
         method: "delete",
-        url: `lead-group/${id}`,
-        headers: {
-          Authorization: `Bearer ${userData.token}`,
-        },
+        url: `lead-group/${id}`
       });
       getAllGuides();
       toast.error("Ийгиликтүү өчүрүлдү!!!", {
@@ -142,9 +141,6 @@ const Guide = () => {
       const response = await customAxios({
         method: "put",
         url: `lead-group/${guideData.data.id}`,
-        headers: {
-          Authorization: `Bearer ${userData.token}`,
-        },
         data: data,
       });
       getAllGuides();
@@ -175,6 +171,15 @@ const Guide = () => {
       alert(err.message);
     }
   };
+
+  const getLanguages=()=>{
+    let langs = guideData.data.languages.filter(item=>item.checked);
+    if(langs.length==0){
+      return "No languages";
+    }else{
+      return langs.map(item=>item.code).join(', ');
+    }
+  }
 
   return (
     <div className="bg-white p-4 overflow-x-scroll">
@@ -308,6 +313,53 @@ const Guide = () => {
                   }
                 />
               </div>
+
+              <div>
+                <label
+                  htmlFor="education"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Билген тилдери
+                </label>
+                <div className="w-9/12 relative text-gray-900 text-sm">
+                  <label
+                    className="block w-full bg-gray-50 border border-gray-300 rounded-lg p-2 cursor-pointer" 
+                    onClick={()=>{setShowLanguages(prev=>!prev);}}
+                  >
+                    {getLanguages()}
+                  </label>
+                  {
+                    showLanguages?
+                    <div className="w-full py-1 border border-gray-300 rounded-lg absolute z-1 bg-white start-0 top-full">
+                    {guideData.data.languages.map((item, index)=>{
+                      return(
+                        <div 
+                          className="w-full px-2 py-1 cursor-pointer hover:bg-gray-100 flex gap-1" 
+                          key={index}
+                          onClick={(e)=>{
+                            setGuideData(prev=>{
+                              const langs = prev.data.languages.map(el=>{
+                                return el.code == item.code?{...item, checked: !el.checked}:el;
+                              })
+                              return{
+                                ...prev,
+                                data: {...prev.data, languages: langs}
+                              } 
+                            })
+                            setShowLanguages(false);
+                          }}
+                        >
+                          <input type="checkbox" checked={item.checked} className="cursor-pointer"/>
+                          <p>{item.lang} </p>
+                        </div>
+                      )
+                    })}
+                  </div>:""
+                  }
+                  
+                </div>
+              </div>
+
               <div className="flex justify-end">
                 <button
                   type="submit"
@@ -321,7 +373,7 @@ const Guide = () => {
         </Modal>
       </div>
       <div className="flex flex-col pt-4">
-        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="-my-2 overflow-x-auto">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
               {isLoad ? (
@@ -406,7 +458,12 @@ const Guide = () => {
                           {person.university}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {person.languages}
+                          {person.languages?
+                            person.languages.map(item=>{
+                              return(item+", ")
+                            }):
+                            "No lang"
+                          }
                         </td>
                         <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
                           <button
