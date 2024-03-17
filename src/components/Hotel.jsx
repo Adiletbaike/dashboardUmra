@@ -15,7 +15,7 @@ const Hotel = () => {
   // Modal
   const [showModal, setShowModal] = useState(false);
   const customAxios = CustomAxios();
-  const {userData, setUserData} = useContext(AppContext); 
+  const { userData, setUserData } = useContext(AppContext);
   const [isLoad, setIsLoad] = useState(true);
 
   // Hotels
@@ -23,55 +23,54 @@ const Hotel = () => {
 
   const [hotelData, setHotelData] = useState({
     isEdit: false,
-    id: '',
-    name: '',
-    location: '',
-    city: ''
-  })
+    id: "",
+    name: "",
+    location: "",
+    city: "",
+  });
 
-  useEffect(()=>{
-    if(userData.isAuth){
-      if(hotels.length==0){
-        getAllHotels()
+  useEffect(() => {
+    if (userData.isAuth) {
+      if (hotels.length == 0) {
+        getAllHotels();
       }
     }
-  }, [userData])
+  }, [userData]);
 
-  const getAllHotels = async ()=>{
-    try{
+  const getAllHotels = async () => {
+    try {
       const response = await customAxios({
-        method: 'get',
-        url: 'hotel'
+        method: "get",
+        url: "hotel",
       });
       setHotels(response.data);
       setIsLoad(false);
-    }
-    catch(err){
+    } catch (err) {
       alert(err.response.data.message);
       setIsLoad(false);
-      }
-  }
+    }
+  };
 
   // Add new hotel data
   const addHotelHandler = async (e) => {
     e.preventDefault();
-    try{
+    try {
       await customAxios({
-        method: 'post',
-        url: 'hotel',
+        method: "post",
+        url: "hotel",
         data: await JSON.stringify({
           name: hotelData.name,
           location: hotelData.location,
-          city: hotelData.city
-        })
+          city: hotelData.city,
+        }),
       });
       getAllHotels();
       setHotelData({
-        id: '',
-        name: '',
-        location: '',
-        city: ''
-      })
+        id: "",
+        name: "",
+        location: "",
+        city: "",
+      });
       setShowModal(false);
       toast.success("Ийгиликтүү сакталды!!!", {
         position: "top-right",
@@ -82,8 +81,7 @@ const Hotel = () => {
         draggable: true,
         progress: undefined,
       });
-    }
-    catch(err){
+    } catch (err) {
       alert(err.response.data.message);
     }
   };
@@ -98,27 +96,26 @@ const Hotel = () => {
         method: "delete",
         url: `hotel/${delHotelId}`,
       })
-      .then(res=>{
-        getAllHotels();
-        setIsShowDialogModalWin(false);
-        toast.error("Ийгиликтүү өчүрүлдү!!!", {
-          position: "top-right",
-          autoClose: 3000, // 3 seconds
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          style: {
-            backgroundColor: "#fff", // Set your desired background color
-          },
+        .then((res) => {
+          getAllHotels();
+          setIsShowDialogModalWin(false);
+          toast.error("Ийгиликтүү өчүрүлдү!!!", {
+            position: "top-right",
+            autoClose: 3000, // 3 seconds
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            style: {
+              backgroundColor: "#fff", // Set your desired background color
+            },
+          });
+          setDelHotelId(null);
+        })
+        .catch((rej) => {
+          alert(rej.message);
         });
-        setDelHotelId(null);
-      })
-      .catch(rej=>{
-        alert(rej.message);
-      })
-      
     } else {
       setIsShowDialogModalWin(false);
       setDelHotelId(null);
@@ -126,51 +123,52 @@ const Hotel = () => {
   };
 
   // Edit hotel data
-  const editFormInitializationHandler = (data)=>{
+  const editFormInitializationHandler = (data) => {
     setHotelData({
       isEdit: true,
-      ...data
-    })
-  }
+      ...data,
+    });
+  };
   const editHotelDataHandler = async (e) => {
     e.preventDefault();
 
     let data = JSON.stringify({
       name: hotelData.name,
       location: hotelData.location,
-      city: hotelData.city
+      city: hotelData.city,
     });
-    
+
     let config = {
-      method: 'put',
+      method: "put",
       maxBodyLength: Infinity,
       url: `hotel/${hotelData.id}`,
-      data : data
+      data: data,
     };
-    
-    await customAxios.request(config)
-    .then((response) => {
-      setHotelData({
-        id: '',
-        name: '',
-        location: '',
-        city: ''
+
+    await customAxios
+      .request(config)
+      .then((response) => {
+        setHotelData({
+          id: "",
+          name: "",
+          location: "",
+          city: "",
+        });
+        setShowModal(false);
+        toast.success("Ийгиликтүү сакталды!!!", {
+          position: "top-right",
+          autoClose: 3000, // 3 seconds
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        getAllHotels();
       })
-      setShowModal(false);
-      toast.success("Ийгиликтүү сакталды!!!", {
-        position: "top-right",
-        autoClose: 3000, // 3 seconds
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+      .catch((err) => {
+        alert(err.message);
       });
-      getAllHotels();
-    })
-    .catch((err) => {
-      alert(err.message);
-    });
   };
 
   return (
@@ -186,10 +184,19 @@ const Hotel = () => {
           <IoMdAdd />
           Жаңы кошуу
         </button>
-        <Modal isVisible={showModal} onClose={() => {
-          setShowModal(false)
-          setHotelData({isEdit:false, id:'', name:'', location:'', city:''})
-        }}>
+        <Modal
+          isVisible={showModal}
+          onClose={() => {
+            setShowModal(false);
+            setHotelData({
+              isEdit: false,
+              id: "",
+              name: "",
+              location: "",
+              city: "",
+            });
+          }}
+        >
           <div className="py-6 px-6 lg:px-8 text-left">
             <h3 className="mb-4 text-xl font-medium text-gray-900">
               Мейманканалар
@@ -197,7 +204,9 @@ const Hotel = () => {
             <form
               className="space-y-3"
               action="#"
-              onSubmit={hotelData.isEdit ? editHotelDataHandler : addHotelHandler}
+              onSubmit={
+                hotelData.isEdit ? editHotelDataHandler : addHotelHandler
+              }
             >
               <div>
                 <label
@@ -214,7 +223,17 @@ const Hotel = () => {
                   required
                   value={hotelData.name}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
-                  onChange={(e)=>{setHotelData(hotelData.isEdit?{...hotelData,name: e.currentTarget.value}:{...hotelData,id: e.currentTarget.value, name: e.currentTarget.value})}}
+                  onChange={(e) => {
+                    setHotelData(
+                      hotelData.isEdit
+                        ? { ...hotelData, name: e.currentTarget.value }
+                        : {
+                            ...hotelData,
+                            id: e.currentTarget.value,
+                            name: e.currentTarget.value,
+                          }
+                    );
+                  }}
                 />
               </div>
               <div>
@@ -232,7 +251,12 @@ const Hotel = () => {
                   required
                   defaultValue={hotelData.location}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
-                  onChange={(e)=>{setHotelData({...hotelData, location: e.currentTarget.value})}}
+                  onChange={(e) => {
+                    setHotelData({
+                      ...hotelData,
+                      location: e.currentTarget.value,
+                    });
+                  }}
                 />
               </div>
               <div>
@@ -242,13 +266,17 @@ const Hotel = () => {
                 >
                   Шаар
                 </label>
-                <select 
-                  onChange={(e)=>{setHotelData({...hotelData, city: e.currentTarget.value})}}
+                <select
+                  onChange={(e) => {
+                    setHotelData({ ...hotelData, city: e.currentTarget.value });
+                  }}
                   className="w-9/12 p-2.5 rounded-lg cursor-pointer bg-gray-50 border-gray-300 border text-gray-900 text-sm"
                 >
-                  <option value={hotelData.isEdit?hotelData.city:""}>{hotelData.isEdit?hotelData.city:"Choose city"}</option>
+                  <option value={hotelData.isEdit ? hotelData.city : ""}>
+                    {hotelData.isEdit ? hotelData.city : "Choose city"}
+                  </option>
                   <option value="MAKKAH">MAKKAH</option>
-                  <option value="MEDINA">MEDINA</option>
+                  <option value="MADINAH">MADINAH</option>
                 </select>
               </div>
               <div className="flex justify-end">
@@ -267,18 +295,17 @@ const Hotel = () => {
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full h-full sm:px-6 lg:px-8">
             <div className="shadow border-b overflow-y-scroll border-gray-200 sm:rounded-lg">
-             {
-                isLoad?
-                <Loader/>:
-                hotels.length==0?
+              {isLoad ? (
+                <Loader />
+              ) : hotels.length == 0 ? (
                 <div className="w-full flex p-5 justify-center items-center">
                   <span>Мейманканалар жок</span>
                 </div>
-                :
+              ) : (
                 <table className="min-w-full divide-y divide-gray-200 ">
                   <thead className="bg-gray-50">
                     <tr>
-                    <th
+                      <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
@@ -370,7 +397,13 @@ const Hotel = () => {
                         <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
                           <button
                             onClick={() => {
-                              editFormInitializationHandler({id: hotel.id, name: hotel.name, location: hotel.latitude+", "+hotel.longitude, city:hotel.city});
+                              editFormInitializationHandler({
+                                id: hotel.id,
+                                name: hotel.name,
+                                location:
+                                  hotel.latitude + ", " + hotel.longitude,
+                                city: hotel.city,
+                              });
                               setShowModal(true);
                             }}
                             className="text-indigo-600 hover:text-indigo-900"
@@ -389,7 +422,7 @@ const Hotel = () => {
                           {isShowDialogModalWin && (
                             <DialogDelete
                               onDialog={areYouSureDelete}
-                              message={'Чындап өчүрүүнү каалайсызбы?'}
+                              message={"Чындап өчүрүүнү каалайсызбы?"}
                             />
                           )}
                         </td>
@@ -397,7 +430,7 @@ const Hotel = () => {
                     ))}
                   </tbody>
                 </table>
-             }
+              )}
             </div>
           </div>
         </div>

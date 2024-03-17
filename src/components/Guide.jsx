@@ -11,13 +11,13 @@ import CustomAxios from "../axios/customAxios";
 import Loader from "./Constants/Louder";
 
 const languagesData = [
-  {code: "RU", lang: "Русский язык"},
-  {code: "KG", lang: "Кыргыз тили"},
-  {code: "KZ", lang: "Казак тили"},
-  {code: "UZ", lang: "Uzbek тили"},
-  {code: "TR", lang: "Turkce"},
-  {code: "EN", lang: "English"}
-]
+  { code: "RU", lang: "Русский язык" },
+  { code: "KG", lang: "Кыргыз тили" },
+  { code: "KZ", lang: "Казак тили" },
+  { code: "UZ", lang: "Uzbek тили" },
+  { code: "TR", lang: "Turkce" },
+  { code: "EN", lang: "English" },
+];
 
 const Guide = () => {
   // Modal
@@ -36,7 +36,7 @@ const Guide = () => {
       surname: "",
       phone: "",
       education: "",
-      languages: []
+      languages: [],
     },
   });
 
@@ -57,7 +57,7 @@ const Guide = () => {
       setGuides(response.data);
       setIsLoad(false);
     } catch (err) {
-      alert(err.response.data.message);
+      console.log(err);
       setIsLoad(false);
     }
   };
@@ -71,7 +71,7 @@ const Guide = () => {
         lastName: guideData.data.surname,
         phoneNumber: guideData.data.phone,
         university: guideData.data.education,
-        languages: guideData.data.languages
+        languages: guideData.data.languages,
       });
       await customAxios({
         method: "post",
@@ -87,7 +87,7 @@ const Guide = () => {
           surname: "",
           phone: "",
           education: "",
-          languages: []
+          languages: [],
         },
       });
       setShowModal(false);
@@ -101,7 +101,7 @@ const Guide = () => {
         progress: undefined,
       });
     } catch (err) {
-      alert(err.response.data.message);
+      alert(err.message);
     }
   };
 
@@ -113,7 +113,7 @@ const Guide = () => {
     if (choose) {
       await customAxios({
         method: "delete",
-        url: `lead-group/${delGuideId}`
+        url: `lead-group/${delGuideId}`,
       });
       getAllGuides();
       toast.error("Ийгиликтүү өчүрүлдү!!!", {
@@ -146,7 +146,7 @@ const Guide = () => {
         university: guideData.data.education,
         languages: guideData.data.languages,
       });
-      const response = await customAxios({
+      await customAxios({
         method: "put",
         url: `lead-group/${guideData.data.id}`,
         data: data,
@@ -154,14 +154,14 @@ const Guide = () => {
       getAllGuides();
       setGuideData({
         isEdit: false,
-        data:{
-            id: "",
-            name: "",
-            surname: "",
-            phone: "",
-            education: "",
-            languages: []
-          }
+        data: {
+          id: "",
+          name: "",
+          surname: "",
+          phone: "",
+          education: "",
+          languages: [],
+        },
       });
       setShowModal(false);
       toast.info("Ийгиликтүү өзгөртүлдү!!!", {
@@ -177,27 +177,30 @@ const Guide = () => {
         },
       });
     } catch (err) {
-      alert(err.response.data.message);
+      alert(err.message);
     }
   };
 
-  const addLanguageHandler=(lang)=>{
-    if(!guideData.data.languages.includes(lang)){
-      setGuideData(prev=>{
+  const addLanguageHandler = (lang) => {
+    if (!guideData.data.languages.includes(lang)) {
+      setGuideData((prev) => {
         return {
           ...prev,
-          data: {...prev.data, languages: [...prev.data.languages, lang]}
-        }
-      })
-    }else{
-      setGuideData(prev=>{
+          data: { ...prev.data, languages: [...prev.data.languages, lang] },
+        };
+      });
+    } else {
+      setGuideData((prev) => {
         return {
           ...prev,
-          data: {...prev.data, languages: prev.data.languages.filter(item=>item!=lang)}
-        }
-      })
+          data: {
+            ...prev.data,
+            languages: prev.data.languages.filter((item) => item != lang),
+          },
+        };
+      });
     }
-  }
+  };
 
   return (
     <div className="bg-white p-4 overflow-x-scroll">
@@ -341,32 +344,42 @@ const Guide = () => {
                 </label>
                 <div className="w-9/12 relative text-gray-900 text-sm">
                   <label
-                    className="block w-full bg-gray-50 border border-gray-300 rounded-lg p-2 cursor-pointer" 
-                    onClick={()=>{setShowLanguages(prev=>!prev);}}
+                    className="block w-full bg-gray-50 border border-gray-300 rounded-lg p-2 cursor-pointer"
+                    onClick={() => {
+                      setShowLanguages((prev) => !prev);
+                    }}
                   >
-                    {guideData.data.languages.length==0?'Select language':guideData.data.languages.join(', ')}
+                    {guideData.data.languages.length == 0
+                      ? "Select language"
+                      : guideData.data.languages.join(", ")}
                   </label>
-                  {
-                    showLanguages?
+                  {showLanguages ? (
                     <div className="w-full py-1 border border-gray-300 rounded-lg absolute z-1 bg-white start-0 top-full">
-                    {languagesData.map((item, index)=>{
-                      return(
-                        <div 
-                          className="w-full px-2 py-1 cursor-pointer hover:bg-gray-100 flex gap-1" 
-                          key={index}
-                          onClick={(e)=>{
-                            addLanguageHandler(item.code);
-                            setShowLanguages(false);
-                          }}
-                        >
-                          <input type="checkbox" checked={guideData.data.languages.includes(item.code)} className="cursor-pointer"/>
-                          <p>{item.lang} </p>
-                        </div>
-                      )
-                    })}
-                  </div>:""
-                  }
-                  
+                      {languagesData.map((item, index) => {
+                        return (
+                          <div
+                            className="w-full px-2 py-1 cursor-pointer hover:bg-gray-100 flex gap-1"
+                            key={index}
+                            onClick={(e) => {
+                              addLanguageHandler(item.code);
+                              setShowLanguages(false);
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={guideData.data.languages.includes(
+                                item.code
+                              )}
+                              className="cursor-pointer"
+                            />
+                            <p>{item.lang} </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
 
@@ -450,7 +463,7 @@ const Guide = () => {
                           <div className="flex items-center">
                             <div>
                               <div className="text-sm font-medium text-gray-900">
-                                {index+1}
+                                {index + 1}
                               </div>
                             </div>
                           </div>
@@ -483,10 +496,9 @@ const Guide = () => {
                           {person.university}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {person.languages?
-                            person.languages.join(', '):
-                            "No lang"
-                          }
+                          {person.languages
+                            ? person.languages.join(", ")
+                            : "No lang"}
                         </td>
                         <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
                           <button
@@ -499,7 +511,9 @@ const Guide = () => {
                                   surname: person.lastName,
                                   phone: person.phoneNumber,
                                   education: person.university,
-                                  languages: person.languages?person.languages:[]
+                                  languages: person.languages
+                                    ? person.languages
+                                    : [],
                                 },
                               });
                               setShowModal(true);
@@ -511,7 +525,7 @@ const Guide = () => {
                           <button
                             onClick={() => {
                               setDelGuideId(person.id);
-                              setIsShowDialogModalWin(true)
+                              setIsShowDialogModalWin(true);
                             }}
                             className="text-red-600 hover:text-red-900"
                           >

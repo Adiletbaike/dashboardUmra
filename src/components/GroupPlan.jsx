@@ -11,19 +11,15 @@ import DialogDelete from "./Modals/DialogDelete";
 import { AppContext } from "../App";
 import CustomAxios from "../axios/customAxios";
 import Loader from "./Constants/Louder";
-import Datetime from 'react-datetime';
+import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
-const groupSceguleInitializationData = {
-  kgName: "",
-  kzName: "",
-  uzName: "",
-  ruName: "",
-  enName: "",
-  trName: "",
-  time: format(new Date(), 'yyyy-MM-dd HH:mm'),
-  name: ""
+const groupScheduleInitializationData = {
+  id: 0,
+  location: "",
+  time: format(new Date(), "yyyy-MM-dd HH:mm"),
+  name: "",
 };
 
 export default function GroupPlan() {
@@ -32,7 +28,7 @@ export default function GroupPlan() {
   const [showModal, setShowModal] = useState(false);
   const [groupSchedules, setGroupSchedules] = useState([]);
   const [groupSchedule, setGroupSchedule] = useState({
-    ...groupSceguleInitializationData,
+    ...groupScheduleInitializationData,
   });
   const [isEdit, setIsedit] = useState(false);
   const [isLoad, setIsLoad] = useState(true);
@@ -49,17 +45,16 @@ export default function GroupPlan() {
   }, [userData]);
 
   const getSchedule = async () => {
-    try{
+    try {
       const response = await customAxios({
         method: "get",
         url: `/group/${groupId}/schedules`,
       });
       setGroupSchedules([...response.data]);
       setIsLoad(false);
-    }catch(err){
+    } catch (err) {
       alert(err.response.data.message);
     }
-    
   };
 
   const getScheduleById = async (id) => {
@@ -81,19 +76,17 @@ export default function GroupPlan() {
   // Create group schedule
   const createGroupScheduleHandler = async (e) => {
     e.preventDefault();
-    console.log(groupSchedule);
     try {
-      const {id, ...data} = groupSchedule;
+      const { id, ...data } = groupSchedule;
       await customAxios({
         method: "post",
         url: `/group/${groupId}/schedule`,
         data: JSON.stringify({
           ...data,
-          time: "2024-03-17T05:56"
         }),
       });
       getSchedule();
-      setGroupSchedule({ ...groupSceguleInitializationData });
+      setGroupSchedule({ ...groupScheduleInitializationData });
       setShowModal(false);
       toast.success("Ийгиликтүү сакталды!!!", {
         position: "top-right",
@@ -112,22 +105,15 @@ export default function GroupPlan() {
   // Edit group schedule
   const editGroupScheduleHandler = async (e) => {
     e.preventDefault();
-    const originalDate = new Date(groupSchedule.time);
-    const formattedDate = `${originalDate.getFullYear()}-${twoDigits(
-      originalDate.getMonth() + 1
-    )}-${twoDigits(originalDate.getDate())} ${twoDigits(
-      originalDate.getHours()
-    )}:${twoDigits(originalDate.getMinutes())}`;
-
     try {
-      const {id, ...data} = groupSchedule;
+      const { id, ...data } = groupSchedule;
       await customAxios({
         method: "put",
         url: `/schedule/${id}`,
         data: JSON.stringify(data),
       });
       getSchedule();
-      setGroupSchedule({ ...groupSceguleInitializationData });
+      setGroupSchedule({ ...groupScheduleInitializationData });
       setShowModal(false);
       toast.success("Ийгиликтүү сакталды!!!", {
         position: "top-right",
@@ -139,8 +125,8 @@ export default function GroupPlan() {
         progress: undefined,
       });
     } catch (err) {
-      alert(err.response.data.message);
-      setGroupSchedule({ ...groupSceguleInitializationData });
+      alert(err.message);
+      setGroupSchedule({ ...groupScheduleInitializationData });
       setShowModal(false);
     }
   };
@@ -159,26 +145,26 @@ export default function GroupPlan() {
         getSchedule();
         toast.error("Ийгиликтүү өчүрүлдү!!!", {
           position: "top-right",
-          autoClose: 3000, 
+          autoClose: 3000,
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
           style: {
-            backgroundColor: "#fff", 
+            backgroundColor: "#fff",
           },
         });
         setIsShowDialogModalWin(false);
       } catch (err) {
         alert(err.response.data.message);
         setIsShowDialogModalWin(false);
-      }finally{
+      } finally {
         setDelMemberId(0);
       }
     } else {
       setIsShowDialogModalWin(false);
-      setDelMemberId(0)
+      setDelMemberId(0);
     }
   };
 
@@ -196,7 +182,7 @@ export default function GroupPlan() {
           className="flex items-center text-lg rounded-lg border p-1 gap-2 bg-green-400"
           onClick={() => {
             setShowModal(true);
-            setGroupSchedule({ ...groupSceguleInitializationData });
+            setGroupSchedule({ ...groupScheduleInitializationData });
           }}
         >
           <FaRegEdit />
@@ -321,8 +307,7 @@ export default function GroupPlan() {
               isEdit ? editGroupScheduleHandler : createGroupScheduleHandler
             }
           >
-
-          <label className="block text-sm font-medium text-gray-900">
+            <label className="block text-sm font-medium text-gray-900">
               Name
             </label>
             <input
@@ -342,107 +327,21 @@ export default function GroupPlan() {
               Time
             </label>
             <Datetime
-              inputProps={{ className: 'w-full p-1.5 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900' }}
+              inputProps={{
+                className:
+                  "w-full p-1.5 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900",
+              }}
               dateFormat="YYYY-MM-DD"
               timeFormat={"hh:mm"}
               value={new Date(groupSchedule.time)}
-              onChange={date=>{
+              onChange={(date) => {
                 setGroupSchedule((prev) => {
-                  return { ...prev, time: format(new Date(date), 'yyyy-MM-dd HH:mm')};
-                })
+                  return {
+                    ...prev,
+                    time: format(new Date(date), "yyyy-MM-dd HH:mm"),
+                  };
+                });
               }}
-
-            />
-
-            <label className="block text-sm font-medium text-gray-900">
-              KG
-            </label>
-            <input
-              type="text"
-              placeholder="Kg text"
-              value={groupSchedule.kgName}
-              required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none"
-              onChange={(e) =>
-                setGroupSchedule((prev) => {
-                  return { ...prev, kgName: e.target.value };
-                })
-              }
-            />
-            <label className="block text-sm font-medium text-gray-900">
-              KZ
-            </label>
-            <input
-              type="text"
-              placeholder="Kz text"
-              value={groupSchedule.kzName}
-              required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none"
-              onChange={(e) =>
-                setGroupSchedule((prev) => {
-                  return { ...prev, kzName: e.target.value };
-                })
-              }
-            />
-            <label className="block text-sm font-medium text-gray-900">
-              UZ
-            </label>
-            <input
-              type="text"
-              placeholder="Uz text"
-              value={groupSchedule.uzName}
-              required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none"
-              onChange={(e) =>
-                setGroupSchedule((prev) => {
-                  return { ...prev, uzName: e.target.value };
-                })
-              }
-            />
-            <label className="block text-sm font-medium text-gray-900">
-              RU
-            </label>
-            <input
-              type="text"
-              placeholder="Ru text"
-              value={groupSchedule.ruName}
-              required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none"
-              onChange={(e) =>
-                setGroupSchedule((prev) => {
-                  return { ...prev, ruName: e.target.value };
-                })
-              }
-            />
-            <label className="block mb-1 text-sm font-medium text-gray-900">
-              EN
-            </label>
-            <input
-              type="text"
-              placeholder="En text"
-              value={groupSchedule.enName}
-              required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none"
-              onChange={(e) =>
-                setGroupSchedule((prev) => {
-                  return { ...prev, enName: e.target.value };
-                })
-              }
-            />
-            <label className="block mb-1 text-sm font-medium text-gray-900">
-              TR
-            </label>
-            <input
-              type="text"
-              placeholder="Tr text"
-              value={groupSchedule.trName}
-              required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none"
-              onChange={(e) =>
-                setGroupSchedule((prev) => {
-                  return { ...prev, trName: e.target.value };
-                })
-              }
             />
             <label className="block text-sm font-medium text-gray-900">
               Location
