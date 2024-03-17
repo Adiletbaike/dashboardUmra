@@ -11,6 +11,9 @@ import DialogDelete from "./Modals/DialogDelete";
 import { AppContext } from "../App";
 import CustomAxios from "../axios/customAxios";
 import Loader from "./Constants/Louder";
+import Datetime from 'react-datetime';
+import "react-datetime/css/react-datetime.css";
+import { format } from 'date-fns';
 
 const groupSceguleInitializationData = {
   kgName: "",
@@ -19,8 +22,8 @@ const groupSceguleInitializationData = {
   ruName: "",
   enName: "",
   trName: "",
-  time: new Date(),
-  location: "",
+  time: format(new Date(), 'yyyy-MM-dd HH:mm'),
+  name: ""
 };
 
 export default function GroupPlan() {
@@ -49,9 +52,6 @@ export default function GroupPlan() {
     const response = await customAxios({
       method: "get",
       url: `/group/${groupId}/schedules`,
-      headers: {
-        Authorization: `Bearer ${userData.token}`,
-      },
     });
     setGroupSchedules([...response.data]);
     setIsLoad(false);
@@ -62,9 +62,6 @@ export default function GroupPlan() {
       const response = await customAxios({
         method: "get",
         url: `schedule/${id}`,
-        headers: {
-          Authorization: `Bearer ${userData.token}`,
-        },
       });
       return response.data;
     } catch (err) {
@@ -79,28 +76,15 @@ export default function GroupPlan() {
   // Create group schedule
   const createGroupScheduleHandler = async (e) => {
     e.preventDefault();
-    const originalDate = new Date(groupSchedule.time);
-    const formattedDate = `${originalDate.getFullYear()}-${twoDigits(
-      originalDate.getMonth() + 1
-    )}-${twoDigits(originalDate.getDate())} ${twoDigits(
-      originalDate.getHours()
-    )}:${twoDigits(originalDate.getMinutes())}`;
+    console.log(groupSchedule);
     try {
-      const response = await customAxios({
+      const {id, ...data} = groupSchedule;
+      await customAxios({
         method: "post",
         url: `/group/${groupId}/schedule`,
-        headers: {
-          Authorization: `Bearer ${userData.token}`,
-        },
         data: JSON.stringify({
-          kgName: groupSchedule.kgName,
-          kzName: groupSchedule.kzName,
-          uzName: groupSchedule.uzName,
-          ruName: groupSchedule.ruName,
-          enName: groupSchedule.enName,
-          trName: groupSchedule.trName,
-          time: formattedDate,
-          location: groupSchedule.location,
+          ...data,
+          time: "2024-03-17T05:56"
         }),
       });
       getSchedule();
@@ -129,24 +113,13 @@ export default function GroupPlan() {
     )}-${twoDigits(originalDate.getDate())} ${twoDigits(
       originalDate.getHours()
     )}:${twoDigits(originalDate.getMinutes())}`;
-    console.log(formattedDate);
+
     try {
-      const response = await customAxios({
+      const {id, ...data} = groupSchedule;
+      await customAxios({
         method: "put",
-        url: `/schedule/${groupSchedule.id}`,
-        headers: {
-          Authorization: `Bearer ${userData.token}`,
-        },
-        data: JSON.stringify({
-          kgName: groupSchedule.kgName,
-          kzName: groupSchedule.kzName,
-          uzName: groupSchedule.uzName,
-          ruName: groupSchedule.ruName,
-          enName: groupSchedule.enName,
-          trName: groupSchedule.trName,
-          time: formattedDate,
-          location: groupSchedule.location,
-        }),
+        url: `/schedule/${id}`,
+        data: JSON.stringify(data),
       });
       getSchedule();
       setGroupSchedule({ ...groupSceguleInitializationData });
@@ -202,15 +175,6 @@ export default function GroupPlan() {
     }
   };
 
-  const formatDateForInput = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // +1, так как месяцы в JS начинаются с 0
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
-
   return (
     <div className="bg-white p-4">
       <div className="flex  justify-between border-b pb-4 border-gray-200">
@@ -264,6 +228,12 @@ export default function GroupPlan() {
                   scope="col"
                   className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
+                  Name
+                </th>
+                <th
+                  scope="col"
+                  className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Time
                 </th>
                 <th
@@ -271,12 +241,6 @@ export default function GroupPlan() {
                   className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
                   Location
-                </th>
-                <th
-                  scope="col"
-                  className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Name
                 </th>
                 <th
                   scope="col"
@@ -294,14 +258,13 @@ export default function GroupPlan() {
                       {index + 1}
                     </td>
                     <td className="p-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {item.name}
+                    </td>
+                    <td className="p-3 whitespace-nowrap text-sm font-medium text-gray-900">
                       {item.time}
                     </td>
                     <td className="p-3 whitespace-nowrap text-sm font-medium text-gray-900">
                       {item.location}
-                    </td>
-                    <td className="p-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {" "}
-                      {item.name}
                     </td>
                     <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
                       <button
@@ -344,12 +307,45 @@ export default function GroupPlan() {
             Кун тартиби
           </h3>
           <form
-            className="space-y-3"
+            className="space-y-1.5"
             action="#"
             onSubmit={
               isEdit ? editGroupScheduleHandler : createGroupScheduleHandler
             }
           >
+
+          <label className="block text-sm font-medium text-gray-900">
+              Name
+            </label>
+            <input
+              type="text"
+              placeholder="Name"
+              value={groupSchedule.name}
+              required
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1"
+              onChange={(e) =>
+                setGroupSchedule((prev) => {
+                  return { ...prev, name: e.target.value };
+                })
+              }
+            />
+
+            <label className="block text-sm font-medium text-gray-900">
+              Time
+            </label>
+            <Datetime
+              inputProps={{ className: 'w-full p-1.5 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900' }}
+              dateFormat="YYYY-MM-DD"
+              timeFormat={"hh:mm"}
+              value={new Date(groupSchedule.time)}
+              onChange={date=>{
+                setGroupSchedule((prev) => {
+                  return { ...prev, time: format(new Date(date), 'yyyy-MM-dd HH:mm')};
+                })
+              }}
+
+            />
+
             <label className="block text-sm font-medium text-gray-900">
               KG
             </label>
@@ -358,7 +354,7 @@ export default function GroupPlan() {
               placeholder="Kg text"
               value={groupSchedule.kgName}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1"
               onChange={(e) =>
                 setGroupSchedule((prev) => {
                   return { ...prev, kgName: e.target.value };
@@ -437,21 +433,6 @@ export default function GroupPlan() {
               onChange={(e) =>
                 setGroupSchedule((prev) => {
                   return { ...prev, trName: e.target.value };
-                })
-              }
-            />
-            <label className="block text-sm font-medium text-gray-900">
-              Time
-            </label>
-            <input
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-              type="datetime-local"
-              id="datetime"
-              name="datetime"
-              value={formatDateForInput(new Date(groupSchedule?.time))}
-              onChange={(e) =>
-                setGroupSchedule((prev) => {
-                  return { ...prev, time: e.target.value };
                 })
               }
             />

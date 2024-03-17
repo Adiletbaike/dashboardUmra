@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import Modal from "./Modals/Modal";
-import CreatableSelect from "react-select/creatable";
+import Select from "react-select";  
 import DialogDelete from "./Modals/DialogDelete";
 import { AppContext } from "../App";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,9 +18,11 @@ const initialMemberData = {
   firstName: "",
   lastName: "",
   phoneNumber: "",
+  gender: '', 
   password: "",
   companyId: 0,
   username: "",
+  birthday: "",
 };
 
 const MembersGroup = () => {
@@ -29,7 +31,7 @@ const MembersGroup = () => {
   const { userData, setUserData, companyId } = useContext(AppContext);
   const navigate = useNavigate();
   const customAxios = CustomAxios();
-  const { id } = useParams();
+  const params = useParams();
   const [isLoad, setIsLoad] = useState(true);
 
   // Table
@@ -51,10 +53,7 @@ const MembersGroup = () => {
     try {
       const response = await customAxios({
         method: "get",
-        url: `group/${id}/participant`,
-        headers: {
-          Authorization: `Bearer ${userData.token}`,
-        },
+        url: `group/${params.id}/participant`,
       });
       setMembers(response.data);
       setIsLoad(false);
@@ -67,21 +66,13 @@ const MembersGroup = () => {
   //add new member
   const addMemberHandler = async (e) => {
     e.preventDefault();
+    const { id, ...data } = memberData.data;
     try {
-      const response = await customAxios({
+      await customAxios({
+        
         method: "post",
-        url: `group/${id}/participant`,
-        headers: {
-          Authorization: `Bearer ${userData.token}`,
-        },
-        data: JSON.stringify({
-          firstName: memberData.data.firstName,
-          lastName: memberData.data.lastName,
-          phoneNumber: memberData.data.phoneNumber,
-          password: memberData.data.password,
-          companyId: companyId,
-          username: memberData.data.username,
-        }),
+        url: `group/${params.id}/participant`,
+        data: JSON.stringify({...data, companyId: companyId}),
       });
       getAllMember();
       setMemberData({
@@ -94,25 +85,24 @@ const MembersGroup = () => {
         autoClose: 3000, // 3 seconds
         hideProgressBar: true,
         closeOnClick: true,
-        pauseOnHover: true,
+        pauseOnHover: true, 
         draggable: true,
         progress: undefined,
       });
     } catch (err) {
-      alert(err.message);
+      alert(err.response.data.message);
     }
   };
 
   // // Delete
   const [isShowDialogModalWin, setIsShowDialogModalWin] = useState(false);
-  const areYouSureDelete = async (choose, participantId) => {
+  const [delParticipantId, setDelParticipantId] = useState(0);
+
+  const areYouSureDelete = async (choose) => {
     if (choose) {
       const response = await customAxios({
         method: "delete",
-        url: `group/${id}/participant/${participantId}`,
-        headers: {
-          Authorization: `Bearer ${userData.token}`,
-        },
+        url: `group/${params.id}/participant/${delParticipantId}`,
       });
       getAllMember();
       toast.error("Ийгиликтүү өчүрүлдү!!!", {
@@ -125,42 +115,43 @@ const MembersGroup = () => {
         progress: undefined,
       });
       setIsShowDialogModalWin(false);
+      setDelParticipantId(0);
     } else {
       setIsShowDialogModalWin(false);
+      setDelParticipantId(0);
     }
   };
 
-  // // // Edit
-  // const editMemberData = (e) => {
-  //   e.preventDefault();
-  //   setMembers(prev=>{
-  //     return prev.map(item=>{
-  //       return item.id===memberData.data.id?
-  //         {...memberData.data}:
-  //         item
-  //     })
-
-  //   })
-  //   setMemberData({
-  //     isEdit: false,
-  //     data: {...initialMemberData}
-  //   })
-  //   setShowModal(false);
-  //   // Show toast notification
-  //   toast.info("Ийгиликтүү өзгөртүлдү!!!", {
-  //     position: "top-right",
-  //     autoClose: 3000, // 3 seconds
-  //     hideProgressBar: true,
-  //     closeOnClick: true,
-  //     pauseOnHover: true,
-  //     draggable: true,
-  //     progress: undefined,
-  //     style: {
-  //       backgroundColor: "#fff", // Set your desired background color
-  //     },
-  //   });
-  // };
-
+  // Edit
+  const editMemberData = async (e) => {
+    e.preventDefault();
+    const { id, companyId, ...data } = memberData.data;
+    try {
+      await customAxios({
+        
+        method: "put",
+        url: `group/${params.id}/participant/${id}`,
+        data: JSON.stringify({...data,}),
+      });
+      getAllMember();
+      setMemberData({
+        isEdit: false,
+        data: { ...initialMemberData },
+      });
+      setShowModal(false);
+      toast.success("Ийгиликтүү өзгөртүлдү!!!", {
+        position: "top-right",
+        autoClose: 3000, // 3 seconds
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (err) {
+      alert(err.response.data.message);
+    }
+  }
   return (
     <div className="bg-white p-4 overflow-x-scroll">
       <ToastContainer />
@@ -268,6 +259,53 @@ const MembersGroup = () => {
                   }}
                 />
               </div>
+              <div className="w-full">
+                <label
+                  htmlFor="member-gender"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Gender
+                </label>
+                <Select
+                  defaultValue={memberData.data.gender!=""?{label: "MALE", value: "MALE"}:""}
+                  options={[{label: "MALE", value: "MALE"}, {label: "FEMALE", value: "FEMALE"}]}
+                  onChange={(value) =>{
+                    setMemberData((prev) => {
+                      return {
+                        ...prev,
+                        data: { ...prev.data, gender: value.value},
+                      };
+                    });
+                  }}
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="birthday"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Birthday
+                </label>
+                <input
+                  type="date"
+                  name="birthday"
+                  value={memberData.data.birthday}
+                  id="birthday"
+                  placeholder="Birthday"
+                  required
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  onChange={(e) => {
+                    setMemberData((prev) => {
+                      return {
+                        ...prev,
+                        data: { ...prev.data, birthday: e.target.value.replace(/\//, '-')},
+                      };
+                    });
+                  }}
+                />
+              </div>
+
               <div>
                 <label
                   htmlFor="login"
@@ -331,7 +369,7 @@ const MembersGroup = () => {
         </Modal>
       </div>
       <div className="flex flex-col pt-4">
-        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="-my-2 overflow-x-auto">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
               {isLoad ? (
@@ -348,7 +386,7 @@ const MembersGroup = () => {
                         scope="col"
                         className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        ID
+                        №
                       </th>
                       <th
                         scope="col"
@@ -437,33 +475,37 @@ const MembersGroup = () => {
                           {member.password}
                         </td>
                         <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
-                          {/* <button
+                          <button
                             onClick={() => {
                               setMemberData(prev=>{return {isEdit: true, data: {
                                 ...prev.data,
                                 id: member.id,
-                                firstName: member.fullName,
-                                lastName: member.fullName,
+                                firstName: member.firstName,
+                                lastName: member.lastName,
                                 phoneNumber: member.phoneNumber,
-                                username: member.username
+                                gender: member.gender,
+                                birthday: member.birthday,
+                                username: member.username,
+                                password: member.password
                               }}})
                               setShowModal(true);
                             }}
                             className="text-indigo-600 hover:text-indigo-900"
                           >
                             <CiEdit />
-                          </button> */}
+                          </button>
                           <button
-                            onClick={() => setIsShowDialogModalWin(true)}
+                            onClick={() => {
+                              setIsShowDialogModalWin(true),
+                              setDelParticipantId(member.id);
+                            }}
                             className="text-red-600 hover:text-red-900"
                           >
                             <RiDeleteBin5Line />
                           </button>
                           {isShowDialogModalWin && (
                             <DialogDelete
-                              onDialog={(choose) =>
-                                areYouSureDelete(choose, member.id)
-                              }
+                              onDialog={areYouSureDelete}
                               message={"Чындап өчүрүүнү каалайсызбы?"}
                             />
                           )}

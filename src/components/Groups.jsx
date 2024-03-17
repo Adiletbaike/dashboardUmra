@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { toast, ToastContainer } from "react-toastify";
-import CreatableSelect from "react-select/creatable";
+import Select from "react-select";  
 import Modal from "./Modals/Modal";
 import DialogDelete from "./Modals/DialogDelete";
 import CustomAxios from "../axios/customAxios";
@@ -28,9 +28,12 @@ const initialGroupData = {
     name: "",
     quantity: 0,
     language: "",
-    guide: 0,
-    mekkah: 0,
-    madina: 0,
+    guideId: 0,
+    guideName:"",
+    makkahId: 0,
+    makkahHotelName: "",
+    madinaId: 0,
+    madinaHotelName: "",
   }
 }
 
@@ -67,9 +70,6 @@ const Groups = () => {
       const response = await customAxios({
         method: "get",
         url: 'lead-group',
-        headers: {
-          'Authorization': `Bearer ${userData.token}`
-        }
       });
       setGuides(response.data);
       setIsLoad(false);
@@ -85,9 +85,6 @@ const Groups = () => {
       const response = await customAxios({
         method: 'get',
         url: 'hotel',
-        headers:{
-          'Authorization': `Bearer ${userData.token}`
-        }
       });
       setHotels(response.data);
     }
@@ -101,9 +98,6 @@ const Groups = () => {
       const response = await customAxios({
         method: 'get',
         url: 'group',
-        headers:{
-          'Authorization': `Bearer ${userData.token}`
-        }
       });
       setGroups(response.data)
     }
@@ -118,10 +112,10 @@ const Groups = () => {
     try{
       const data = JSON.stringify({
         "name": groupData.data.name,
-        "leadGroupId": groupData.data.guide,
+        "leadGroupId": groupData.data.guideId,
         "language": groupData.data.language,
-        "makkahHotelId": groupData.data.mekkah,
-        "madinahHotelId": groupData.data.madina,
+        "makkahHotelId": groupData.data.makkahId,
+        "madinahHotelId": groupData.data.madinaId,
         "countOfParticipant": groupData.data.quantity,
       });
       
@@ -129,13 +123,9 @@ const Groups = () => {
         method: 'post',
         maxBodyLength: Infinity,
         url: 'group',
-        headers: {
-          'Authorization': `Bearer ${userData.token}`
-        },
         data : data
       };
-
-      const response = await customAxios(config);
+      await customAxios(config);
       getAllGroups();
       setGroupData({...initialGroupData})
       setShowModal(false);
@@ -155,15 +145,14 @@ const Groups = () => {
 
   // Delete
   const [isShowDialogModalWin, setIsShowDialogModalWin] = useState(false);
-  const areYouSureDelete = async (choose, id) => {
+  const [delGroupId, setDelGroupId] = useState(0);
+
+  const areYouSureDelete = async (choose) => {
     if (choose) {
       try{
-        const response = await customAxios({
+        await customAxios({
           method: "delete",
-          url: `group/${id}`,
-          headers: {
-            'Authorization': `Bearer ${userData.token}`
-          },
+          url: `group/${delGroupId}`
         });
         getAllGroups();
         setIsShowDialogModalWin(false);
@@ -176,7 +165,7 @@ const Groups = () => {
           draggable: true,
           progress: undefined,
         });
-        
+        setDelGroupId(0);
       }catch(err){
         console.log(err.message);
         setIsShowDialogModalWin(false);
@@ -192,10 +181,10 @@ const Groups = () => {
     try{
       const data = JSON.stringify({
         "name": groupData.data.name,
-        "leadGroupId": groupData.data.guide,
+        "leadGroupId": groupData.data.guideId,
         "language": groupData.data.language,
-        "makkahHotelId": groupData.data.mekkah,
-        "madinahHotelId": groupData.data.madina,
+        "makkahHotelId": groupData.data.makkahId,
+        "madinahHotelId": groupData.data.madinaId,
         "countOfParticipant": groupData.quantity
       });
       
@@ -203,13 +192,10 @@ const Groups = () => {
         method: 'put',
         maxBodyLength: Infinity,
         url: `group/${groupData.data.id}`,
-        headers: {
-          'Authorization': `Bearer ${userData.token}`
-        },
         data : data
       };
 
-      const response = await customAxios(config);
+      await customAxios(config);
       getAllGroups();
       setGroupData({...initialGroupData})
       setShowModal(false);
@@ -279,6 +265,8 @@ const Groups = () => {
                 <input
                   type="number"
                   name="number"
+                  min="0"
+                  max="100"
                   value={groupData.data.quantity}
                   id="number"
                   placeholder="Саны"
@@ -301,10 +289,9 @@ const Groups = () => {
                   >
                     Группанын тили
                   </label>
-                  <CreatableSelect
-                    isClearable
+                  <Select
+                    defaultValue={languages.filter(item=>item.value == groupData.data.language)[0]}
                     options={languages}
-                    defualtValue={groupData.data.language}
                     onChange={(value) => setGroupData(prev=>{return{
                       ...prev,
                       data:{
@@ -321,20 +308,23 @@ const Groups = () => {
                   >
                     Умра башчы
                   </label>
-                  <CreatableSelect
-                    isClearable
+                  <Select
+                    defaultValue={groupData.data.guideId!=0?{
+                      value: groupData.data.guideId,
+                      label: groupData.data.guideName,
+                    }:''}
                     options={guides.map(item=>{
                       return {
                         value: item.id,
                         label: item.firstName+" "+item.lastName
                       }
                     })}
-                    defualtValue={groupData.data.guide}
                     onChange={(value) => setGroupData(prev=>{ return{
                       ...prev,
                       data:{
                         ...prev.data,
-                        guide: value.value
+                        guideId: value.value,
+                        guideName: value.label
                       }
                     }})}
                   />
@@ -343,25 +333,28 @@ const Groups = () => {
               <div className="flex justify-between">
                 <div className="w-[48%]">
                   <label
-                    htmlFor="hotelMekkah"
+                    htmlFor="hotelMakkah"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Мекке отель
                   </label>
-                  <CreatableSelect
-                    isClearable
-                    options={hotels.map(item=>{
+                  <Select
+                    options={hotels.map(item=>{ 
                       return {
                         value: item.id,
                         label: item.name
                       }
                     })}
-                    defualtValue={groupData.data.mekkah}
+                    defaultValue={groupData.data.makkahId!=0?{
+                      value: groupData.data.makkahId,
+                      label: groupData.data.makkahHotelName
+                    }:''}
                     onChange={(value) => setGroupData( prev=>{return{
                       ...prev,
                       data:{
                         ...prev.data,
-                        mekkah: value.value
+                        makkahId: value.value,
+                        makkahHotelName: value.label
                       }
                     }})}
                   />
@@ -373,20 +366,23 @@ const Groups = () => {
                   >
                     Мадина отель
                   </label>
-                  <CreatableSelect
-                    isClearable
+                  <Select
                     options={hotels.map(item=>{
                       return {
                         value: item.id,
                         label: item.name
                       }
                     })}
-                    defualtValue={groupData.data.madina}
+                    defaultValue={groupData.data.madinaId!=0?{
+                        value: groupData.data.madinaId,
+                        label: groupData.data.madinaHotelName
+                    }:""}
                     onChange={(value) => setGroupData(prev=>{return{
                       ...prev,
                       data:{
                         ...prev.data,
-                        madina: value.value
+                        madinaId: value.value,
+                        madinaHotelName: value.label
                       }
                     }})}
                   />
@@ -417,73 +413,41 @@ const Groups = () => {
                   <div className="flex w-full justify-center items-center p-5">
                     <span > Группа башчылары жок </span>
                   </div>:
-                  <table className="min-w-full divide-y divide-gray-200">
+                  <table className="w-full">
                     <thead className="bg-gray-50">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           №
                         </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Аты
                         </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Cаны
                         </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Группа тили
                         </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Умра башчы
                         </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Мекке
                         </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Мадина
                         </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Программа
                         </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Action
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Actions
                         </th>
-
-                        <th scope="col" className="relative px-6 py-3">
-                          <span className="sr-only">Edit</span>
-                        </th>
-                      </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {groups.map((group, index) => (
-                        <tr key={index} className="hover:bg-gray-200 duration-300">
-                          <td className="px-6 py-4 whitespace-nowrap">
+
+                    <tbody className="bg-white w-full">
+                    {groups.map((group, index) => (
+                        <tr key={index} className="hover:bg-gray-200 w-full">
+                          <td className="px-6 py-4">
                             <div className="flex items-center">
                               <div>
                                 <div className="text-sm font-medium text-gray-900">
@@ -492,7 +456,7 @@ const Groups = () => {
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-6 py-4">
                             <div className="flex items-center">
                               <div>
                                 <div className="text-sm font-medium text-gray-900">
@@ -501,15 +465,15 @@ const Groups = () => {
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-6 py-4">
                             <div className="text-sm text-gray-900">
                               {group.countOfParticipant}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 text-sm text-gray-500">
                             {group.language}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-6 py-4">
                             <div className="flex items-center">
                               <div>
                                 <div className="text-sm font-medium text-gray-900">
@@ -518,13 +482,13 @@ const Groups = () => {
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 text-sm text-gray-500">
                             {group.makkahHotel.name}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 text-sm text-gray-500">
                             {group.madinahHotel.name}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-6 py-4">
                             <div className="flex items-center">
                               <div>
                                 <div className="text-sm font-medium text-gray-900">
@@ -536,7 +500,7 @@ const Groups = () => {
                               </div>
                             </div>
                           </td>
-                          <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
+                          <td className="px-6 py-6 gap-2 text-right text-2xl items-center font-medium">
                             <button
                               onClick={() => {
                                 setGroupData({
@@ -546,9 +510,12 @@ const Groups = () => {
                                     name: group.name,
                                     quantity:group.countOfParticipant,
                                     language: group.language,
-                                    guide: "",
-                                    mekkah: group.makkahHotel.id,
-                                    madina: group.madinahHotel.id
+                                    guideId: guides.filter(item=>(item.firstName.trim()+" "+item.lastName.trim())== group.leadOfGroupFullName)[0].id,
+                                    guideName: group.leadOfGroupFullName,
+                                    makkahId: group.makkahHotel.id,
+                                    makkahHotelName: group.makkahHotel.name,
+                                    madinaId: group.madinahHotel.id,
+                                    madinaHotelName: group.madinahHotel.name
                                   }
                                 })
                                 setShowModal(true);
@@ -559,13 +526,16 @@ const Groups = () => {
                             </button>
                             <button
                               className="text-red-600 hover:text-red-900"
-                              onClick={e=>setIsShowDialogModalWin(true)}
+                              onClick={e=>{
+                                setDelGroupId(group.groupId);
+                                setIsShowDialogModalWin(true);
+                              }}
                             >
                               <RiDeleteBin5Line />
                             </button>
                             {isShowDialogModalWin && (
                               <DialogDelete
-                                onDialog={choose=>areYouSureDelete(choose, group.groupId)}
+                                onDialog={areYouSureDelete}
                                 message={'Чындап өчүрүүнү каалайсызбы?'}
                               />
                             )}
