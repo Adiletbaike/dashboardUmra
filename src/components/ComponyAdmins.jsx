@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { CiEdit, CiLogout } from "react-icons/ci";
+import {CiEdit, CiLogout } from "react-icons/ci";
 import { FaKaaba } from "react-icons/fa6";
 import { IoMdAdd } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
@@ -11,6 +11,25 @@ import { IoArrowBack } from "react-icons/io5";
 import Loader from "./Constants/Louder";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import DialogDelete from "./Modals/DialogDelete";
+import Select from "react-select";  
+
+const initialAdminData = {
+    id: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    username: "",
+    password: "",
+}
+
+const languages = [
+    { label: "KG", value: "KG" },
+    { label: "RU", value: "RU" },
+    { label: "KZ", value: "KZ" },
+    { label: "UZ", value: "UZ" },
+    { label: "EN", value: "EN" },
+    { label: "TR", value: "TR" },
+  ];
 
 export default function CompanyAdmins(){
 
@@ -23,14 +42,9 @@ export default function CompanyAdmins(){
     const [isLoad, setIsLoad] = useState(true);
     
     const [admins, setAdmins] = useState([]);
-    const [adminData, setAdminData] = useState({
-        id: "",
-        firstName: "",
-        lastName: "",
-        phoneNumber: "",
-        username: "",
-        password: ""
-    });
+    const [adminData, setAdminData] = useState({...initialAdminData});
+
+    const [adminLanguage, setAdminLanguage] = useState('');
 
     useEffect(()=>{
         if(!userData.isAuth){
@@ -44,19 +58,14 @@ export default function CompanyAdmins(){
     const getAllAdmins = ()=>{
         customAxios({
             method : "get",
-            url: `company/${companyId}/admins`,
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${userData.token}`
-            },
+            url: `company/${companyId}/admins`
         })
         .then(res=>{
             setAdmins(res.data);
             setIsLoad(false);
         })
         .catch(rej=>{
-            alert(rej.message)
-            alert(rej.message)
+            alert(err.response.data.message);
         })
     }
 
@@ -71,7 +80,7 @@ export default function CompanyAdmins(){
             localStorage.setItem('isSuperAdmin', false);
             localStorage.setItem('token', '');
         }catch(err){
-            alert(err.message)
+            alert(err.response.data.message);
         }finally{
             navigate('/login')
         }
@@ -80,33 +89,19 @@ export default function CompanyAdmins(){
     // add new admin
     const addAdminHandler = (e)=>{
         e.preventDefault();
-
+        const {id, ...data} = adminData;
         customAxios({
             method: "post",
-            url: `company/${companyId}/admin?language=RU`,
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${userData.token}`
-            },
+            url: `company/${companyId}/admin?language=${adminLanguage}`,
             data: JSON.stringify({
-                firstName: adminData.firstName,
-                lastName: adminData.lastName,
-                phoneNumber: adminData.phoneNumber,
+                ...data,
                 companyId: companyId,
-                username: adminData.username,
-                password: adminData.password
             })
         })
         .then(res=>{
             getAllAdmins()
-            setAdminData({
-                id: "",
-                firstName: "",
-                lastName: "",
-                phoneNumber: "",
-                username: "",
-                password: ""
-            })
+            setAdminData({...initialAdminData})
+            setAdminLanguage("");
             setShowModal(false);
             toast.success("Ийгиликтүү сакталды!!!", {
                 position: "top-right",
@@ -119,39 +114,75 @@ export default function CompanyAdmins(){
               });
         })
         .catch(rej=>{
-            alert(rej.message)
+            alert(rej.message);
         })
     }
     
     //Delete
     const [isShowDialogModalWin, setIsShowDialogModalWin] = useState(false);
-    const areYouSureDelete = async(choose, id) => {
+    const [delAdminId, setDelAdminId] = useState(0);
+
+    const areYouSureDelete = async(choose) => {
       if (choose) {
-        const response = await customAxios({
-          method: "delete",
-          url: `company/${companyId}/admin/${id}`,
-          headers: {
-            'Authorization': `Bearer ${userData.token}`
-          },
-        });
-        getAllAdmins();
-        toast.error("Ийгиликтүү өчүрүлдү!!!", {
-          position: "top-right",
-          autoClose: 3000, // 3 seconds
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          style: {
-            backgroundColor: "#fff", // Set your desired background color
-          },
-        });
-        setIsShowDialogModalWin(false)
+        try{
+            await customAxios({
+                method: "delete",
+                url: `company/${companyId}/admin/${delAdminId}`,
+              });
+              getAllAdmins();
+              toast.error("Ийгиликтүү өчүрүлдү!!!", {
+                position: "top-right",
+                autoClose: 3000, // 3 seconds
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: {
+                  backgroundColor: "#fff", // Set your desired background color
+                },
+              });
+              setIsShowDialogModalWin(false)
+        }catch(err){
+            alert(err.response.data.message);
+        }finally{
+            setDelAdminId(0)
+        }
       } else {
         setIsShowDialogModalWin(false)
       }
     };
+
+    // Edit admin data
+    const editAdminDataHandler = async (e)=>{
+        e.preventDefault();
+
+        alert("No api for update");
+
+        // const {id, ...data} = adminData;
+        // customAxios({
+        //     method: "post",
+        //     url: `company/${companyId}/admin?language=${adminLanguage}`,
+        //     data: JSON.stringify({...data})
+        // })
+        // .then(res=>{
+        //     getAllAdmins()
+        //     setAdminData({...initialAdminData})
+        //     setShowModal(false);
+        //     toast.success("Ийгиликтүү өзгөртүлдү!!!", {
+        //         position: "top-right",
+        //         autoClose: 3000,
+        //         hideProgressBar: true,
+        //         closeOnClick: true,
+        //         pauseOnHover: true,
+        //         draggable: true,
+        //         progress: undefined,
+        //       });
+        // })
+        // .catch(rej=>{
+        //     alert(rej.message);
+        // })
+    }
 
     return (
         <div className="flex-1">
@@ -214,7 +245,7 @@ export default function CompanyAdmins(){
                                     placeholder="Аты"
                                     value={adminData.firstName}
                                     required
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                                     onChange={(e) =>setAdminData(prev=>{return {...prev, firstName: e.target.value}})}
                                 />
                             </div>
@@ -230,7 +261,7 @@ export default function CompanyAdmins(){
                                     placeholder="Фамилия"
                                     value={adminData.lastName}
                                     required
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                                     onChange={(e) =>setAdminData(prev=>{return {...prev, lastName: e.target.value}})}
                                 />
                             </div>
@@ -246,10 +277,27 @@ export default function CompanyAdmins(){
                                     placeholder="Телефон"
                                     value={adminData.phoneNumber}
                                     required
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                                     onChange={(e) =>setAdminData(prev=>{return {...prev, phoneNumber: e.target.value}})}
                                 />
                             </div>
+
+                            {isEdit?
+                            "":
+                            <div className="w-full">
+                                <label
+                                htmlFor="language"
+                                className="block mb-2 text-sm font-medium text-gray-900"
+                                >
+                                    Тил
+                                </label>
+                                <Select
+                                    defaultValue={adminLanguage!=""?{label:adminLanguage, value: adminLanguage}:""}
+                                    options={languages}
+                                    onChange={(value) => setAdminLanguage(value.value)}
+                                />
+                            </div>}
+                            
                             <div>
                                 <label
                                     htmlFor="groups"
@@ -263,7 +311,7 @@ export default function CompanyAdmins(){
                                     placeholder="Username"
                                     value={adminData.username}
                                     required
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                                     onChange={(e) =>setAdminData(prev=>{return {...prev, username: e.target.value}})}
                                 />
                             </div>
@@ -279,7 +327,7 @@ export default function CompanyAdmins(){
                                     placeholder="Пороль"
                                     value={adminData.password}
                                     required
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                                     onChange={(e) =>setAdminData(prev=>{return {...prev, password: e.target.value}})}
                                 />
                             </div>
@@ -350,6 +398,18 @@ export default function CompanyAdmins(){
                                         >
                                             Username
                                         </th>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-full"
+                                        >
+                                            Password
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-full"
+                                        >
+                                            Control
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
@@ -362,7 +422,7 @@ export default function CompanyAdmins(){
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center text-sm font-medium text-gray-900">
-                                                {admin.fullName}
+                                                {admin.firstName.concat(" ", admin.lastName)}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
@@ -382,14 +442,27 @@ export default function CompanyAdmins(){
                                         </td>
                                         <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
                                         <button
-                                            onClick={() => setIsShowDialogModalWin(true)}
+                                            onClick={() => {
+                                                setAdminData({...admin})
+                                                setIsEdit(true);
+                                                setShowModal(true);
+                                            }}
+                                            className="text-indigo-600 hover:text-indigo-900"
+                                        >
+                                        <CiEdit />
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setIsShowDialogModalWin(true);
+                                                setDelAdminId(admin.id);
+                                            }}
                                             className="text-red-600 hover:text-red-900"
                                         >
                                             <RiDeleteBin5Line />
                                         </button>
                                         {isShowDialogModalWin && (
                                             <DialogDelete
-                                            onDialog={(choose)=>areYouSureDelete(choose, admin.id)}
+                                            onDialog={areYouSureDelete}
                                             message={"Чындап өчүрүүнү каалайсызбы?"}
                                             />
                                         )}

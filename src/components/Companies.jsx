@@ -44,11 +44,7 @@ const Componies = () => {
     const getAllCompanies = async ()=>{
         customAxios({
             method: "get",
-            url: 'company',
-            headers: { 
-                'Authorization': `Bearer ${userData.token}`
-            }
-
+            url: 'company'
         })
         .then(res=>{
             setCompanies(prev=>{
@@ -71,10 +67,6 @@ const Componies = () => {
     customAxios({
         method: "post",
         url: 'company',
-        headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${userData.token}`
-        },
         data: JSON.stringify({
             name: companyData.data.name
         })
@@ -111,15 +103,14 @@ const Componies = () => {
 
   // Delete
   const [isShowDialogModalWin, setIsShowDialogModalWin] = useState(false);
-  const areYouSureDelete = async (choose, id) => {
+  const [delComponyId, setDelComponyId] = useState(0);
+
+  const areYouSureDelete = async (choose) => {
     if (choose) {
       try{
-        const response = await customAxios({
+        await customAxios({
             method: "delete",
-            url: `company/${id}`,
-            headers: {
-                'Authorization': `Bearer ${userData.token}`
-            }
+            url: `company/${delComponyId}`
         })
         getAllCompanies();
         toast.error("Ийгиликтүү өчүрүлдү!!!", {
@@ -135,9 +126,10 @@ const Componies = () => {
             },
           });
       }catch(err){
-        alert(err.message);
+        alert(err.response.data.message);
       }finally{
         setIsShowDialogModalWin(false);
+        setDelComponyId(0)
       }
     } else {
         setIsShowDialogModalWin(false);
@@ -151,10 +143,6 @@ const Componies = () => {
     customAxios({
         method: "put",
         url: `company/${companyData.data.id}`,
-        headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${userData.token}`
-        },
         data: JSON.stringify({
             name: companyData.data.name
         })
@@ -255,7 +243,7 @@ const Componies = () => {
                             placeholder="Аты"
                             value={companyData.data.name}
                             required
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                             onChange={(e) => setCompanyData(prev=>{
                                 return{ ...prev,data:{...prev.data,name: e.target.value}}
                             })}
@@ -299,26 +287,20 @@ const Componies = () => {
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    >
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                                         №
                                     </th>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-full"
-                                    >
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                        Company id
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                                         Компания аты
                                     </th>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    >
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                                         Control
                                     </th>
 
-                                    <th scope="col" className="relative px-6 py-3">
+                                    <th  className="relative px-6 py-3">
                                     <span className="sr-only">Edit</span>
                                     </th>
                                 </tr>
@@ -326,57 +308,53 @@ const Componies = () => {
                             <tbody className="bg-white divide-y divide-gray-200">
                             {companies.map((company, index) => (
                                 <tr key={index} className="hover:bg-gray-200 duration-300">
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="flex items-center">
-                                    <div>
-                                        <div className="text-sm font-medium text-gray-900">
+                                <td className="px-6 py-4 ">
+                                    <div className="text-sm font-medium text-gray-900">
                                         {index + 1}
-                                        </div>
-                                    </div>
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="flex items-center">
-                                    <div>
-                                        <div className="text-sm font-medium text-gray-900">
-                                            {company.name}
-                                        </div>
-                                    </div>
+                                <td className="px-6 py-4 ">
+                                    <div className="text-sm font-medium text-gray-900">
+                                        {company.id}
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="flex items-center">
-                                    <div>
-                                        <div className="text-sm font-medium text-gray-900">
-                                            <a href={`/${company.name}/${company.id}/admins`}>admins</a>
-                                        </div>
-                                    </div>
+                                <td className="px-6 py-4 w-full">
+                                    <div className="text-sm font-medium text-gray-900">
+                                        {company.name}
                                     </div>
                                 </td>
-                                <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
+                                <td className="px-6 py-4 ">
+                                    <div className="text-sm font-medium text-gray-900">
+                                        <a href={`/${company.name}/${company.id}/admins`}>admins</a>
+                                    </div>
+                                </td>
+                                <td className=" flex px-6 py-6  gap-2 border-none text-right text-2xl items-center font-medium">
                                     <button
-                                    onClick={() => {
-                                        setCompanyData({
-                                            isEdit: true,
-                                            data: {
-                                                ...company
-                                            }
-                                        })
-                                        setShowModal(true);
-                                    }}
-                                    className="text-indigo-600 hover:text-indigo-900"
+                                        onClick={() => {
+                                            setCompanyData({
+                                                isEdit: true,
+                                                data: {
+                                                    ...company
+                                                }
+                                            })
+                                            setShowModal(true);
+                                        }}
+                                        className="text-indigo-600 hover:text-indigo-900"
                                     >
                                     <CiEdit />
                                     </button>
                                     <button
-                                    className="text-red-600 hover:text-red-900"
-                                    onClick={e=>setIsShowDialogModalWin(true)}
+                                        className="text-red-600 hover:text-red-900"
+                                        onClick={e=>{
+                                            setIsShowDialogModalWin(true);
+                                            setDelComponyId(company.id);
+                                        }}
                                     >
                                     <RiDeleteBin5Line />
                                     </button>
                                     {isShowDialogModalWin && (
                                     <DialogDelete
-                                        onDialog={choose=>areYouSureDelete(choose, company.id)}
+                                        onDialog={areYouSureDelete}
                                         message={'Чындап өчүрүүнү каалайсызбы?'}
                                     />
                                     )}

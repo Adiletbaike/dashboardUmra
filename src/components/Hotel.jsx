@@ -47,7 +47,7 @@ const Hotel = () => {
       setIsLoad(false);
     }
     catch(err){
-      alert(err.message)
+      alert(err.response.data.message);
       setIsLoad(false);
       }
   }
@@ -84,7 +84,7 @@ const Hotel = () => {
       });
     }
     catch(err){
-      alert(err.message)
+      alert(err.response.data.message);
     }
   };
 
@@ -94,25 +94,31 @@ const Hotel = () => {
 
   const areYouSureDelete = async (choose) => {
     if (choose) {
-      const response = await customAxios({
+      await customAxios({
         method: "delete",
         url: `hotel/${delHotelId}`,
-      });
-      getAllHotels();
-      setIsShowDialogModalWin(false);
-      toast.error("Ийгиликтүү өчүрүлдү!!!", {
-        position: "top-right",
-        autoClose: 3000, // 3 seconds
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        style: {
-          backgroundColor: "#fff", // Set your desired background color
-        },
-      });
-      setDelHotelId(null);
+      })
+      .then(res=>{
+        getAllHotels();
+        setIsShowDialogModalWin(false);
+        toast.error("Ийгиликтүү өчүрүлдү!!!", {
+          position: "top-right",
+          autoClose: 3000, // 3 seconds
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          style: {
+            backgroundColor: "#fff", // Set your desired background color
+          },
+        });
+        setDelHotelId(null);
+      })
+      .catch(rej=>{
+        alert(rej.message);
+      })
+      
     } else {
       setIsShowDialogModalWin(false);
       setDelHotelId(null);
@@ -162,8 +168,8 @@ const Hotel = () => {
       });
       getAllHotels();
     })
-    .catch((error) => {
-      alert(error)
+    .catch((err) => {
+      alert(err.message);
     });
   };
 
@@ -207,7 +213,7 @@ const Hotel = () => {
                   placeholder="Аты"
                   required
                   value={hotelData.name}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e)=>{setHotelData(hotelData.isEdit?{...hotelData,name: e.currentTarget.value}:{...hotelData,id: e.currentTarget.value, name: e.currentTarget.value})}}
                 />
               </div>
@@ -225,7 +231,7 @@ const Hotel = () => {
                   placeholder="42.161384638583456, 74.27452891557907"
                   required
                   defaultValue={hotelData.location}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e)=>{setHotelData({...hotelData, location: e.currentTarget.value})}}
                 />
               </div>
@@ -272,6 +278,12 @@ const Hotel = () => {
                 <table className="min-w-full divide-y divide-gray-200 ">
                   <thead className="bg-gray-50">
                     <tr>
+                    <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        №
+                      </th>
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -310,6 +322,15 @@ const Hotel = () => {
                         key={index}
                         className="hover:bg-gray-200 duration-300"
                       >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">
+                                {index + 1}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div>

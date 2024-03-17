@@ -75,7 +75,7 @@ const Groups = () => {
       setIsLoad(false);
     }
     catch(err){
-      alert(err.message)
+      alert(err.response.data.message);
       setIsLoad(false)
     }
   }
@@ -89,7 +89,7 @@ const Groups = () => {
       setHotels(response.data);
     }
     catch(err){
-      console.log(err.message);
+      alert(err.response.data.message);
     }
   }
 
@@ -102,7 +102,7 @@ const Groups = () => {
       setGroups(response.data)
     }
     catch(err){
-      console.log(err.message);
+      alert(err.response.data.message);
     }
   }
 
@@ -139,7 +139,7 @@ const Groups = () => {
         progress: undefined,
       });
     }catch(err){
-      console.log(err.message);
+      alert(err.response.data.message);
     }
   };
 
@@ -167,7 +167,7 @@ const Groups = () => {
         });
         setDelGroupId(0);
       }catch(err){
-        console.log(err.message);
+        alert(err.response.data.message);
         setIsShowDialogModalWin(false);
       }
     } else {
@@ -209,7 +209,7 @@ const Groups = () => {
         progress: undefined,
       });
     }catch(err){
-      console.log(err.message);
+      alert(err.response.data.message);
     }
   };
 
@@ -249,7 +249,7 @@ const Groups = () => {
                   placeholder="Аты"
                   value={groupData.data.name}
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) => setGroupData(prev=>{
                     return  { ...prev,data:{...prev.data,name: e.target.value}}
                   })}
@@ -271,7 +271,7 @@ const Groups = () => {
                   id="number"
                   placeholder="Саны"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) => setGroupData(prev=>{return{
                     ...prev,
                     data:{

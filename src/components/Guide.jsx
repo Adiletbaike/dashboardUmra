@@ -57,7 +57,7 @@ const Guide = () => {
       setGuides(response.data);
       setIsLoad(false);
     } catch (err) {
-      alert(err.message);
+      alert(err.response.data.message);
       setIsLoad(false);
     }
   };
@@ -101,7 +101,7 @@ const Guide = () => {
         progress: undefined,
       });
     } catch (err) {
-      alert(err.message);
+      alert(err.response.data.message);
     }
   };
 
@@ -177,7 +177,7 @@ const Guide = () => {
         },
       });
     } catch (err) {
-      alert(err.message);
+      alert(err.response.data.message);
     }
   };
 
@@ -236,7 +236,7 @@ const Guide = () => {
                   id="name"
                   placeholder="Аты"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) =>
                     setGuideData((prev) => {
                       return guideData.isEdit
@@ -270,7 +270,7 @@ const Guide = () => {
                   id="surname"
                   placeholder="Фамилиясы"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) =>
                     setGuideData((prev) => {
                       return {
@@ -295,7 +295,7 @@ const Guide = () => {
                   id="number"
                   placeholder="Телефон номери"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) =>
                     setGuideData((prev) => {
                       return {
@@ -320,7 +320,7 @@ const Guide = () => {
                   id="education"
                   placeholder="Билими"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) =>
                     setGuideData((prev) => {
                       return {

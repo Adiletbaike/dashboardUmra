@@ -58,7 +58,7 @@ const MembersGroup = () => {
       setMembers(response.data);
       setIsLoad(false);
     } catch (err) {
-      console.log(err.message);
+      alert(err.response.data.message);
       setIsLoad(false);
     }
   };
@@ -198,7 +198,7 @@ const MembersGroup = () => {
                   value={memberData.data.firstName}
                   placeholder="Аты"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) => {
                     setMemberData((prev) => {
                       return {
@@ -223,7 +223,7 @@ const MembersGroup = () => {
                   id="name"
                   placeholder="Фамилия"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) => {
                     setMemberData((prev) => {
                       return {
@@ -248,7 +248,7 @@ const MembersGroup = () => {
                   value={memberData.data.phoneNumber}
                   placeholder="Телефон"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) => {
                     setMemberData((prev) => {
                       return {
@@ -294,7 +294,7 @@ const MembersGroup = () => {
                   id="birthday"
                   placeholder="Birthday"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) => {
                     setMemberData((prev) => {
                       return {
@@ -320,7 +320,7 @@ const MembersGroup = () => {
                   id="login"
                   placeholder="Логин"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) => {
                     setMemberData((prev) => {
                       return {
@@ -345,7 +345,7 @@ const MembersGroup = () => {
                   id="password"
                   placeholder="Пароль"
                   required
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) => {
                     setMemberData((prev) => {
                       return {
@@ -359,7 +359,7 @@ const MembersGroup = () => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="w-100 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  className="w-100 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 outline-none"
                 >
                   {memberData.isEdit ? "Өзгөртүү" : "Сактоо"}
                 </button>

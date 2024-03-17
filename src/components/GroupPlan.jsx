@@ -49,12 +49,17 @@ export default function GroupPlan() {
   }, [userData]);
 
   const getSchedule = async () => {
-    const response = await customAxios({
-      method: "get",
-      url: `/group/${groupId}/schedules`,
-    });
-    setGroupSchedules([...response.data]);
-    setIsLoad(false);
+    try{
+      const response = await customAxios({
+        method: "get",
+        url: `/group/${groupId}/schedules`,
+      });
+      setGroupSchedules([...response.data]);
+      setIsLoad(false);
+    }catch(err){
+      alert(err.response.data.message);
+    }
+    
   };
 
   const getScheduleById = async (id) => {
@@ -65,7 +70,7 @@ export default function GroupPlan() {
       });
       return response.data;
     } catch (err) {
-      console.log(err.message);
+      alert(err.response.data.message);
     }
   };
 
@@ -100,7 +105,7 @@ export default function GroupPlan() {
         progress: undefined,
       });
     } catch (err) {
-      console.log(err);
+      alert(err.response.data.message);
     }
   };
 
@@ -134,7 +139,7 @@ export default function GroupPlan() {
         progress: undefined,
       });
     } catch (err) {
-      alert(err.message);
+      alert(err.response.data.message);
       setGroupSchedule({ ...groupSceguleInitializationData });
       setShowModal(false);
     }
@@ -142,36 +147,38 @@ export default function GroupPlan() {
 
   // // Delete group schodule
   const [isShowDialogModalWin, setIsShowDialogModalWin] = useState(false);
-  const deleteGroupScheduleHandler = async (choose, id) => {
+  const [delMemberId, setDelMemberId] = useState(0);
+
+  const deleteGroupScheduleHandler = async (choose) => {
     if (choose) {
       try {
-        const response = await customAxios({
+        await customAxios({
           method: "delete",
-          url: `schedule/${id}`,
-          headers: {
-            Authorization: `Bearer ${userData.token}`,
-          },
+          url: `schedule/${delMemberId}`,
         });
         getSchedule();
         toast.error("Ийгиликтүү өчүрүлдү!!!", {
           position: "top-right",
-          autoClose: 3000, // 3 seconds
+          autoClose: 3000, 
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
           style: {
-            backgroundColor: "#fff", // Set your desired background color
+            backgroundColor: "#fff", 
           },
         });
         setIsShowDialogModalWin(false);
       } catch (err) {
-        console.log(err.message);
+        alert(err.response.data.message);
         setIsShowDialogModalWin(false);
+      }finally{
+        setDelMemberId(0);
       }
     } else {
       setIsShowDialogModalWin(false);
+      setDelMemberId(0)
     }
   };
 
@@ -280,15 +287,16 @@ export default function GroupPlan() {
                       </button>
                       <button
                         className="text-red-600 hover:text-red-900"
-                        onClick={() => setIsShowDialogModalWin(true)}
+                        onClick={() => {
+                          setIsShowDialogModalWin(true);
+                          setDelMemberId(item.id);
+                        }}
                       >
                         <RiDeleteBin5Line />
                       </button>
                       {isShowDialogModalWin && (
                         <DialogDelete
-                          onDialog={(choose) =>
-                            deleteGroupScheduleHandler(choose, item.id)
-                          }
+                          onDialog={deleteGroupScheduleHandler}
                           message={"Чындап өчүрүүнү каалайсызбы?"}
                         />
                       )}
@@ -322,7 +330,7 @@ export default function GroupPlan() {
               placeholder="Name"
               value={groupSchedule.name}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none"
               onChange={(e) =>
                 setGroupSchedule((prev) => {
                   return { ...prev, name: e.target.value };
@@ -354,7 +362,7 @@ export default function GroupPlan() {
               placeholder="Kg text"
               value={groupSchedule.kgName}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none"
               onChange={(e) =>
                 setGroupSchedule((prev) => {
                   return { ...prev, kgName: e.target.value };
@@ -369,7 +377,7 @@ export default function GroupPlan() {
               placeholder="Kz text"
               value={groupSchedule.kzName}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none"
               onChange={(e) =>
                 setGroupSchedule((prev) => {
                   return { ...prev, kzName: e.target.value };
@@ -384,7 +392,7 @@ export default function GroupPlan() {
               placeholder="Uz text"
               value={groupSchedule.uzName}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none"
               onChange={(e) =>
                 setGroupSchedule((prev) => {
                   return { ...prev, uzName: e.target.value };
@@ -399,7 +407,7 @@ export default function GroupPlan() {
               placeholder="Ru text"
               value={groupSchedule.ruName}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none"
               onChange={(e) =>
                 setGroupSchedule((prev) => {
                   return { ...prev, ruName: e.target.value };
@@ -414,7 +422,7 @@ export default function GroupPlan() {
               placeholder="En text"
               value={groupSchedule.enName}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none"
               onChange={(e) =>
                 setGroupSchedule((prev) => {
                   return { ...prev, enName: e.target.value };
@@ -429,7 +437,7 @@ export default function GroupPlan() {
               placeholder="Tr text"
               value={groupSchedule.trName}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none"
               onChange={(e) =>
                 setGroupSchedule((prev) => {
                   return { ...prev, trName: e.target.value };
@@ -444,7 +452,7 @@ export default function GroupPlan() {
               placeholder="42.8700351769714, 74.5677123645863"
               value={groupSchedule.location}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none"
               onChange={(e) =>
                 setGroupSchedule((prev) => {
                   return { ...prev, location: e.target.value };
