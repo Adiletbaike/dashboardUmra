@@ -174,6 +174,9 @@ const Groups = () => {
   // Edit group data
   const editGroupDataHandler = async (e) => {
     e.preventDefault();
+
+    console.log(groupData);
+
     try {
       const data = JSON.stringify({
         name: groupData.data.name,
@@ -181,7 +184,7 @@ const Groups = () => {
         language: groupData.data.language,
         makkahHotelId: groupData.data.makkahId,
         madinahHotelId: groupData.data.madinaId,
-        countOfParticipant: groupData.quantity,
+        countOfParticipant: groupData.data.quantity,
       });
 
       let config = {
@@ -225,7 +228,13 @@ const Groups = () => {
           <IoMdAdd />
           Жаңы кошуу
         </button>
-        <Modal isVisible={showModal} onClose={() => setShowModal(false)}>
+        <Modal 
+          isVisible={showModal}
+          onClose={() => {
+            setShowModal(false)
+            setGroupData({...initialGroupData});
+          }}
+        >
           <div className="py-6 px-6 lg:px-8 text-left">
             <h3 className="mb-4 text-xl font-medium text-gray-900">Группа</h3>
             <form

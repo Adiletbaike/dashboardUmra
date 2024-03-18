@@ -13,7 +13,7 @@ import CustomAxios from "../axios/customAxios";
 import Loader from "./Constants/Louder";
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
-import { format } from "date-fns";
+import { format, compareDesc} from "date-fns";
 
 const groupScheduleInitializationData = {
   id: 0,
@@ -50,10 +50,11 @@ export default function GroupPlan() {
         method: "get",
         url: `/group/${groupId}/schedules`,
       });
-      setGroupSchedules([...response.data]);
+      let data = response.data.sort(function(a, b){return new Date(a.time) - new Date(b.time);})
+      setGroupSchedules(data);
       setIsLoad(false);
     } catch (err) {
-      alert(err.response.data.message);
+      alert(err.message);
     }
   };
 

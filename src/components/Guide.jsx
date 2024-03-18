@@ -19,6 +19,18 @@ const languagesData = [
   { code: "EN", lang: "English" },
 ];
 
+const guideInitialData = {
+  isEdit: false,
+  data: {
+    id: "",
+    name: "",
+    surname: "",
+    phone: "",
+    education: "",
+    languages: [],
+  },
+}
+
 const Guide = () => {
   // Modal
   const [showModal, setShowModal] = useState(false);
@@ -28,17 +40,7 @@ const Guide = () => {
   const [isLoad, setIsLoad] = useState(true);
   const [showLanguages, setShowLanguages] = useState(false);
 
-  const [guideData, setGuideData] = useState({
-    isEdit: false,
-    data: {
-      id: "",
-      name: "",
-      surname: "",
-      phone: "",
-      education: "",
-      languages: [],
-    },
-  });
+  const [guideData, setGuideData] = useState({...guideInitialData});
 
   useEffect(() => {
     if (userData.isAuth) {
@@ -79,17 +81,7 @@ const Guide = () => {
         data: data,
       });
       getAllGuides();
-      setGuideData({
-        ...guideData,
-        data: {
-          id: "",
-          name: "",
-          surname: "",
-          phone: "",
-          education: "",
-          languages: [],
-        },
-      });
+      setGuideData({...guideInitialData});
       setShowModal(false);
       toast.success("Ийгиликтүү сакталды!!!", {
         position: "top-right",
@@ -152,17 +144,7 @@ const Guide = () => {
         data: data,
       });
       getAllGuides();
-      setGuideData({
-        isEdit: false,
-        data: {
-          id: "",
-          name: "",
-          surname: "",
-          phone: "",
-          education: "",
-          languages: [],
-        },
-      });
+      setGuideData({...guideInitialData});
       setShowModal(false);
       toast.info("Ийгиликтүү өзгөртүлдү!!!", {
         position: "top-right",
@@ -215,7 +197,12 @@ const Guide = () => {
           <IoMdAdd />
           Жаңы кошуу
         </button>
-        <Modal isVisible={showModal} onClose={() => setShowModal(false)}>
+        <Modal 
+          isVisible={showModal} 
+          onClose={() => {
+            setShowModal(false)
+            setGuideData({...guideInitialData})
+          }}>
           <div className="py-6 px-6 lg:px-8 text-left">
             <h3 className="mb-4 text-xl font-medium text-gray-900">
               Умра башчы

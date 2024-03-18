@@ -18,6 +18,8 @@ const initialAdminData = {
     firstName: "",
     lastName: "",
     phoneNumber: "",
+    birthday: "",
+    gender: "MALE",
     username: "",
     password: "",
 }
@@ -44,7 +46,7 @@ export default function CompanyAdmins(){
     const [admins, setAdmins] = useState([]);
     const [adminData, setAdminData] = useState({...initialAdminData});
 
-    const [adminLanguage, setAdminLanguage] = useState('');
+    const [adminLanguage, setAdminLanguage] = useState('KG');
 
     useEffect(()=>{
         if(!userData.isAuth){
@@ -156,32 +158,29 @@ export default function CompanyAdmins(){
     // Edit admin data
     const editAdminDataHandler = async (e)=>{
         e.preventDefault();
-
-        alert("No api for update");
-
-        // const {id, ...data} = adminData;
-        // customAxios({
-        //     method: "post",
-        //     url: `company/${companyId}/admin?language=${adminLanguage}`,
-        //     data: JSON.stringify({...data})
-        // })
-        // .then(res=>{
-        //     getAllAdmins()
-        //     setAdminData({...initialAdminData})
-        //     setShowModal(false);
-        //     toast.success("Ийгиликтүү өзгөртүлдү!!!", {
-        //         position: "top-right",
-        //         autoClose: 3000,
-        //         hideProgressBar: true,
-        //         closeOnClick: true,
-        //         pauseOnHover: true,
-        //         draggable: true,
-        //         progress: undefined,
-        //       });
-        // })
-        // .catch(rej=>{
-        //     alert(rej.message);
-        // })
+        const {id, ...data} = adminData;
+        customAxios({
+            method: "put",
+            url: `company/${companyId}/admin/${id}`,
+            data: JSON.stringify({...data, companyId: companyId,})
+        })
+        .then(res=>{
+            getAllAdmins()
+            setAdminData({...initialAdminData})
+            setShowModal(false);
+            toast.success("Ийгиликтүү өзгөртүлдү!!!", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              });
+        })
+        .catch(rej=>{
+            alert(rej.message);
+        })
     }
 
     return (
@@ -210,22 +209,14 @@ export default function CompanyAdmins(){
                     </button>
                     <button
                     className="flex justify-end items-center text-lg rounded-lg border p-1 bg-green-400"
-                    onClick={() => {
-                        setAdminData({
-                            id: "",
-                            firstName: "",
-                            lastName: "",
-                            phoneNumber: "",
-                            username: "",
-                            password: ""
-                        });
-                        setShowModal(true);
-                    }}
-                    >
+                    onClick={() => {setShowModal(true);}}>
                         <IoMdAdd />
                         Жаңы кошуу
                     </button>
-                    <Modal isVisible={showModal} onClose={() => setShowModal(false)}>
+                    <Modal isVisible={showModal} onClose={() => {
+                        setAdminData({...initialAdminData});
+                        setShowModal(false);
+                    }}>
                         <div className="py-6 px-6 lg:px-8 text-left">
                             <h3 className="mb-4 text-xl font-medium text-gray-900">Компания</h3>
                             <form
@@ -297,6 +288,45 @@ export default function CompanyAdmins(){
                                     onChange={(value) => setAdminLanguage(value.value)}
                                 />
                             </div>}
+
+                            <div className="w-full">
+                                <label
+                                htmlFor="admin-gender"
+                                className="block mb-2 text-sm font-medium text-gray-900"
+                                >
+                                Gender
+                                </label>
+                                <Select
+                                    defaultValue={adminData.gender && adminData.gender!=""?{label: adminData.gender, value: adminData.gender}:""}
+                                    options={[{label: "MALE", value: "MALE"}, {label: "FEMALE", value: "FEMALE"}]}
+                                    onChange={(value) =>{
+                                        setAdminData((prev) => { return {...prev, gender: value.value}});
+                                    }}
+                                />
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="birthday"
+                                    className="block mb-2 text-sm font-medium text-gray-900"
+                                >
+                                    Birthday
+                                </label>
+                                <input
+                                    type="date"
+                                    name="birthday"
+                                    value={adminData.birthday}
+                                    id="birthday"
+                                    placeholder="Birthday"
+                                    required
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
+                                    onChange={(e) => {
+                                        setAdminData((prev) => {
+                                            return {...prev, birthday: e.target.value.replace(/\//, '-')};
+                                        });
+                                    }}
+                                />
+                            </div>
                             
                             <div>
                                 <label
@@ -355,18 +385,7 @@ export default function CompanyAdmins(){
                             <div className="p-7 flex justify-center">
                                 <button
                                     className="flex justify-end items-center text-lg rounded-lg border p-1 bg-green-400"
-                                    onClick={() => {
-                                        setAdminData({
-                                            id: "",
-                                            firstName: "",
-                                            lastName: "",
-                                            phoneNumber: "",
-                                            username: "",
-                                            password: ""
-                                        });
-                                        setShowModal(true);
-                                    }}
-                                    >
+                                    onClick={() => {setShowModal(true);}}>
                                         <IoMdAdd />
                                         Жаңы кошуу
                                     </button>
@@ -391,6 +410,18 @@ export default function CompanyAdmins(){
                                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-full"
                                         >
                                             Телефон
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-full"
+                                        >
+                                            Birthday
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-full"
+                                        >
+                                            Gender
                                         </th>
                                         <th
                                             scope="col"
@@ -428,6 +459,16 @@ export default function CompanyAdmins(){
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center text-sm font-medium text-gray-900">
                                                 {admin.phoneNumber}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center text-sm font-medium text-gray-900">
+                                                {admin.birthday}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center text-sm font-medium text-gray-900">
+                                                {admin.gender}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">

@@ -267,7 +267,7 @@ const MembersGroup = () => {
                   Gender
                 </label>
                 <Select
-                  defaultValue={memberData.data.gender!=""?{label: "MALE", value: "MALE"}:""}
+                  defaultValue={memberData.data.gender && memberData.data.gender!=""?{label: memberData.data.gender, value: memberData.data.gender}:""}
                   options={[{label: "MALE", value: "MALE"}, {label: "FEMALE", value: "FEMALE"}]}
                   onChange={(value) =>{
                     setMemberData((prev) => {
