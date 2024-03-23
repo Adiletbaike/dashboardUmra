@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
@@ -8,7 +8,6 @@ import Select from "react-select";
 import Modal from "./Modals/Modal";
 import DialogDelete from "./Modals/DialogDelete";
 import CustomAxios from "../axios/customAxios";
-import { AppContext } from "../App";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "./Constants/Louder";
 
@@ -42,7 +41,6 @@ const Groups = () => {
   const [showModal, setShowModal] = useState(false);
   const [isLoad, setIsLoad] = useState(true);
   const customAxios = CustomAxios();
-  const { userData, setUserData } = useContext(AppContext);
   const [guides, setGuides] = useState([]);
   const [hotels, setHotels] = useState([]);
 
@@ -51,7 +49,7 @@ const Groups = () => {
   const [groupData, setGroupData] = useState(initialGroupData);
 
   useEffect(() => {
-    if (userData.isAuth) {
+    if (localStorage.getItem('isAuth')=='true') {
       if (guides.length == 0) {
         getAllGuides();
       }
@@ -62,7 +60,7 @@ const Groups = () => {
         getAllGroups();
       }
     }
-  }, [userData]);
+  }, []);
 
   const getAllGuides = async () => {
     try {

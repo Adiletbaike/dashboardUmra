@@ -1,5 +1,4 @@
-import CreatableSelect from "react-select/creatable";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Line } from "react-icons/ri";
@@ -8,14 +7,12 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DialogDelete from "./Modals/DialogDelete";
 import CustomAxios from "../axios/customAxios";
-import { AppContext } from "../App";
 import Loader from "./Constants/Louder";
 
 const Hotel = () => {
   // Modal
   const [showModal, setShowModal] = useState(false);
   const customAxios = CustomAxios();
-  const { userData, setUserData } = useContext(AppContext);
   const [isLoad, setIsLoad] = useState(true);
 
   // Hotels
@@ -30,12 +27,12 @@ const Hotel = () => {
   });
 
   useEffect(() => {
-    if (userData.isAuth) {
+    if (localStorage.getItem('isAuth')=='true') {
       if (hotels.length == 0) {
         getAllHotels();
       }
     }
-  }, [userData]);
+  }, []);
 
   const getAllHotels = async () => {
     try {

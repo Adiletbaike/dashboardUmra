@@ -1,14 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "../../App";
 import CustomAxios from "../../axios/customAxios";
 import Loader from "../Constants/Louder";
 
 const Login = () => {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
-  const {userData, setUserData, companyId} = useContext(AppContext);
+  const [companyId, setCompanyId] = useState(0);
   const navigate = useNavigate();
   const customAxios = CustomAxios();
   const [isLaod, setIsLoad] = useState(false);
@@ -18,7 +16,7 @@ const Login = () => {
     try {
       const response = await customAxios({
         method: 'post',
-        url: isSuperAdmin ? 'auth/login/super-admin' : 'auth/login',
+        url: 'auth/login',
         maxBodyLength: Infinity,
         data: JSON.stringify({
           username: login,
@@ -26,16 +24,13 @@ const Login = () => {
           companyId: companyId,
         }),
       });
-  
-      setUserData({
-        isAuth: true,
-        isSuperAdmin: isSuperAdmin,
-        token: response.data.token,
-      });
-  
       localStorage.setItem('isAuth', true);
-      localStorage.setItem('isSuperAdmin', isSuperAdmin);
+      localStorage.setItem('companyId', companyId);
       localStorage.setItem('token', response.data.token);
+      setLogin("");
+      setPassword("");
+      setCompanyId(0);
+      navigate("/");
     } catch (error) {
       alert(error.message);
     }finally{
@@ -44,15 +39,15 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (userData.isAuth) {
+    if (localStorage.getItem('isAuth')=="true"){
       navigate("/");
     }
-  }, [userData]);  
+  }, []);  
 
   return (
     <div className="relative">
       <div className="flex justify-center bg-[url(https://images.unsplash.com/photo-1693590614566-1d3ea9ef32f7?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] h-screen bg-center">
-        <div className="h-[90%] w-full md:w-full pt-20">
+        <div className="h-[90%] w-full md:w-full pt-20 flex flex-col justify-center items-center">
           <div className="text-xl cursor-pointer flex flex-col justify-center items-center mt-5 md:mt-0">
             <h1 className="font-semibold text-3xl text-gray-700 m-2">Логин</h1>
           </div>
@@ -76,14 +71,15 @@ const Login = () => {
                 className=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-violet-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]"
               />
             </div>
-            <div className="bg-gray-100 p-2 pl-5 rounded-lg md:w-72 lg:w-[340px]">
+            <div className="">
               <input
-              id="isSuperAdmin"
-                onClick={(e) => {setIsSuperAdmin(prev=>!prev);}}
-                type="checkbox"
-                className="mr-2 cursor-pointer"
+                type="number"
+                min={0}
+                value={companyId}
+                onChange={(e) => setCompanyId(e.target.value)}
+                placeholder="Compony id"
+                className=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-violet-600 focus:outline-none text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]"
               />
-              <label htmlFor="isSuperAdmin" className="text-gray-400 cursor-pointer">Super admin</label>
             </div>
             {
               isLaod?

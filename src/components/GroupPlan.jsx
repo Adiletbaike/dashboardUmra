@@ -2,18 +2,17 @@ import { IoArrowBack } from "react-icons/io5";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaRegEdit } from "react-icons/fa";
-import { useContext, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import Modal from "./Modals/Modal";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { toast, ToastContainer } from "react-toastify";
 import DialogDelete from "./Modals/DialogDelete";
-import { AppContext } from "../App";
 import CustomAxios from "../axios/customAxios";
 import Loader from "./Constants/Louder";
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
-import { format, compareDesc} from "date-fns";
+import { format} from "date-fns";
 
 const groupScheduleInitializationData = {
   id: 0,
@@ -23,6 +22,7 @@ const groupScheduleInitializationData = {
 };
 
 export default function GroupPlan() {
+
   const navigate = useNavigate();
   const groupId = useParams().id;
   const [showModal, setShowModal] = useState(false);
@@ -33,16 +33,15 @@ export default function GroupPlan() {
   const [isEdit, setIsedit] = useState(false);
   const [isLoad, setIsLoad] = useState(true);
 
-  const { userData, serUserData } = useContext(AppContext);
   const customAxios = CustomAxios();
 
   useEffect(() => {
-    if (userData.isAuth) {
+    if (localStorage.getItem('isAuth')=='true') {
       if (groupSchedules.length == 0) {
         getSchedule();
       }
     }
-  }, [userData]);
+  }, []);
 
   const getSchedule = async () => {
     try {
@@ -87,7 +86,6 @@ export default function GroupPlan() {
         }),
       });
       getSchedule();
-      setGroupSchedule({ ...groupScheduleInitializationData });
       setShowModal(false);
       toast.success("Ийгиликтүү сакталды!!!", {
         position: "top-right",
@@ -101,9 +99,16 @@ export default function GroupPlan() {
     } catch (err) {
       alert(err.response.data.message);
     }
+    finally{
+      setGroupSchedule({ ...groupScheduleInitializationData });
+      setIsedit(false);
+      setShowModal(false);
+    }
   };
 
   // Edit group schedule
+  let [oldTime, setOldTime] = useState(''); 
+
   const editGroupScheduleHandler = async (e) => {
     e.preventDefault();
     try {
@@ -127,7 +132,10 @@ export default function GroupPlan() {
       });
     } catch (err) {
       alert(err.message);
+    }
+    finally{
       setGroupSchedule({ ...groupScheduleInitializationData });
+      setIsedit(false);
       setShowModal(false);
     }
   };
@@ -266,6 +274,7 @@ export default function GroupPlan() {
                         onClick={async () => {
                           setIsedit(true);
                           const data = await getScheduleById(item.id);
+                          setOldTime(data.time);
                           setGroupSchedule({ ...data });
                           setShowModal(true);
                         }}
@@ -296,7 +305,11 @@ export default function GroupPlan() {
         )}
       </div>
 
-      <Modal isVisible={showModal} onClose={() => setShowModal(false)}>
+      <Modal isVisible={showModal} onClose={() => {
+        setGroupSchedule({...groupScheduleInitializationData});
+        setIsedit(false);
+        setShowModal(false);
+        }}>
         <div className="py-6 px-6 lg:px-8 text-left">
           <h3 className="mb-4 text-xl font-medium text-gray-900">
             Кун тартиби

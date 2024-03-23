@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import {useEffect, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,7 +7,6 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import Modal from "./Modals/Modal";
 import Select from "react-select";  
 import DialogDelete from "./Modals/DialogDelete";
-import { AppContext } from "../App";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomAxios from "../axios/customAxios";
 import { IoArrowBack } from "react-icons/io5";
@@ -20,7 +19,6 @@ const initialMemberData = {
   phoneNumber: "",
   gender: '', 
   password: "",
-  companyId: 0,
   username: "",
   birthday: "",
 };
@@ -28,7 +26,6 @@ const initialMemberData = {
 const MembersGroup = () => {
   // Modal
   const [showModal, setShowModal] = useState(false);
-  const { userData, setUserData, companyId } = useContext(AppContext);
   const navigate = useNavigate();
   const customAxios = CustomAxios();
   const params = useParams();
@@ -42,12 +39,12 @@ const MembersGroup = () => {
   });
 
   useEffect(() => {
-    if (userData.isAuth) {
+    if (localStorage.getItem('isAuth')=='true') {
       if (members.length == 0) {
         getAllMember();
       }
     }
-  }, [userData]);
+  }, []);
 
   const getAllMember = async () => {
     try {
@@ -72,7 +69,7 @@ const MembersGroup = () => {
         
         method: "post",
         url: `group/${params.id}/participant`,
-        data: JSON.stringify({...data, companyId: companyId}),
+        data: JSON.stringify({...data, companyId: localStorage.getItem('companyId')}),
       });
       getAllMember();
       setMemberData({
@@ -100,7 +97,7 @@ const MembersGroup = () => {
 
   const areYouSureDelete = async (choose) => {
     if (choose) {
-      const response = await customAxios({
+      await customAxios({
         method: "delete",
         url: `group/${params.id}/participant/${delParticipantId}`,
       });
@@ -125,13 +122,13 @@ const MembersGroup = () => {
   // Edit
   const editMemberData = async (e) => {
     e.preventDefault();
-    const { id, companyId, ...data } = memberData.data;
+    const { id, ...data } = memberData.data;
     try {
       await customAxios({
         
         method: "put",
         url: `group/${params.id}/participant/${id}`,
-        data: JSON.stringify({...data,}),
+        data: JSON.stringify({...data, companyId: localStorage.getItem('companyId')})
       });
       getAllMember();
       setMemberData({

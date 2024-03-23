@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {useEffect, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Line } from "react-icons/ri";
@@ -6,7 +6,6 @@ import Modal from "./Modals/Modal";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DialogDelete from "./Modals/DialogDelete";
-import { AppContext } from "../App";
 import CustomAxios from "../axios/customAxios";
 import Loader from "./Constants/Louder";
 
@@ -35,7 +34,6 @@ const Guide = () => {
   // Modal
   const [showModal, setShowModal] = useState(false);
   const [guides, setGuides] = useState([]);
-  const { userData, setUserData } = useContext(AppContext);
   const customAxios = CustomAxios();
   const [isLoad, setIsLoad] = useState(true);
   const [showLanguages, setShowLanguages] = useState(false);
@@ -43,12 +41,12 @@ const Guide = () => {
   const [guideData, setGuideData] = useState({...guideInitialData});
 
   useEffect(() => {
-    if (userData.isAuth) {
+    if (localStorage.getItem('isAuth')=='true') {
       if (guides.length == 0) {
         getAllGuides();
       }
     }
-  }, [userData]);
+  }, []);
 
   const getAllGuides = async () => {
     try {
