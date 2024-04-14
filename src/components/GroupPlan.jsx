@@ -2,7 +2,7 @@ import { IoArrowBack } from "react-icons/io5";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaRegEdit } from "react-icons/fa";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./Modals/Modal";
 import { CiEdit } from "react-icons/ci";
 import { RiDeleteBin5Line } from "react-icons/ri";
@@ -12,7 +12,14 @@ import CustomAxios from "../axios/customAxios";
 import Loader from "./Constants/Louder";
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
-import { format} from "date-fns";
+import { format } from "date-fns";
+import { CustomProvider, DatePicker } from "rsuite";
+import * as locales from "rsuite/locales";
+
+const data = Object.keys(locales).map((key) => ({
+  key,
+  value: locales[key],
+}));
 
 const groupScheduleInitializationData = {
   id: 0,
@@ -22,9 +29,10 @@ const groupScheduleInitializationData = {
 };
 
 export default function GroupPlan() {
-
   const navigate = useNavigate();
   const groupId = useParams().id;
+  const [localeKey, setLocaleKey] = useState("ruRU");
+  const locale = data.find((item) => item.key === localeKey);
   const [showModal, setShowModal] = useState(false);
   const [groupSchedules, setGroupSchedules] = useState([]);
   const [groupSchedule, setGroupSchedule] = useState({
@@ -36,7 +44,7 @@ export default function GroupPlan() {
   const customAxios = CustomAxios();
 
   useEffect(() => {
-    if (localStorage.getItem('isAuth')=='true') {
+    if (localStorage.getItem("isAuth") == "true") {
       if (groupSchedules.length == 0) {
         getSchedule();
       }
@@ -49,7 +57,9 @@ export default function GroupPlan() {
         method: "get",
         url: `/group/${groupId}/schedules`,
       });
-      let data = response.data.sort(function(a, b){return new Date(a.time) - new Date(b.time);})
+      let data = response.data.sort(function (a, b) {
+        return new Date(a.time) - new Date(b.time);
+      });
       setGroupSchedules(data);
       setIsLoad(false);
     } catch (err) {
@@ -98,8 +108,7 @@ export default function GroupPlan() {
       });
     } catch (err) {
       alert(err.response.data.message);
-    }
-    finally{
+    } finally {
       setGroupSchedule({ ...groupScheduleInitializationData });
       setIsedit(false);
       setShowModal(false);
@@ -107,7 +116,7 @@ export default function GroupPlan() {
   };
 
   // Edit group schedule
-  let [oldTime, setOldTime] = useState(''); 
+  let [oldTime, setOldTime] = useState("");
 
   const editGroupScheduleHandler = async (e) => {
     e.preventDefault();
@@ -132,8 +141,7 @@ export default function GroupPlan() {
       });
     } catch (err) {
       alert(err.message);
-    }
-    finally{
+    } finally {
       setGroupSchedule({ ...groupScheduleInitializationData });
       setIsedit(false);
       setShowModal(false);
@@ -305,11 +313,14 @@ export default function GroupPlan() {
         )}
       </div>
 
-      <Modal isVisible={showModal} onClose={() => {
-        setGroupSchedule({...groupScheduleInitializationData});
-        setIsedit(false);
-        setShowModal(false);
-        }}>
+      <Modal
+        isVisible={showModal}
+        onClose={() => {
+          setGroupSchedule({ ...groupScheduleInitializationData });
+          setIsedit(false);
+          setShowModal(false);
+        }}
+      >
         <div className="py-6 px-6 lg:px-8 text-left">
           <h3 className="mb-4 text-xl font-medium text-gray-900">
             Кун тартиби
@@ -340,23 +351,35 @@ export default function GroupPlan() {
             <label className="block text-sm font-medium text-gray-900">
               Time
             </label>
-            <Datetime
-              inputProps={{
-                className:
-                  "w-full p-1.5 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900",
-              }}
-              dateFormat="YYYY-MM-DD"
-              timeFormat={"hh:mm"}
-              value={new Date(groupSchedule.time)}
-              onChange={(date) => {
-                setGroupSchedule((prev) => {
-                  return {
-                    ...prev,
-                    time: format(new Date(date), "yyyy-MM-dd HH:mm"),
-                  };
-                });
-              }}
-            />
+            <CustomProvider locale={locale.value}>
+              <DatePicker
+                inputProps={{
+                  className:
+                    "w-full p-1.5 text-sm rounded-lg bg-gray-50 border border-gray-300 text-gray-900",
+                }}
+                value={new Date(groupSchedule.time)}
+                format="yyyy-MM-dd HH:mm"
+                editable={false}
+                // onChange={(date) => {
+                //   console.log(date);
+                //   setGroupSchedule((prev) => {
+                //     return {
+                //       ...prev,
+                //       time: format(new Date(date), "yyyy-MM-dd HH:mm"),
+                //     };
+                //   });
+                // }}
+                onSelect={(date) => {
+                  console.log(date);
+                  setGroupSchedule((prev) => {
+                    return {
+                      ...prev,
+                      time: format(new Date(date), "yyyy-MM-dd HH:mm"),
+                    };
+                  });
+                }}
+              />
+            </CustomProvider>
             <label className="block text-sm font-medium text-gray-900">
               Location
             </label>
