@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomAxios from "../../axios/customAxios";
 import Loader from "../Constants/Louder";
@@ -6,7 +6,6 @@ import Loader from "../Constants/Louder";
 const Login = () => {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
-  const [companyId, setCompanyId] = useState(0);
   const navigate = useNavigate();
   const customAxios = CustomAxios();
   const [isLaod, setIsLoad] = useState(false);
@@ -15,34 +14,32 @@ const Login = () => {
     setIsLoad(true);
     try {
       const response = await customAxios({
-        method: 'post',
-        url: 'auth/login',
+        method: "post",
+        url: "auth/login/admin",
         maxBodyLength: Infinity,
         data: JSON.stringify({
           username: login,
           password: password,
-          companyId: companyId,
+          companyId: import.meta.env.VITE_APP_COMPANY_ID,
         }),
       });
-      localStorage.setItem('isAuth', true);
-      localStorage.setItem('companyId', companyId);
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem("isAuth", true);
+      localStorage.setItem("token", response.data.token);
       setLogin("");
       setPassword("");
-      setCompanyId(0);
       navigate("/");
     } catch (error) {
       alert(error.message);
-    }finally{
-      setIsLoad(false)
+    } finally {
+      setIsLoad(false);
     }
   };
 
   useEffect(() => {
-    if (localStorage.getItem('isAuth')=="true"){
+    if (localStorage.getItem("isAuth") == "true") {
       navigate("/");
     }
-  }, []);  
+  }, []);
 
   return (
     <div className="relative">
@@ -54,7 +51,6 @@ const Login = () => {
           <div className="flex flex-col justify-center items-center mt-10 md:mt-4 space-y-6 md:space-y-8 relative">
             <div className="">
               <input
-
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
                 type="text"
@@ -71,23 +67,13 @@ const Login = () => {
                 className=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-violet-600 focus:outline-none text-black placeholder:text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]"
               />
             </div>
-            <div className="">
-              <input
-                type="number"
-                min={0}
-                value={companyId}
-                onChange={(e) => setCompanyId(e.target.value)}
-                placeholder="Compony id"
-                className=" bg-gray-100 rounded-lg px-5 py-2 focus:border border-violet-600 focus:outline-none text-gray-600 placeholder:opacity-50 font-semibold md:w-72 lg:w-[340px]"
-              />
-            </div>
-            {
-              isLaod?
-              <div className= "z-1 absolute">
-                <Loader/>
-              </div>:
-              ''
-            }
+            {isLaod ? (
+              <div className="z-1 absolute">
+                <Loader />
+              </div>
+            ) : (
+              ""
+            )}
           </div>
           <div className="text-center mt-7">
             <button
@@ -101,7 +87,6 @@ const Login = () => {
         </div>
       </div>
     </div>
-
   );
 };
 
