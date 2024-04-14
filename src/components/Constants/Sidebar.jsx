@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { FaKaaba } from "react-icons/fa6";
 import { HiOutlineLogout } from "react-icons/hi";
 import {
-  DASHBOARD_SIDEBAR_BOTTOM_LINKS,
   DASHBOARD_SIDEBAR_LINKS,
 } from "../../lib/consts/Navigation";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -49,9 +48,6 @@ const Sidebar = () => {
         ))}
       </div>
       <div className="flex flex-col gap-0.5 pt-2 border-t border-neutral-700">
-        {DASHBOARD_SIDEBAR_BOTTOM_LINKS.map((item) => (
-          <SidebarLink key={item.key} item={item} />
-        ))}
         <div className={classNames("", linkClasses)}>
           <div
             className="flex gap-2 text-red-500 cursor-pointer hover:no-underline"

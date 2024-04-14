@@ -33,11 +33,11 @@ export const DASHBOARD_SIDEBAR_LINKS = [
   },
 ];
 
-export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [
-  {
-    key: "settings",
-    label: "Настройка",
-    path: "/settings",
-    icon: <HiOutlineCog />,
-  },
-];
+// export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [
+//   {
+//     key: "settings",
+//     label: "Настройка",
+//     path: "/settings",
+//     icon: <HiOutlineCog />,
+//   },
+// ];
