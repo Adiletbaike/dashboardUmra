@@ -26,7 +26,7 @@ const initialGroupData = {
     id: "",
     name: "",
     language: "",
-    guideId: 0,
+    leadGroupId: 0,
     guideName: "",
     makkahId: 0,
     makkahHotelName: "",
@@ -50,7 +50,7 @@ const Groups = () => {
   const [groupData, setGroupData] = useState(initialGroupData);
 
   useEffect(() => {
-    if (localStorage.getItem('isAuth')=='true') {
+    if (localStorage.getItem("isAuth") == "true") {
       if (guides.length == 0) {
         getAllGuides();
       }
@@ -107,10 +107,12 @@ const Groups = () => {
     try {
       const data = JSON.stringify({
         name: groupData.data.name,
-        leadGroupId: groupData.data.guideId,
+        leadGroupId: groupData.data.leadGroupId,
         language: groupData.data.language,
         makkahHotelId: groupData.data.makkahId,
         madinahHotelId: groupData.data.madinaId,
+        password: groupData.data.password,
+        username: groupData.data.username,
       });
 
       let config = {
@@ -173,22 +175,23 @@ const Groups = () => {
   const editGroupDataHandler = async (e) => {
     e.preventDefault();
 
-    console.log(groupData);
-
     try {
-      const data = JSON.stringify({
+      const data = {
         name: groupData.data.name,
-        leadGroupId: groupData.data.guideId,
+        leadGroupId: groupData.data.leadGroupId,
         language: groupData.data.language,
         makkahHotelId: groupData.data.makkahId,
         madinahHotelId: groupData.data.madinaId,
-      });
+        password: groupData.data.password,
+        username: groupData.data.username,
+      };
+      console.log(data);
 
       let config = {
         method: "put",
         maxBodyLength: Infinity,
         url: `group/${groupData.data.id}`,
-        data: data,
+        data: JSON.stringify(data),
       };
 
       await customAxios(config);
@@ -225,11 +228,11 @@ const Groups = () => {
           <IoMdAdd />
           Жаңы кошуу
         </button>
-        <Modal 
+        <Modal
           isVisible={showModal}
           onClose={() => {
-            setShowModal(false)
-            setGroupData({...initialGroupData});
+            setShowModal(false);
+            setGroupData({ ...initialGroupData });
           }}
         >
           <div className="py-6 px-6 lg:px-8 text-left">
@@ -353,9 +356,9 @@ const Groups = () => {
                   </label>
                   <Select
                     defaultValue={
-                      groupData.data.guideId != 0
+                      groupData.data.leadGroupId != 0
                         ? {
-                            value: groupData.data.guideId,
+                            value: groupData.data.leadGroupId,
                             label: groupData.data.guideName,
                           }
                         : ""
@@ -366,18 +369,19 @@ const Groups = () => {
                         label: item.firstName + " " + item.lastName,
                       };
                     })}
-                    onChange={(value) =>
+                    onChange={(value) => {
+                      console.log(value);
                       setGroupData((prev) => {
                         return {
                           ...prev,
                           data: {
                             ...prev.data,
-                            guideId: value.value,
+                            leadGroupId: value.value,
                             guideName: value.label,
                           },
                         };
-                      })
-                    }
+                      });
+                    }}
                   />
                 </div>
               </div>
@@ -499,17 +503,17 @@ const Groups = () => {
                       Мадина
                     </th>
                     <th
-                        scope="col"
-                        className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Логин
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Пароль
-                      </th>
+                      scope="col"
+                      className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Логин
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Пароль
+                    </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Программа
                     </th>
@@ -534,7 +538,7 @@ const Groups = () => {
                           <div className="flex items-center">
                             <div>
                               <div className="text-sm font-medium text-gray-900">
-                                  {group.name}
+                                {group.name}
                               </div>
                             </div>
                           </div>
@@ -579,6 +583,7 @@ const Groups = () => {
                         <td className="px-6 py-6 gap-2 text-right text-2xl items-center font-medium">
                           <button
                             onClick={() => {
+                              console.log(group);
                               setGroupData({
                                 isEdit: true,
                                 data: {
@@ -586,18 +591,14 @@ const Groups = () => {
                                   name: group.name,
                                   quantity: group.countOfParticipant,
                                   language: group.language,
-                                  guideId: guides.filter(
-                                    (item) =>
-                                      item.firstName.trim() +
-                                        " " +
-                                        item.lastName.trim() ==
-                                      group.leadOfGroupFullName
-                                  )[0]?.id,
+                                  leadGroupId: group.leadGroupId,
                                   guideName: group.leadOfGroupFullName,
                                   makkahId: group.makkahHotel.id,
                                   makkahHotelName: group.makkahHotel.name,
                                   madinaId: group.madinahHotel.id,
                                   madinaHotelName: group.madinahHotel.name,
+                                  password: group.password,
+                                  username: group.username,
                                 },
                               });
                               setShowModal(true);
