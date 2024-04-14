@@ -25,7 +25,6 @@ const initialGroupData = {
   data: {
     id: "",
     name: "",
-    quantity: 0,
     language: "",
     guideId: 0,
     guideName: "",
@@ -33,6 +32,8 @@ const initialGroupData = {
     makkahHotelName: "",
     madinaId: 0,
     madinaHotelName: "",
+    password: "",
+    username: "",
   },
 };
 
@@ -110,7 +111,6 @@ const Groups = () => {
         language: groupData.data.language,
         makkahHotelId: groupData.data.makkahId,
         madinahHotelId: groupData.data.madinaId,
-        countOfParticipant: groupData.data.quantity,
       });
 
       let config = {
@@ -182,7 +182,6 @@ const Groups = () => {
         language: groupData.data.language,
         makkahHotelId: groupData.data.makkahId,
         madinahHotelId: groupData.data.madinaId,
-        countOfParticipant: groupData.data.quantity,
       });
 
       let config = {
@@ -269,32 +268,52 @@ const Groups = () => {
               </div>
               <div>
                 <label
-                  htmlFor="number"
+                  htmlFor="login"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Адам саны
+                  Логин
                 </label>
                 <input
-                  type="number"
-                  name="number"
-                  min="0"
-                  max="100"
-                  value={groupData.data.quantity}
-                  id="number"
-                  placeholder="Саны"
+                  type="text"
+                  name="login"
+                  value={groupData.data.username}
+                  id="login"
+                  placeholder="Логин"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setGroupData((prev) => {
                       return {
                         ...prev,
-                        data: {
-                          ...prev.data,
-                          quantity: parseInt(e.target.value, 10),
-                        },
+                        data: { ...prev.data, username: e.target.value },
                       };
-                    })
-                  }
+                    });
+                  }}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Пароль
+                </label>
+                <input
+                  type="text"
+                  name="password"
+                  value={groupData.data.password}
+                  id="password"
+                  placeholder="Пароль"
+                  required
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
+                  onChange={(e) => {
+                    setGroupData((prev) => {
+                      return {
+                        ...prev,
+                        data: { ...prev.data, password: e.target.value },
+                      };
+                    });
+                  }}
                 />
               </div>
               <div className="flex justify-between">
@@ -468,9 +487,6 @@ const Groups = () => {
                       Аты
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Cаны
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Группа тили
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -482,6 +498,18 @@ const Groups = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Мадина
                     </th>
+                    <th
+                        scope="col"
+                        className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Логин
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Пароль
+                      </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Программа
                     </th>
@@ -506,19 +534,9 @@ const Groups = () => {
                           <div className="flex items-center">
                             <div>
                               <div className="text-sm font-medium text-gray-900">
-                                <Link
-                                  to={`/group/${group.groupId}/members`}
-                                  state={{ quality: group.countOfParticipant }}
-                                >
                                   {group.name}
-                                </Link>
                               </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900">
-                            {group.countOfParticipant}
                           </div>
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500">
@@ -538,6 +556,12 @@ const Groups = () => {
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-500">
                           {group.madinahHotel.name}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {group.username}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {group.password}
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center">
