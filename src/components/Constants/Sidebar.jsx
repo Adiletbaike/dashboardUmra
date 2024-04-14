@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import { FaKaaba } from "react-icons/fa6";
 import { HiOutlineLogout } from "react-icons/hi";
-import {
-  DASHBOARD_SIDEBAR_LINKS,
-} from "../../lib/consts/Navigation";
+import { DASHBOARD_SIDEBAR_LINKS } from "../../lib/consts/Navigation";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 
@@ -31,7 +29,10 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!localStorage.getItem('isAuth')||localStorage.getItem('isAuth')=='false') {
+    if (
+      !localStorage.getItem("isAuth") ||
+      localStorage.getItem("isAuth") == "false"
+    ) {
       navigate("/login");
     }
   }, []);
@@ -40,7 +41,9 @@ const Sidebar = () => {
     <div className="bg-neutral-900 w-60 p-3 flex flex-col text-white">
       <div className="flex items-center gap-2 px-3 py-3 border-b border-neutral-700">
         <FaKaaba fontSize={28} color="yellow" />{" "}
-        <span className="text-neutral-100 text-lg font-bold">Умра</span>
+        <span className="text-neutral-100 text-lg font-bold">
+          {import.meta.env.VITE_APP_COMPANY_NAME}
+        </span>
       </div>
       <div className="flex-1 py-8 flex flex-col gap-0.5">
         {DASHBOARD_SIDEBAR_LINKS.map((item) => (
@@ -51,12 +54,12 @@ const Sidebar = () => {
         <div className={classNames("", linkClasses)}>
           <div
             className="flex gap-2 text-red-500 cursor-pointer hover:no-underline"
-            onClick={()=>{
-              localStorage.removeItem('isAuth');
-              localStorage.removeItem('companyId');
-              localStorage.removeItem('token');
-              navigate('/login');
-          }}
+            onClick={() => {
+              localStorage.removeItem("isAuth");
+              localStorage.removeItem("companyId");
+              localStorage.removeItem("token");
+              navigate("/login");
+            }}
           >
             <span className="text-xl">
               <HiOutlineLogout />
