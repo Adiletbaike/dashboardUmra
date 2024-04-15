@@ -64,7 +64,7 @@ const Sidebar = () => {
             <span className="text-xl">
               <HiOutlineLogout />
             </span>
-            Чыгуу
+            Выход
           </div>
         </div>
       </div>

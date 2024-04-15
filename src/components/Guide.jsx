@@ -11,11 +11,11 @@ import Loader from "./Constants/Louder";
 
 const languagesData = [
   { code: "RU", lang: "Русский язык" },
-  { code: "KG", lang: "Кыргыз тили" },
-  { code: "KZ", lang: "Казак тили" },
-  { code: "UZ", lang: "Uzbek тили" },
-  { code: "TR", lang: "Turkce" },
-  { code: "EN", lang: "English" },
+  { code: "KG", lang: "Кыргызский язык" },
+  { code: "KZ", lang: "Казакский язык" },
+  { code: "UZ", lang: "Узбекский язык" },
+  { code: "TR", lang: "Турецский язык" },
+  { code: "EN", lang: "Англиский язык" },
 ];
 
 const guideInitialData = {
@@ -81,7 +81,7 @@ const Guide = () => {
       getAllGuides();
       setGuideData({...guideInitialData});
       setShowModal(false);
-      toast.success("Ийгиликтүү сакталды!!!", {
+      toast.success("Успешно добавлено!!!", {
         position: "top-right",
         autoClose: 3000, // 3 seconds
         hideProgressBar: true,
@@ -106,7 +106,7 @@ const Guide = () => {
         url: `lead-group/${delGuideId}`,
       });
       getAllGuides();
-      toast.error("Ийгиликтүү өчүрүлдү!!!", {
+      toast.error("Успешно удалено!!!", {
         position: "top-right",
         autoClose: 3000, // 3 seconds
         hideProgressBar: true,
@@ -144,7 +144,7 @@ const Guide = () => {
       getAllGuides();
       setGuideData({...guideInitialData});
       setShowModal(false);
-      toast.info("Ийгиликтүү өзгөртүлдү!!!", {
+      toast.info("Успешно обновлено!!!", {
         position: "top-right",
         autoClose: 3000, // 3 seconds
         hideProgressBar: true,
@@ -193,7 +193,7 @@ const Guide = () => {
           }}
         >
           <IoMdAdd />
-          Жаңы кошуу
+          Добавить
         </button>
         <Modal 
           isVisible={showModal} 
@@ -203,7 +203,7 @@ const Guide = () => {
           }}>
           <div className="py-6 px-6 lg:px-8 text-left">
             <h3 className="mb-4 text-xl font-medium text-gray-900">
-              Умра башчы
+              Гид
             </h3>
             <form
               className="space-y-3"
@@ -215,14 +215,14 @@ const Guide = () => {
                   htmlFor="name"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Аты
+                  Имя
                 </label>
                 <input
                   value={guideData.data.name}
                   type="text"
                   name="name"
                   id="name"
-                  placeholder="Аты"
+                  placeholder="Имя"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) =>
@@ -256,7 +256,7 @@ const Guide = () => {
                   value={guideData.data.surname}
                   name="surname"
                   id="surname"
-                  placeholder="Фамилиясы"
+                  placeholder="Фамилия"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) =>
@@ -281,7 +281,7 @@ const Guide = () => {
                   value={guideData.data.phone}
                   name="number"
                   id="number"
-                  placeholder="Телефон номери"
+                  placeholder="Номер телефона"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) =>
@@ -299,14 +299,14 @@ const Guide = () => {
                   htmlFor="education"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Билими
+                  Университет
                 </label>
                 <input
                   type="text"
                   value={guideData.data.education}
                   name="education"
                   id="education"
-                  placeholder="Билими"
+                  placeholder="Университет"
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
                   onChange={(e) =>
@@ -325,7 +325,7 @@ const Guide = () => {
                   htmlFor="education"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Билген тилдери
+                  Языки
                 </label>
                 <div className="w-9/12 relative text-gray-900 text-sm">
                   <label
@@ -373,7 +373,7 @@ const Guide = () => {
                   type="submit"
                   className="w-100 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
-                  {guideData.isEdit ? "Өзгөртүү" : "Сактоо"}
+                  {guideData.isEdit ? "Обновить" : "Сохранить"}
                 </button>
               </div>
             </form>
@@ -388,7 +388,7 @@ const Guide = () => {
                 <Loader />
               ) : guides.length == 0 ? (
                 <div className="flex w-full justify-center items-center p-5">
-                  <span> Группа башчылары жок </span>
+                  <span> Нет гиды </span>
                 </div>
               ) : (
                 <table className="min-w-full divide-y divide-gray-200">
@@ -404,13 +404,13 @@ const Guide = () => {
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        Аты
+                        Имя
                       </th>
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        Фамилиясы
+                        Фамилия
                       </th>
                       <th
                         scope="col"
@@ -422,19 +422,19 @@ const Guide = () => {
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        Билими
+                        Университет
                       </th>
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        Билген тилдери
+                        Языки
                       </th>
                       <th
                         scope="col"
                         className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        Action
+                        Действие
                       </th>
                     </tr>
                   </thead>
@@ -519,7 +519,7 @@ const Guide = () => {
                           {isShowDialogModalWin && (
                             <DialogDelete
                               onDialog={areYouSureDelete}
-                              message={"Чындап өчүрүүнү каалайсызбы?"}
+                              message={"Вы уверены?"}
                             />
                           )}
                         </td>

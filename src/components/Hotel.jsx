@@ -69,7 +69,7 @@ const Hotel = () => {
         city: "",
       });
       setShowModal(false);
-      toast.success("Ийгиликтүү сакталды!!!", {
+      toast.success("Успешно добавлено!!!", {
         position: "top-right",
         autoClose: 3000, // 3 seconds
         hideProgressBar: true,
@@ -96,7 +96,7 @@ const Hotel = () => {
         .then((res) => {
           getAllHotels();
           setIsShowDialogModalWin(false);
-          toast.error("Ийгиликтүү өчүрүлдү!!!", {
+          toast.error("Успешно удалено!!!", {
             position: "top-right",
             autoClose: 3000, // 3 seconds
             hideProgressBar: true,
@@ -152,7 +152,7 @@ const Hotel = () => {
           city: "",
         });
         setShowModal(false);
-        toast.success("Ийгиликтүү сакталды!!!", {
+        toast.info("Успешно обновлено!!!", {
           position: "top-right",
           autoClose: 3000, // 3 seconds
           hideProgressBar: true,
@@ -196,7 +196,7 @@ const Hotel = () => {
         >
           <div className="py-6 px-6 lg:px-8 text-left">
             <h3 className="mb-4 text-xl font-medium text-gray-900">
-              Мейманканалар
+              Гостиницы
             </h3>
             <form
               className="space-y-3"
@@ -210,13 +210,13 @@ const Hotel = () => {
                   htmlFor="name"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Мейманкана аты
+                  Название гостиницы
                 </label>
                 <input
                   type="text"
                   name="name"
                   id="name"
-                  placeholder="Аты"
+                  placeholder="Название"
                   required
                   value={hotelData.name}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
@@ -238,7 +238,7 @@ const Hotel = () => {
                   htmlFor="location"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Карта адреси
+                  Координата карты
                 </label>
                 <input
                   type="text"
@@ -261,7 +261,7 @@ const Hotel = () => {
                   htmlFor="location"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Шаар
+                  Город
                 </label>
                 <select
                   onChange={(e) => {
@@ -281,7 +281,7 @@ const Hotel = () => {
                   type="submit"
                   className="w-100 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
-                  {hotelData.isEdit ? "Өзгөртүү" : "Сактоо"}
+                  {hotelData.isEdit ? "Обновить" : "Сохранить"}
                 </button>
               </div>
             </form>
@@ -296,7 +296,7 @@ const Hotel = () => {
                 <Loader />
               ) : hotels.length == 0 ? (
                 <div className="w-full flex p-5 justify-center items-center">
-                  <span>Мейманканалар жок</span>
+                  <span>Нет гостиницы</span>
                 </div>
               ) : (
                 <table className="min-w-full divide-y divide-gray-200 ">
@@ -312,31 +312,31 @@ const Hotel = () => {
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        Аты
+                        Название
                       </th>
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        Latitude
+                        Долгота 
                       </th>
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        Logitude
+                        Широта
                       </th>
                       <th
                         scope="col"
                         className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        City
+                        Город
                       </th>
                       <th
                         scope="col"
                         className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                       >
-                        Action
+                        Действие
                       </th>
                     </tr>
                   </thead>
@@ -419,7 +419,7 @@ const Hotel = () => {
                           {isShowDialogModalWin && (
                             <DialogDelete
                               onDialog={areYouSureDelete}
-                              message={"Чындап өчүрүүнү каалайсызбы?"}
+                              message={"Вы уверены?"}
                             />
                           )}
                         </td>

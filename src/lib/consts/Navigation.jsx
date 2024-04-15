@@ -15,19 +15,19 @@ export const DASHBOARD_SIDEBAR_LINKS = [
   // },
   {
     key: "groups",
-    label: "Группалар",
+    label: "Группы",
     path: "/",
     icon: <HiOutlineUserGroup />,
   },
   {
     key: "guide",
-    label: "Умра башчылар",
+    label: "Гиды",
     path: "/guide",
     icon: <HiOutlineUserPlus />,
   },
   {
     key: "hotels",
-    label: "Мейманканалар",
+    label: "Гостиницы",
     path: "/hotels",
     icon: <HiOutlineBuildingOffice2 />,
   },

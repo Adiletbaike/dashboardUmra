@@ -12,12 +12,12 @@ import "react-toastify/dist/ReactToastify.css";
 import Loader from "./Constants/Louder";
 
 const languages = [
-  { label: "Кыргызча", value: "KG" },
+  { label: "Кыргызский", value: "KG" },
   { label: "Рyсский", value: "RU" },
-  { label: "Казакча", value: "KZ" },
-  { label: "Озбекче", value: "UZ" },
-  { label: "English", value: "EN" },
-  { label: "Turkce", value: "TR" },
+  { label: "Казакский", value: "KZ" },
+  { label: "Узбекский", value: "UZ" },
+  { label: "Англиский", value: "EN" },
+  { label: "Турецский", value: "TR" },
 ];
 
 const initialGroupData = {
@@ -125,7 +125,7 @@ const Groups = () => {
       getAllGroups();
       setGroupData({ ...initialGroupData });
       setShowModal(false);
-      toast.success("Ийгиликтүү сакталды!!!", {
+      toast.success("Успешно добавлено!!!", {
         position: "top-right",
         autoClose: 3000, // 3 seconds
         hideProgressBar: true,
@@ -152,7 +152,7 @@ const Groups = () => {
         });
         getAllGroups();
         setIsShowDialogModalWin(false);
-        toast.success("Ийгиликтүү өчүрүлдү!!!", {
+        toast.success("Успешно удалено!!!", {
           position: "top-right",
           autoClose: 3000, // 3 seconds
           hideProgressBar: true,
@@ -198,7 +198,7 @@ const Groups = () => {
       getAllGroups();
       setGroupData({ ...initialGroupData });
       setShowModal(false);
-      toast.success("Ийгиликтүү сакталды!!!", {
+      toast.info("Успешно обновлено!!!", {
         position: "top-right",
         autoClose: 3000, // 3 seconds
         hideProgressBar: true,
@@ -226,7 +226,7 @@ const Groups = () => {
           }}
         >
           <IoMdAdd />
-          Жаңы кошуу
+          Добавить
         </button>
         <Modal
           isVisible={showModal}
@@ -249,13 +249,13 @@ const Groups = () => {
                   htmlFor="groups"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Группанын аты
+                  Название группы
                 </label>
                 <input
                   type="text"
                   name="name"
                   id="name"
-                  placeholder="Аты"
+                  placeholder="Название"
                   value={groupData.data.name}
                   required
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
@@ -325,7 +325,7 @@ const Groups = () => {
                     htmlFor="language"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    Группанын тили
+                    Язык группы
                   </label>
                   <Select
                     defaultValue={
@@ -352,7 +352,7 @@ const Groups = () => {
                     htmlFor="guide"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    Умра башчы
+                    Гид
                   </label>
                   <Select
                     defaultValue={
@@ -391,7 +391,7 @@ const Groups = () => {
                     htmlFor="hotelMakkah"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    Мекке отель
+                    Мекке гостиница
                   </label>
                   <Select
                     options={hotels.map((item) => {
@@ -427,7 +427,7 @@ const Groups = () => {
                     htmlFor="hotelMedina"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    Мадина отель
+                    Мадина гостиница
                   </label>
                   <Select
                     options={hotels.map((item) => {
@@ -464,7 +464,7 @@ const Groups = () => {
                   type="submit"
                   className="w-100 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 >
-                  Сактоо
+                  {groupData.isEdit ? "Обновить" : "Сохранить"}
                 </button>
               </div>
             </form>
@@ -479,7 +479,7 @@ const Groups = () => {
                 <Loader />
               ) : groups.length == 0 ? (
                 <div className="flex w-full justify-center items-center p-5">
-                  <span> Группа башчылары жок </span>
+                  <span> Нет группы </span>
                 </div>
               ) : (
                 <table className="w-full">
@@ -488,13 +488,13 @@ const Groups = () => {
                       №
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Аты
+                      Название
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Группа тили
+                      Язык группы
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Умра башчы
+                      Гид
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Мекке
@@ -518,7 +518,7 @@ const Groups = () => {
                       Программа
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
+                      Действие
                     </th>
                   </thead>
 

@@ -1,16 +1,15 @@
 import { IoArrowBack } from "react-icons/io5";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaRegEdit } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import Modal from "./Modals/Modal";
 import { CiEdit } from "react-icons/ci";
+import { IoMdAdd } from "react-icons/io";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { toast, ToastContainer } from "react-toastify";
 import DialogDelete from "./Modals/DialogDelete";
 import CustomAxios from "../axios/customAxios";
 import Loader from "./Constants/Louder";
-import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 import { format } from "date-fns";
 import { CustomProvider, DatePicker } from "rsuite";
@@ -97,7 +96,7 @@ export default function GroupPlan() {
       });
       getSchedule();
       setShowModal(false);
-      toast.success("Ийгиликтүү сакталды!!!", {
+      toast.success("Успешно добавлено!!!", {
         position: "top-right",
         autoClose: 3000, // 3 seconds
         hideProgressBar: true,
@@ -130,7 +129,7 @@ export default function GroupPlan() {
       getSchedule();
       setGroupSchedule({ ...groupScheduleInitializationData });
       setShowModal(false);
-      toast.success("Ийгиликтүү сакталды!!!", {
+      toast.info("Успешно обновлено!!!", {
         position: "top-right",
         autoClose: 3000, // 3 seconds
         hideProgressBar: true,
@@ -160,7 +159,7 @@ export default function GroupPlan() {
           url: `schedule/${delMemberId}`,
         });
         getSchedule();
-        toast.error("Ийгиликтүү өчүрүлдү!!!", {
+        toast.error("Успешно удалено!!!", {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: true,
@@ -193,22 +192,22 @@ export default function GroupPlan() {
           onClick={() => navigate("/")}
         >
           <IoArrowBack />
-          Back
+          Назад
         </button>
         <button
-          className="flex items-center text-lg rounded-lg border p-1 gap-2 bg-green-400"
+          className="flex items-center text-lg rounded-lg border p-1 bg-green-400"
           onClick={() => {
             setShowModal(true);
             setGroupSchedule({ ...groupScheduleInitializationData });
           }}
         >
-          <FaRegEdit />
-          Жаны кошуу
+          <IoMdAdd />
+          Добавить
         </button>
       </div>
       <div className="pb-3 pt-7">
         <h3 className="w-full flex justify-between">
-          <span>Кун тартиби</span>
+          <span>Расписание</span>
         </h3>
         {isLoad ? (
           <Loader />
@@ -220,8 +219,8 @@ export default function GroupPlan() {
                 setShowModal(true);
               }}
             >
-              <FaRegEdit />
-              Жаны кошуу
+              <IoMdAdd />
+              Добавить
             </button>
           </div>
         ) : (
@@ -238,25 +237,25 @@ export default function GroupPlan() {
                   scope="col"
                   className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Name
+                  Название
                 </th>
                 <th
                   scope="col"
                   className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Time
+                  Время
                 </th>
                 <th
                   scope="col"
                   className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Location
+                  Локация
                 </th>
                 <th
                   scope="col"
                   className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
-                  Action
+                  Действие
                 </th>
               </tr>
             </thead>
@@ -301,7 +300,7 @@ export default function GroupPlan() {
                       {isShowDialogModalWin && (
                         <DialogDelete
                           onDialog={deleteGroupScheduleHandler}
-                          message={"Чындап өчүрүүнү каалайсызбы?"}
+                          message={"Вы уверены?"}
                         />
                       )}
                     </td>
@@ -323,7 +322,7 @@ export default function GroupPlan() {
       >
         <div className="py-6 px-6 lg:px-8 text-left">
           <h3 className="mb-4 text-xl font-medium text-gray-900">
-            Кун тартиби
+            Расписание
           </h3>
           <form
             className="space-y-1.5"
@@ -333,11 +332,11 @@ export default function GroupPlan() {
             }
           >
             <label className="block text-sm font-medium text-gray-900">
-              Name
+              Название
             </label>
             <input
               type="text"
-              placeholder="Name"
+              placeholder="Название"
               value={groupSchedule.name}
               required
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none"
@@ -349,7 +348,7 @@ export default function GroupPlan() {
             />
 
             <label className="block text-sm font-medium text-gray-900">
-              Time
+              Время
             </label>
             <CustomProvider locale={locale.value}>
               <DatePicker
@@ -381,11 +380,11 @@ export default function GroupPlan() {
               />
             </CustomProvider>
             <label className="block text-sm font-medium text-gray-900">
-              Location
+              Локация
             </label>
             <input
               type="text"
-              placeholder="42.8700351769714, 74.5677123645863"
+              placeholder="Локация"
               value={groupSchedule.location}
               required
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none"
@@ -400,7 +399,7 @@ export default function GroupPlan() {
                 type="submit"
                 className="w-100 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
               >
-                Сактоо
+                Сохранить
               </button>
             </div>
           </form>
