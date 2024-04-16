@@ -185,7 +185,7 @@ export default function GroupPlan() {
   };
 
   return (
-    <div className="bg-white p-4">
+    <div className="bg-white p-4 overflow-y-auto" style={{ maxHeight: "95vh" }}>
       <div className="flex  justify-between border-b pb-4 border-gray-200">
         <button
           className="flex items-center text-lg rounded-lg border p-1 gap-2 bg-gray-300"
@@ -212,7 +212,7 @@ export default function GroupPlan() {
         {isLoad ? (
           <Loader />
         ) : groupSchedules.length == 0 ? (
-          <div className="w-full flex justify-center align-center p-10">
+          <div className="w-full flex justify-center align-center p-10 ">
             <button
               className="flex items-center text-lg rounded-lg border p-5 pt-3 pb-3 gap-2 bg-green-400 font-bold"
               onClick={() => {
@@ -224,36 +224,36 @@ export default function GroupPlan() {
             </button>
           </div>
         ) : (
-          <table className="w-full table-auto mt-3">
+          <table className="w-full  table-auto mt-3 shadow border rounded-lg border-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th
                   scope="col"
-                  className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-6 p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
                   №
                 </th>
                 <th
                   scope="col"
-                  className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-6 p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
                   Название
                 </th>
                 <th
                   scope="col"
-                  className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-6 p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
                   Время
                 </th>
                 <th
                   scope="col"
-                  className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-6 p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
                   Локация
                 </th>
                 <th
                   scope="col"
-                  className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  className="px-6 p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
                   Действие
                 </th>
@@ -263,19 +263,19 @@ export default function GroupPlan() {
               {groupSchedules.map((item, index) => {
                 return (
                   <tr className="hover:bg-gray-200 duration-200" key={index}>
-                    <td className="p-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-6 p-3 whitespace-nowrap text-sm font-medium text-gray-900">
                       {index + 1}
                     </td>
-                    <td className="p-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-6 p-3 whitespace-nowrap text-sm font-medium text-gray-900">
                       {item.name}
                     </td>
-                    <td className="p-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-6 p-3 whitespace-nowrap text-sm font-medium text-gray-900">
                       {item.time}
                     </td>
-                    <td className="p-3 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="px-6 p-3 whitespace-nowrap text-sm font-medium text-gray-900">
                       {item.location}
                     </td>
-                    <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
+                    <td className=" flex px-6 py-6 whitespace-nowrap gap-2 text-right text-2xl items-center font-medium border-b-0">
                       <button
                         className="text-indigo-600 hover:text-indigo-900"
                         onClick={async () => {
@@ -359,17 +359,7 @@ export default function GroupPlan() {
                 value={new Date(groupSchedule.time)}
                 format="yyyy-MM-dd HH:mm"
                 editable={false}
-                // onChange={(date) => {
-                //   console.log(date);
-                //   setGroupSchedule((prev) => {
-                //     return {
-                //       ...prev,
-                //       time: format(new Date(date), "yyyy-MM-dd HH:mm"),
-                //     };
-                //   });
-                // }}
                 onSelect={(date) => {
-                  console.log(date);
                   setGroupSchedule((prev) => {
                     return {
                       ...prev,

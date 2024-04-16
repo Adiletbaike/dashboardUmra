@@ -183,7 +183,7 @@ const Guide = () => {
   };
 
   return (
-    <div className="bg-white p-4 overflow-x-scroll">
+    <div className="bg-white p-4">
       <ToastContainer />
       <div className="flex justify-end border-b pb-4 border-gray-200">
         <button
@@ -381,9 +381,9 @@ const Guide = () => {
         </Modal>
       </div>
       <div className="flex flex-col pt-4">
-        <div className="-my-2 overflow-x-auto">
+        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <div className="shadow overflow-hidden overflow-y-scroll border-b border-gray-200 sm:rounded-lg" style={{ maxHeight: '80vh'}}>
               {isLoad ? (
                 <Loader />
               ) : guides.length == 0 ? (
@@ -485,7 +485,7 @@ const Guide = () => {
                             ? person.languages.join(", ")
                             : "No lang"}
                         </td>
-                        <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-none text-right text-2xl items-center font-medium">
+                        <td className=" flex px-6 py-6 whitespace-nowrap gap-2 border-b  text-right text-2xl items-center font-medium">
                           <button
                             onClick={() => {
                               setGuideData({

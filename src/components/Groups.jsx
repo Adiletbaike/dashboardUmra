@@ -474,7 +474,7 @@ const Groups = () => {
       <div className="flex flex-col pt-4">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <div className="shadow overflow-hidden overflow-y-scroll border-b border-gray-200 sm:rounded-lg" style={{ maxHeight: '80vh'}}>
               {isLoad ? (
                 <Loader />
               ) : groups.length == 0 ? (
@@ -619,7 +619,7 @@ const Groups = () => {
                           {isShowDialogModalWin && (
                             <DialogDelete
                               onDialog={areYouSureDelete}
-                              message={"Чындап өчүрүүнү каалайсызбы?"}
+                              message={"Вы уверены?"}
                             />
                           )}
                         </td>
